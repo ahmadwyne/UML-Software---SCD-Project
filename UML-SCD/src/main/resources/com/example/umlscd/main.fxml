@@ -14,21 +14,28 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.MainController">
     <top>
-        <MenuBar>
-            <Menu text="File">
-                <MenuItem text="New"/>
-                <MenuItem text="Open"/>
-                <MenuItem text="Save"/>
-                <MenuItem text="Exit"/>
-            </Menu>
-            <Menu text="Edit">
-                <MenuItem text="Undo"/>
-                <MenuItem text="Redo"/>
-            </Menu>
-            <Menu text="Help">
-                <MenuItem text="About"/>
-            </Menu>
-        </MenuBar>
+        <!-- HBox containing Home button and MenuBar -->
+        <HBox>
+            <!-- Home Button -->
+            <Button text="Home" fx:id="homeButton" style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+            <!-- MenuBar with other menus -->
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="New"/>
+                    <MenuItem text="Open"/>
+                    <MenuItem text="Save"/>
+                    <MenuItem text="Exit"/>
+                </Menu>
+                <Menu text="Edit">
+                    <MenuItem text="Undo"/>
+                    <MenuItem text="Redo"/>
+                </Menu>
+                <Menu text="Help">
+                    <MenuItem text="About"/>
+                </Menu>
+            </MenuBar>
+        </HBox>
     </top>
 
     <left>
