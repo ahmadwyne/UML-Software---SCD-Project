@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.MainController">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassDiagram">
     <top>
         <!-- HBox containing Home button and MenuBar -->
         <HBox>

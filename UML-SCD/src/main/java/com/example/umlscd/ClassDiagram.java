@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
-public class MainController {
+public class ClassDiagram {
 
     @FXML
     private Button homeButton;
