@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
-public class WelcomeController {
+public class WelcomePage {
 
     @FXML
     private Button btnClassDiagram;
@@ -36,7 +36,7 @@ public class WelcomeController {
             Stage stage = (Stage) btnClassDiagram.getScene().getWindow();
 
             // Load the Class Diagram scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/main.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/classDiagram.fxml"));
             Parent root = loader.load();
 
             // Set the Class Diagram scene in the current stage
