@@ -1,76 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassDiagram">
-    <top>
-        <!-- HBox containing Home button and MenuBar -->
-        <HBox>
-            <!-- Home Button -->
-            <Button text="Home" fx:id="homeButton" style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-font-weight: bold;"/>
 
-            <!-- MenuBar with other menus -->
-            <MenuBar>
-                <Menu text="File">
-                    <MenuItem text="New"/>
-                    <MenuItem text="Open"/>
-                    <MenuItem text="Save"/>
-                    <MenuItem text="Exit"/>
-                </Menu>
-                <Menu text="Edit">
-                    <MenuItem text="Undo"/>
-                    <MenuItem text="Redo"/>
-                </Menu>
-                <Menu text="Help">
-                    <MenuItem text="About"/>
-                </Menu>
-            </MenuBar>
-        </HBox>
+    <!-- Top Menu -->
+    <top>
+        <MenuBar>
+            <Menu text="Home">
+                <MenuItem text="Home" onAction="#handleHome"/>
+            </Menu>
+            <Menu text="File">
+                <MenuItem text="New"/>
+                <MenuItem text="Open"/>
+                <MenuItem text="Save"/>
+                <MenuItem text="Exit"/>
+            </Menu>
+            <Menu text="Edit">
+                <MenuItem text="Undo"/>
+                <MenuItem text="Redo"/>
+            </Menu>
+            <Menu text="Help">
+                <MenuItem text="About"/>
+            </Menu>
+        </MenuBar>
     </top>
 
+    <!-- Left Panel -->
     <left>
-        <VBox spacing="5" style="-fx-padding: 10;">
-            <TitledPane text="Object Builder" expanded="true">
-                <VBox>
-                    <Button text="Select"/>
-                    <Button text="Delete"/>
-                    <Button text="Point"/>
-                    <Button text="Class Box"/>
-                    <Button text="Association"/>
-                    <Button text="Dependency"/>
-                    <Button text="Aggregation"/>
-                    <Button text="Composition"/>
-                    <Button text="Generalization"/>
-                    <Button text="Line Split"/>
-                    <Button text="Line"/>
-                    <Button text="Note"/>
+        <VBox style="-fx-padding: 10;">
+            <!-- Working Diagrams Section -->
+            <TitledPane text="Working Diagrams" expanded="true">
+                <VBox spacing="5" style="-fx-padding: 5;">
+                    <ListView fx:id="diagramListView"/>
+                    <!-- Add logic to populate diagrams dynamically in the controller -->
+                </VBox>
+            </TitledPane>
+
+            <!-- Toolbox Section -->
+            <TitledPane text="Toolbox" expanded="true">
+                <VBox spacing="5" style="-fx-padding: 5;">
+                    <Button text="Class" fx:id="btnClass"/>
+                    <Button text="Interface" fx:id="btnInterface"/>
+                    <Button text="Association" fx:id="btnAssociation"/>
+                    <Button text="Directed Association" fx:id="btnDirectedAssociation"/>
+                    <Button text="Aggregation" fx:id="btnAggregation"/>
+                    <Button text="Composition" fx:id="btnComposition"/>
+                    <Button text="Dependency" fx:id="btnDependency"/>
+                    <Button text="Generalization" fx:id="btnGeneralization"/>
+                    <Button text="Interface Realization" fx:id="btnInterfaceRealization"/>
+                    <!-- Add more buttons if needed -->
                 </VBox>
             </TitledPane>
         </VBox>
     </left>
 
+    <!-- Center Pane (Canvas for Drawing) -->
     <center>
-        <Canvas fx:id="canvas" width="700" height="500" style="-fx-border-color: lightblue;"/>
+        <Pane fx:id="drawingPane" style="-fx-background-color: white; -fx-border-color: lightgrey;"/>
     </center>
 
+    <!-- Right Panel (Placeholder for Properties) -->
     <right>
         <VBox spacing="5" style="-fx-padding: 10;">
-            <TitledPane text="Inspector" expanded="true">
+            <TitledPane text="Model Explorer" expanded="true">
                 <VBox>
-                    <Label text="Inspector Panel"/>
-                    <!-- Add more inspector fields or controls here -->
+                    <ListView fx:id="modelExplorerListView"/>
+                    <!-- Add controls for model exploration here -->
+                </VBox>
+            </TitledPane>
+
+            <TitledPane text="Editors" expanded="true">
+                <VBox>
+                    <ListView fx:id="propertiesListView"/>
+                    <!-- Add controls for properties editing here -->
                 </VBox>
             </TitledPane>
         </VBox>
     </right>
+
 </BorderPane>
