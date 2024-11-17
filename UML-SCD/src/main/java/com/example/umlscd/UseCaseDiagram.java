@@ -3,9 +3,7 @@ package com.example.umlscd;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -55,6 +53,11 @@ public class UseCaseDiagram {
     @FXML
     private TextField txtSystemBoundaryName;  // New TextField for the system boundary name
 
+    @FXML
+    private TreeView<String> objectExplorer; // TreeView for the object explorer
+
+    private TreeItem<String> rootItem; // Root item for the explorer
+
     private ArrayList<UseCaseDiagramObject> objects;
     private ArrayList<Association> associations;
     private GraphicsContext gc;
@@ -72,6 +75,18 @@ public class UseCaseDiagram {
         objects = new ArrayList<>();
         associations = new ArrayList<>();
         gc = canvas.getGraphicsContext2D();
+
+        // Initialize the object explorer
+        rootItem = new TreeItem<>("Use Case Diagram");
+        rootItem.setExpanded(true);
+        objectExplorer.setRoot(rootItem);
+
+        // Handle selection in the object explorer
+        objectExplorer.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectObjectFromExplorer(newSelection.getValue());
+            }
+        });
 
         // Button actions
         btnAddActor.setOnAction(event -> addActor());
@@ -125,6 +140,11 @@ public class UseCaseDiagram {
         }
         UseCaseDiagramObject actor = new UseCaseDiagramObject("actor", 150, 100, actorName);
         objects.add(actor);
+
+        // Update the explorer
+        TreeItem<String> actorItem = new TreeItem<>(actorName);
+        rootItem.getChildren().add(actorItem);
+
         redrawCanvas();
     }
 
@@ -135,7 +155,23 @@ public class UseCaseDiagram {
         }
         UseCaseDiagramObject useCase = new UseCaseDiagramObject("usecase", 250, 150, useCaseName);
         objects.add(useCase);
+
+        // Update the explorer
+        TreeItem<String> useCaseItem = new TreeItem<>(useCaseName);
+        rootItem.getChildren().add(useCaseItem);
+
         redrawCanvas();
+    }
+
+    // Select an object from the explorer
+    private void selectObjectFromExplorer(String objectName) {
+        for (UseCaseDiagramObject object : objects) {
+            if (object.getName().equals(objectName)) {
+                selectedObject1 = object;
+                redrawCanvas(); // Highlight the selected object
+                break;
+            }
+        }
     }
 
     private void drawSystemBoundary() {
@@ -342,6 +378,7 @@ public class UseCaseDiagram {
     }
 
 
+    // Redraw the canvas
     public void redrawCanvas() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         drawSystemBoundary();
@@ -350,6 +387,17 @@ public class UseCaseDiagram {
         }
         for (Association association : associations) {
             drawAssociation(association.getObj1(), association.getObj2(), association.getType());
+        }
+
+        // Highlight the selected object
+        if (selectedObject1 != null) {
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(2);
+            if ("actor".equals(selectedObject1.getType())) {
+                gc.strokeOval(selectedObject1.getX() - 20, selectedObject1.getY() - 20, 40, 40);
+            } else if ("usecase".equals(selectedObject1.getType())) {
+                gc.strokeRect(selectedObject1.getX() - 55, selectedObject1.getY() - 30, 110, 60);
+            }
         }
     }
 

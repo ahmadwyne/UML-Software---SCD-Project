@@ -3,11 +3,10 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.UseCaseDiagram">
     <top>
         <Button fx:id="btnHome" text="Home" style="-fx-font-size: 14px; -fx-padding: 5px;" />
@@ -32,4 +31,10 @@
     <center>
         <Canvas fx:id="canvas" width="800" height="600" style="-fx-background-color: white;" />
     </center>
+    <right>
+        <VBox spacing="10" style="-fx-padding: 10px; -fx-background-color: #f9f9f9;">
+            <Label text="Object Explorer" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <TreeView fx:id="objectExplorer" style="-fx-font-size: 14px;" />
+        </VBox>
+    </right>
 </BorderPane>
