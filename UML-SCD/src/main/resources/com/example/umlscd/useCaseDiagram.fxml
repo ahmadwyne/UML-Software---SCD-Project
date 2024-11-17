@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.UseCaseDiagram">
     <top>
         <Button fx:id="btnHome" text="Home" style="-fx-font-size: 14px; -fx-padding: 5px;" />
@@ -14,7 +15,9 @@
     <left>
         <VBox spacing="10" style="-fx-padding: 10px; -fx-background-color: #f0f0f0;">
             <Label text="Add Use Case Objects" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <TextField fx:id="txtActorName" promptText="Enter Actor Name" style="-fx-font-size: 14px;" />
             <Button fx:id="btnAddActor" text="Add Actor" style="-fx-font-size: 14px;" />
+            <TextField fx:id="txtUseCaseName" promptText="Enter Use Case Name" style="-fx-font-size: 14px;" />
             <Button fx:id="btnAddUseCase" text="Add Use Case" style="-fx-font-size: 14px;" />
             <Label text="Associations" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
             <ToggleButton fx:id="btnAssociation" text="Association" />
@@ -22,6 +25,7 @@
             <ToggleButton fx:id="btnExtend" text="&lt;&lt;extend&gt;&gt;" />
             <ToggleButton fx:id="btnDrag" text="Drag" />
             <ToggleButton fx:id="btnDelete" text="Delete" />
+            <ToggleButton fx:id="btnEdit" text="Edit" />
         </VBox>
     </left>
     <center>
