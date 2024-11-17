@@ -3,10 +3,9 @@ package com.example.umlscd;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-
-import javafx.scene.Parent;
 import javafx.scene.image.Image;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
 
 public class Main extends Application {
 
@@ -18,19 +17,17 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml"));
         Parent root = loader.load();
 
         // Set title and icon
-        String fileName = "Untitled";
         window = primaryStage;
-        window.setTitle("UML Editor: " + fileName);
-        window.getIcons().add(new Image(Main.class.getResourceAsStream("/images/Team_Rocket_Logo.jpg")));
+        window.setTitle("Welcome to UML Editor");
+        window.getIcons().add(new Image(Main.class.getResourceAsStream("/images/Team.png")));
 
-        // Set the scene with a defined size
-        Scene scene = new Scene(root, 1000, 600);
+        // Set the welcome page scene
+        Scene scene = new Scene(root, 800, 600);
         window.setScene(scene);
         window.show();
     }
 }
-
