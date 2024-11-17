@@ -29,6 +29,10 @@ public class UseCaseDiagramObject {
         this.y = y;
     }
 
+    public String getType(){
+        return type;
+    }
+
     public void draw(GraphicsContext gc) {
         if ("actor".equals(type)) {
             gc.setStroke(Color.BLACK);

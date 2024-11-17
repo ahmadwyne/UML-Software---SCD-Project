@@ -21,7 +21,7 @@
             <ToggleButton fx:id="btnInclude" text="&lt;&lt;include&gt;&gt;" />
             <ToggleButton fx:id="btnExtend" text="&lt;&lt;extend&gt;&gt;" />
             <ToggleButton fx:id="btnDrag" text="Drag" />
-
+            <ToggleButton fx:id="btnDelete" text="Delete" />
         </VBox>
     </left>
     <center>
