@@ -26,6 +26,7 @@
             <ToggleButton fx:id="btnDrag" text="Drag" />
             <ToggleButton fx:id="btnDelete" text="Delete" />
             <ToggleButton fx:id="btnEdit" text="Edit" />
+            <TextField fx:id="txtSystemBoundaryName" promptText="Enter System Boundary Name" style="-fx-font-size: 14px;" />
         </VBox>
     </left>
     <center>

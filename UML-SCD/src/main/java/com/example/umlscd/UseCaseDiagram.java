@@ -52,6 +52,9 @@ public class UseCaseDiagram {
     @FXML
     private TextField txtUseCaseName;
 
+    @FXML
+    private TextField txtSystemBoundaryName;  // New TextField for the system boundary name
+
     private ArrayList<UseCaseDiagramObject> objects;
     private ArrayList<Association> associations;
     private GraphicsContext gc;
@@ -62,6 +65,7 @@ public class UseCaseDiagram {
     private boolean isInDragMode = false;
     private UseCaseDiagramObject objectBeingDragged = null;
     private boolean isInEditMode = false; // To track if the user is in edit mode
+    private String systemBoundaryName = "System";  // Default name for the system boundary
 
     @FXML
     private void initialize() {
@@ -103,6 +107,7 @@ public class UseCaseDiagram {
         // Add listeners to text fields to handle name changes
         txtActorName.setOnAction(event -> onNameChange());
         txtUseCaseName.setOnAction(event -> onNameChange());
+        txtSystemBoundaryName.setOnAction(event -> onSystemBoundaryNameChange());  // Listener for system boundary name
 
         // Canvas interactions
         canvas.setOnMousePressed(this::onMousePressed);
@@ -139,6 +144,15 @@ public class UseCaseDiagram {
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
         gc.strokeRect(100, 50, canvas.getWidth() - 200, canvas.getHeight() - 100);
+
+        // Draw the system boundary name at the top-center inside the rectangle
+        gc.setFill(Color.BLACK);
+        gc.fillText(systemBoundaryName, (canvas.getWidth() - systemBoundaryName.length() * 6) / 2, 50 + 20);
+    }
+
+    private void onSystemBoundaryNameChange() {
+        systemBoundaryName = txtSystemBoundaryName.getText().trim();
+        redrawCanvas();  // Redraw the canvas to reflect the updated name
     }
 
     private void onMousePressed(MouseEvent event) {
