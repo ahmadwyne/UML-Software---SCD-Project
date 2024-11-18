@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassEditorController">
+    <Label text="Class Editor" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    <TextField fx:id="classNameField" promptText="Class Name"/>
+
+    <Label text="Attributes"/>
+    <TextArea fx:id="attributesArea" promptText="Add attributes (one per line)" />
+
+    <ComboBox fx:id="dataTypeDropdown" promptText="Data Type"/>
+
+    <Label text="Methods"/>
+    <TextArea fx:id="methodsArea" promptText="Add methods (one per line)" />
+
+    <ComboBox fx:id="returnTypeDropdown" promptText="Return Type"/>
+
+    <Button fx:id="applyChangesButton" text="Apply Changes"/>
+</VBox>
