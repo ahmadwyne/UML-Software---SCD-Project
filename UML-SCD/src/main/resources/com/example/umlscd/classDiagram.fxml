@@ -1,48 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassDiagram">
-
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassDiagramController">
     <!-- Top Menu -->
     <top>
-        <MenuBar>
-            <Menu text="Home">
-                <MenuItem text="Home" onAction="#handleHome"/>
-            </Menu>
-            <Menu text="File">
-                <MenuItem text="New"/>
-                <MenuItem text="Open"/>
-                <MenuItem text="Save"/>
-                <MenuItem text="Exit"/>
-            </Menu>
-            <Menu text="Edit">
-                <MenuItem text="Undo"/>
-                <MenuItem text="Redo"/>
-            </Menu>
-            <Menu text="Help">
-                <MenuItem text="About"/>
-            </Menu>
-        </MenuBar>
+        <HBox spacing="10" style="-fx-padding: 10;">
+            <Button text="Home" fx:id="homeButton" style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="New"/>
+                    <MenuItem text="Open"/>
+                    <MenuItem text="Save"/>
+                    <MenuItem text="Exit"/>
+                </Menu>
+                <Menu text="Edit">
+                    <MenuItem text="Undo"/>
+                    <MenuItem text="Redo"/>
+                </Menu>
+                <Menu text="Help">
+                    <MenuItem text="About"/>
+                </Menu>
+            </MenuBar>
+        </HBox>
     </top>
 
-    <!-- Left Panel -->
+    <!-- Left Panel with Fixed Width -->
     <left>
-        <VBox style="-fx-padding: 10;">
+        <VBox spacing="10" style="-fx-padding: 10;" prefWidth="220" maxWidth="220"> <!-- Set fixed width -->
             <!-- Working Diagrams Section -->
             <TitledPane text="Working Diagrams" expanded="true">
                 <VBox spacing="5" style="-fx-padding: 5;">
                     <ListView fx:id="diagramListView"/>
-                    <!-- Add logic to populate diagrams dynamically in the controller -->
                 </VBox>
             </TitledPane>
 
@@ -58,7 +48,6 @@
                     <Button text="Dependency" fx:id="btnDependency"/>
                     <Button text="Generalization" fx:id="btnGeneralization"/>
                     <Button text="Interface Realization" fx:id="btnInterfaceRealization"/>
-                    <!-- Add more buttons if needed -->
                 </VBox>
             </TitledPane>
         </VBox>
@@ -69,23 +58,23 @@
         <Pane fx:id="drawingPane" style="-fx-background-color: white; -fx-border-color: lightgrey;"/>
     </center>
 
-    <!-- Right Panel (Placeholder for Properties) -->
+    <!-- Right Panel -->
     <right>
-        <VBox spacing="5" style="-fx-padding: 10;">
+        <VBox spacing="10" style="-fx-padding: 10;" prefWidth="300" maxWidth="300"> <!-- Set fixed width -->
+
+            <!-- Model Explorer Section -->
             <TitledPane text="Model Explorer" expanded="true">
-                <VBox>
+                <VBox spacing="5">
                     <ListView fx:id="modelExplorerListView"/>
-                    <!-- Add controls for model exploration here -->
                 </VBox>
             </TitledPane>
 
+            <!-- Editors Section (For Class Editor) -->
             <TitledPane text="Editors" expanded="true">
-                <VBox>
-                    <ListView fx:id="propertiesListView"/>
-                    <!-- Add controls for properties editing here -->
+                <VBox fx:id="editorsPane" spacing="5" style="-fx-padding: 5;">
+                    <!-- This pane will be dynamically populated with the Class Editor when a class is selected -->
                 </VBox>
             </TitledPane>
         </VBox>
     </right>
-
 </BorderPane>
