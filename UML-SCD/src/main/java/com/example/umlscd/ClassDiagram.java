@@ -1,39 +1,57 @@
 package com.example.umlscd;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 public class ClassDiagram {
 
     @FXML
-    private Button homeButton;
+    private Pane drawingPane;
+
+    @FXML
+    private ListView<String> diagramListView, modelExplorerListView, propertiesListView;
+
+    @FXML
+    private Button btnClass, btnInterface, btnAssociation, btnDirectedAssociation, btnAggregation, btnComposition, btnDependency, btnGeneralization, btnInterfaceRealization;
+
+    private Stage primaryStage;
 
     @FXML
     private void initialize() {
-        // Set up action for the Home button to return to the welcome page
-        homeButton.setOnAction(event -> goToWelcomePage());
+        setupToolboxHandlers();
+        loadWorkingDiagrams();
     }
 
-    private void goToWelcomePage() {
-        try {
-            // Get the current stage (window)
-            Stage stage = (Stage) homeButton.getScene().getWindow();
+    // Sample method for Home button
+    @FXML
+    private void handleHome() {
+        System.out.println("Navigating to Home");
+        // Logic to navigate back to the welcome screen
+    }
 
-            // Load the Welcome page scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml"));
-            Parent root = loader.load();
+    // Load sample data in "Working Diagrams"
+    private void loadWorkingDiagrams() {
+        diagramListView.getItems().addAll("Main Model", "ClassDiagram1", "UseCaseDiagram1");
+    }
 
-            // Set the Welcome page scene in the current stage
-            Scene welcomeScene = new Scene(root, 800, 600);
-            stage.setScene(welcomeScene);
-            stage.setTitle("Welcome to UML Editor");
+    // Set up handlers for Toolbox buttons
+    private void setupToolboxHandlers() {
+        btnClass.setOnAction(e -> handleToolSelection("Class"));
+        btnInterface.setOnAction(e -> handleToolSelection("Interface"));
+        btnAssociation.setOnAction(e -> handleToolSelection("Association"));
+        btnDirectedAssociation.setOnAction(e -> handleToolSelection("Directed Association"));
+        btnAggregation.setOnAction(e -> handleToolSelection("Aggregation"));
+        btnComposition.setOnAction(e -> handleToolSelection("Composition"));
+        btnDependency.setOnAction(e -> handleToolSelection("Dependency"));
+        btnGeneralization.setOnAction(e -> handleToolSelection("Generalization"));
+        btnInterfaceRealization.setOnAction(e -> handleToolSelection("Interface Realization"));
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void handleToolSelection(String tool) {
+        System.out.println("Selected Tool: " + tool);
+        // Add logic to activate the tool and update the drawing mode
     }
 }

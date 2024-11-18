@@ -27,7 +27,25 @@ public class WelcomePage {
 
         // Button actions
         btnClassDiagram.setOnAction(event -> loadClassDiagram());
-        btnUseCaseDiagram.setOnAction(event -> System.out.println("Use Case Diagram feature coming soon!"));
+        btnUseCaseDiagram.setOnAction(event -> loadUseCaseDiagram());
+    }
+
+    private void loadUseCaseDiagram() {
+        try {
+            // Get the current stage (window)
+            Stage stage = (Stage) btnUseCaseDiagram.getScene().getWindow();
+
+            // Load the Use Case Diagram scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/useCaseDiagram.fxml"));
+            Parent root = loader.load();
+
+            // Set the Use Case Diagram scene in the current stage
+            Scene useCaseScene = new Scene(root, 800, 600);
+            stage.setScene(useCaseScene);
+            stage.setTitle("UML Editor: Use Case Diagram");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadClassDiagram() {
