@@ -1,20 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassEditorController">
-    <Label text="Class Editor" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-    <TextField fx:id="classNameField" promptText="Class Name"/>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassEditorUI" spacing="10" style="-fx-padding: 10;">
+    <!-- Centered Class Name Section -->
+    <TextField fx:id="classNameField" promptText="Class Name" style="-fx-alignment: center;"/>
 
+    <!-- Attributes Section -->
     <Label text="Attributes"/>
-    <TextArea fx:id="attributesArea" promptText="Add attributes (one per line)" />
+    <TextArea fx:id="attributesArea" promptText="All attributes " wrapText="true" editable="false"/>
 
-    <ComboBox fx:id="dataTypeDropdown" promptText="Data Type"/>
+    <!-- New Attribute Controls (Data Type, Visibility, and Name) -->
+    <HBox spacing="5">
+        <ComboBox fx:id="dataTypeDropdown" promptText="Data Type" prefWidth="150"/>
+        <ComboBox fx:id="visibilityDropdown" promptText="Visibility" prefWidth="150"/>
+    </HBox>
 
+    <TextField fx:id="attributeNameField" promptText="Attribute Name"/>
+
+    <!-- Add Attribute Button - Below the Attribute Name Field -->
+    <Button text="Add Attribute" fx:id="addAttributeButton"/>
+
+    <!-- Methods Section -->
     <Label text="Methods"/>
-    <TextArea fx:id="methodsArea" promptText="Add methods (one per line)" />
+    <TextArea fx:id="methodsArea" promptText="All methods " wrapText="true" editable="false"/>
 
-    <ComboBox fx:id="returnTypeDropdown" promptText="Return Type"/>
+    <!-- Method Controls (Return Type, Visibility, and Method Name with Add Parameter Button) -->
+    <HBox spacing="5">
+        <ComboBox fx:id="returnTypeDropdown" promptText="Return Type" prefWidth="150"/>
+        <ComboBox fx:id="methodVisibilityDropdown" promptText="Visibility" prefWidth="150"/>
+    </HBox>
 
-    <Button fx:id="applyChangesButton" text="Apply Changes"/>
+    <HBox spacing="5">
+        <TextField fx:id="methodNameField" promptText="Method Name"/>
+        <!-- Add Parameter Button - Positioned to the Right of the Method Name Field -->
+        <Button text="Add Parameter" fx:id="addParameterButton"/>
+    </HBox>
+
+    <!-- Add Method Button -->
+    <Button text="Add Method" fx:id="addMethodButton"/>
+
+    <!-- Apply Changes Button -->
+    <Button text="Apply Changes" fx:id="applyChangesButton"/>
 </VBox>
