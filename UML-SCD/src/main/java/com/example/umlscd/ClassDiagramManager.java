@@ -35,7 +35,7 @@ public class ClassDiagramManager {
     private void createClassBox(String name, Pane drawingPane) {
         VBox classBox = new VBox();
         classBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        classBox.setSpacing(5);
+        classBox.setSpacing(0);
 
         // Centered Class Name Label
         Label classNameLabel = new Label(name);
