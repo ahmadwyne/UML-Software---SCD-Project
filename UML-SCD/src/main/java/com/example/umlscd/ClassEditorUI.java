@@ -59,7 +59,19 @@ public class ClassEditorUI {
 
         methodVisibilityDropdown.setItems(FXCollections.observableArrayList("+ public", "- private", "# protected"));
         methodVisibilityDropdown.setValue("+ public");
+        // Add listener to handle custom data type input for attributes
+        dataTypeDropdown.setOnAction(event -> {
+            if ("Custom...".equals(dataTypeDropdown.getValue())) {
+                classEditorManager.handleCustomDataType(dataTypeDropdown); // Call custom data type handler
+            }
+        });
 
+        // Add listener to handle custom return type input for methods
+        returnTypeDropdown.setOnAction(event -> {
+            if ("Custom...".equals(returnTypeDropdown.getValue())) {
+                classEditorManager.handleCustomDataType(returnTypeDropdown); // Call custom data type handler
+            }
+        });
         addAttributeButton.setOnAction(event -> addAttribute());
         addMethodButton.setOnAction(event -> addMethod());
         addParameterButton.setOnAction(event -> addParameter());

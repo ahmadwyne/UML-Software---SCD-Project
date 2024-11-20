@@ -1,11 +1,13 @@
 package com.example.umlscd;
 
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ClassEditorManager {
 
@@ -72,14 +74,22 @@ public class ClassEditorManager {
             }
         }
     }
+    // Method to handle adding a custom data type to a dropdown
+    public void handleCustomDataType(ComboBox<String> dropdown) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Custom Data Type");
+        dialog.setHeaderText("Enter Custom Data Type:");
+        dialog.setContentText("Data Type:");
 
-    // Method to handle adding a custom data type to the data type dropdown
-    public void handleCustomDataType(String customType, ComboBox<String> dataTypeDropdown) {
-        if (!dataTypeDropdown.getItems().contains(customType)) {
-            dataTypeDropdown.getItems().add(customType);
-        }
-        dataTypeDropdown.setValue(customType);
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(customType -> {
+            if (!dropdown.getItems().contains(customType)) {
+                dropdown.getItems().add(customType);
+            }
+            dropdown.setValue(customType); // Set the custom type as the selected value
+        });
     }
+
 
     // Add parameter to the temporary list of parameters for the current method
     public void addParameterToMethod(String parameter) {
