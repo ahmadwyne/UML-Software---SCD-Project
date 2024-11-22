@@ -1,6 +1,10 @@
 package com.example.umlscd;
 
-public class Association {
+import java.io.Serializable;
+
+public class Association implements Serializable {
+    private static final long serialVersionUID = 1L; // Add a serial version UID
+
     private UseCaseDiagramObject obj1;
     private UseCaseDiagramObject obj2;
     private String type;

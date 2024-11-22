@@ -6,11 +6,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class UseCaseDiagram {
@@ -57,6 +59,10 @@ public class UseCaseDiagram {
     private TreeView<String> objectExplorer; // TreeView for the object explorer
 
     private TreeItem<String> rootItem; // Root item for the explorer
+
+    @FXML
+    private Button btnSaveDiagram, btnLoadDiagram;
+
 
     private ArrayList<UseCaseDiagramObject> objects;
     private ArrayList<Association> associations;
@@ -131,6 +137,9 @@ public class UseCaseDiagram {
 
         // Home button
         btnHome.setOnAction(event -> navigateToHome());
+
+        btnSaveDiagram.setOnAction(event -> saveDiagram());
+        btnLoadDiagram.setOnAction(event -> loadDiagram());
     }
 
     private void addActor() {
@@ -404,7 +413,7 @@ public class UseCaseDiagram {
     private void navigateToHome() {
         try {
             Stage stage = (Stage) btnHome.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("HomePage.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("welcome.fxml"));
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -412,4 +421,54 @@ public class UseCaseDiagram {
             e.printStackTrace();
         }
     }
+
+    private void saveDiagram() {
+        // Open a file chooser dialog for saving
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Use Case Diagram");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Serialized Files (*.ser)", "*.ser"));
+
+        // Show save dialog
+        File selectedFile = fileChooser.showSaveDialog((Stage) btnSaveDiagram.getScene().getWindow());
+
+        if (selectedFile != null) {
+            // Ensure the file ends with ".ser"
+            String filePath = selectedFile.getAbsolutePath();
+            if (!filePath.endsWith(".ser")) {
+                filePath += ".ser";
+            }
+
+            // Save the diagram to the chosen file
+            UseCaseDiagramManager manager = new UseCaseDiagramManager(objects, associations, systemBoundaryName);
+            UseCaseDiagramDAO.saveDiagram(manager, filePath);
+        } else {
+            System.out.println("Save operation was cancelled.");
+        }
+    }
+
+
+
+    private void loadDiagram() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load Use Case Diagram");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Serialized Files (*.ser)", "*.ser"));
+
+        File selectedFile = fileChooser.showOpenDialog((Stage) btnLoadDiagram.getScene().getWindow());
+
+        if (selectedFile != null) {
+            UseCaseDiagramManager manager = UseCaseDiagramDAO.loadDiagram(selectedFile.getAbsolutePath());
+            if (manager != null) {
+                objects = manager.getObjects();
+                associations = manager.getAssociations();
+                systemBoundaryName = manager.getSystemBoundaryName(); // Load the system boundary name
+                redrawCanvas();
+            } else {
+                System.err.println("Failed to load diagram from the selected file.");
+            }
+        } else {
+            System.out.println("No file selected.");
+        }
+    }
+
+
 }
