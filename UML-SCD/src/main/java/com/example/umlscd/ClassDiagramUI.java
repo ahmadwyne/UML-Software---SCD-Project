@@ -18,12 +18,12 @@ public class ClassDiagramUI {
     private ListView<String> diagramListView, modelExplorerListView;
 
     @FXML
-    private Button btnClass, btnInterface, btnAssociation;
+    private Button btnClass, btnInterface, btnAssociation, btnDrag;
 
     @FXML
     private VBox editorsPane;
 
-    private ClassDiagramManager classDiagramManager; // Business layer instance
+    private ClassDiagramManager classDiagramManager;
 
     public ClassDiagramUI() {
         this.classDiagramManager = new ClassDiagramManager(this);
@@ -43,31 +43,25 @@ public class ClassDiagramUI {
         btnClass.setOnAction(e -> handleToolSelection("Class"));
         btnInterface.setOnAction(e -> handleToolSelection("Interface"));
         btnAssociation.setOnAction(e -> handleToolSelection("Association"));
+        btnDrag.setOnAction(e -> handleToolSelection("Drag"));
     }
 
     private void handleToolSelection(String tool) {
         classDiagramManager.handleToolSelection(tool, drawingPane, editorsPane);
     }
 
+    public void openClassEditor(VBox classBox) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/ClassEditor.fxml"));
+            VBox editor = loader.load();
 
-        public void openClassEditor(VBox classBox) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/ClassEditor.fxml"));
-                VBox editor = loader.load();
+            ClassEditorUI controller = loader.getController();
+            controller.setClassBox(classBox);
 
-                // Get the controller and set the class box
-                ClassEditorUI controller = loader.getController();
-                controller.setClassBox(classBox);
-
-                // Clear existing editor content and display the new editor
-                editorsPane.getChildren().clear();
-                editorsPane.getChildren().add(editor);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            editorsPane.getChildren().clear();
+            editorsPane.getChildren().add(editor);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        // Other methods
     }
-
-
+}
