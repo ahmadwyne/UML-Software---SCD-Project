@@ -3,6 +3,7 @@ package com.example.umlscd;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 
@@ -14,7 +15,10 @@ public class Main extends Application {
             // Load the WelcomePage as the initial scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml"));
             Parent root = loader.load();
-
+            // Set title and icon
+            Stage window = primaryStage;
+            window.setTitle("Welcome to UML Editor");
+            window.getIcons().add(new Image(Main.class.getResourceAsStream("/images/Team.png")));
             // Set the initial scene and show the primary stage
             Scene welcomeScene = new Scene(root, 1000, 600);
             primaryStage.setScene(welcomeScene);
