@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.UseCaseDiagram">
     <top>
         <Button fx:id="btnHome" text="Home" style="-fx-font-size: 14px; -fx-padding: 5px;" />
@@ -37,4 +38,10 @@
             <TreeView fx:id="objectExplorer" style="-fx-font-size: 14px;" />
         </VBox>
     </right>
+    <bottom>
+        <VBox spacing="10" alignment="center" style="-fx-padding: 10px; -fx-background-color: #eaeaea;">
+            <Button fx:id="btnSaveDiagram" text="Save Diagram" style="-fx-font-size: 14px;" />
+            <Button fx:id="btnLoadDiagram" text="Load Diagram" style="-fx-font-size: 14px;" />
+        </VBox>
+    </bottom>
 </BorderPane>

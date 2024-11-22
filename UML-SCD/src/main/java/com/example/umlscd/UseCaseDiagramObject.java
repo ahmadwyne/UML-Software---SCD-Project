@@ -4,25 +4,39 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
-public class UseCaseDiagramObject {
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
+public class UseCaseDiagramObject implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String type;
     private double x;
     private double y;
     private String name;
-    private TextField nameField;
-    private boolean isNameFieldVisible;
+
+    private transient TextField nameField; // Mark as transient
+    private transient boolean isNameFieldVisible; // Transient field for visibility state
 
     public UseCaseDiagramObject(String type, double x, double y, String name) {
         this.type = type;
         this.x = x;
         this.y = y;
         this.name = name;
-        this.isNameFieldVisible = false;
+        initializeTransientFields();
+    }
+
+    private void initializeTransientFields() {
         this.nameField = new TextField(name);
         this.nameField.setVisible(false);
+        this.isNameFieldVisible = false;
     }
-    // Add setters for x and y
+
+    private void readObject(ObjectInputStream ois) throws Exception {
+        ois.defaultReadObject(); // Deserialize non-transient fields
+        initializeTransientFields(); // Reinitialize transient fields
+    }
+
     public void setX(double x) {
         this.x = x;
     }
@@ -35,28 +49,22 @@ public class UseCaseDiagramObject {
         gc.setFill(Color.BLACK); // Set text color to black
 
         if ("actor".equals(type)) {
-            // Draw actor figure (head, body, arms, legs)
             gc.setStroke(Color.BLACK);
-            gc.strokeOval(x - 15, y - 15, 30, 30); // Head (circle)
-            gc.strokeLine(x, y + 15, x, y + 50); // Body (line)
-            gc.strokeLine(x, y + 25, x - 15, y + 40); // Left Arm (line)
-            gc.strokeLine(x, y + 25, x + 15, y + 40); // Right Arm (line)
-            gc.strokeLine(x, y + 50, x - 10, y + 70); // Left Leg (line)
-            gc.strokeLine(x, y + 50, x + 10, y + 70); // Right Leg (line)
-
-            // Draw actor's name below the actor figure (remove the above name field)
-            gc.fillText(name, x - 15, y + 90); // Name text below the figure
+            gc.strokeOval(x - 15, y - 15, 30, 30); // Head
+            gc.strokeLine(x, y + 15, x, y + 50); // Body
+            gc.strokeLine(x, y + 25, x - 15, y + 40); // Left Arm
+            gc.strokeLine(x, y + 25, x + 15, y + 40); // Right Arm
+            gc.strokeLine(x, y + 50, x - 10, y + 70); // Left Leg
+            gc.strokeLine(x, y + 50, x + 10, y + 70); // Right Leg
+            gc.fillText(name, x - 15, y + 90); // Name text
         } else if ("usecase".equals(type)) {
-            // Draw use case body (ellipse)
             gc.setStroke(Color.BLACK);
-            gc.strokeOval(x - 50, y - 25, 100, 50); // Use case body (ellipse)
-
-            // Draw use case's name inside the oval (centered)
-            gc.fillText(name, x - 30, y); // Name inside the oval (centered)
+            gc.strokeOval(x - 50, y - 25, 100, 50); // Use case body
+            gc.fillText(name, x - 30, y); // Name text
         }
 
-        // Draw name text field (only if it is visible)
-        if (isNameFieldVisible) {
+        // Draw name text field (only if visible)
+        if (isNameFieldVisible && nameField != null) {
             nameField.setLayoutX(x - nameField.getWidth() / 2);
             nameField.setLayoutY(y - 35);
         }
@@ -72,13 +80,16 @@ public class UseCaseDiagramObject {
     }
 
     public void showNameField() {
+        if (nameField == null) initializeTransientFields(); // Ensure field is initialized
         this.isNameFieldVisible = true;
         nameField.setVisible(true);
     }
 
     public void hideNameField() {
-        this.isNameFieldVisible = false;
-        nameField.setVisible(false);
+        if (nameField != null) {
+            this.isNameFieldVisible = false;
+            nameField.setVisible(false);
+        }
     }
 
     public String getName() {
@@ -87,11 +98,13 @@ public class UseCaseDiagramObject {
 
     public void setName(String name) {
         this.name = name;
-        this.nameField.setText(name);
+        if (nameField != null) nameField.setText(name);
     }
 
     public void updateNameFromTextField() {
-        this.name = nameField.getText().trim();
+        if (nameField != null) {
+            this.name = nameField.getText().trim();
+        }
     }
 
     public double getX() {
