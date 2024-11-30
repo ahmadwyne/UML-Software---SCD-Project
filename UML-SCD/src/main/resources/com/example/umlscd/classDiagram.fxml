@@ -39,6 +39,7 @@
             <!-- Toolbox Section -->
             <TitledPane text="Toolbox" expanded="true">
                 <VBox spacing="5" style="-fx-padding: 5;">
+                    <Button text="Drag"  fx:id="btnDrag"  />
                     <Button text="Class" fx:id="btnClass"/>
                     <Button text="Interface" fx:id="btnInterface"/>
                     <Button text="Association" fx:id="btnAssociation"/>
