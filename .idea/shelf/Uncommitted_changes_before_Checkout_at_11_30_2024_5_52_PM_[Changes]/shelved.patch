@@ -1,0 +1,45 @@
+Index: UML-SCD/src/main/java/module-info.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>module com.example.umlscd {\r\n    requires javafx.controls;\r\n    requires javafx.fxml;\r\n    requires javafx.web;\r\n\r\n    requires org.controlsfx.controls;\r\n    requires com.dlsc.formsfx;\r\n    requires net.synedra.validatorfx;\r\n    requires org.kordamp.ikonli.javafx;\r\n    requires org.kordamp.bootstrapfx.core;\r\n    requires eu.hansolo.tilesfx;\r\n    useCaseLoadSerializer\r\n    requires org.junit.jupiter.api;\r\n\r\n    requires java.desktop;\r\n    main\r\n\r\n    opens com.example.umlscd to javafx.fxml;\r\n    exports com.example.umlscd;\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/UML-SCD/src/main/java/module-info.java b/UML-SCD/src/main/java/module-info.java
+--- a/UML-SCD/src/main/java/module-info.java	(revision 3beebef0f0d6a7ddb7f51af90123e1ea5f1e2753)
++++ b/UML-SCD/src/main/java/module-info.java	(date 1732970787782)
+@@ -9,11 +9,9 @@
+     requires org.kordamp.ikonli.javafx;
+     requires org.kordamp.bootstrapfx.core;
+     requires eu.hansolo.tilesfx;
+-    useCaseLoadSerializer
+     requires org.junit.jupiter.api;
+ 
+     requires java.desktop;
+-    main
+ 
+     opens com.example.umlscd to javafx.fxml;
+     exports com.example.umlscd;
+Index: UML-SCD/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\r\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n  <modelVersion>4.0.0</modelVersion>\r\n\r\n  <groupId>com.example</groupId>\r\n  <artifactId>UML-SCD</artifactId>\r\n  <version>1.0-SNAPSHOT</version>\r\n  <name>UML-SCD</name>\r\n\r\n  <properties>\r\n    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\r\n    <junit.version>5.10.2</junit.version>\r\n  </properties>\r\n\r\n  <dependencies>\r\n    <!-- JavaFX Dependencies -->\r\n    <dependency>\r\n      <groupId>org.openjfx</groupId>\r\n      <artifactId>javafx-controls</artifactId>\r\n      <version>21</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>org.openjfx</groupId>\r\n      <artifactId>javafx-fxml</artifactId>\r\n      <version>21</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>org.openjfx</groupId>\r\n      <artifactId>javafx-web</artifactId>\r\n      <version>21</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>org.openjfx</groupId>\r\n      <artifactId>javafx-swing</artifactId>\r\n      <version>21</version>\r\n    </dependency>\r\n\r\n    <!-- Additional JavaFX-Related Dependencies -->\r\n    <dependency>\r\n      <groupId>org.controlsfx</groupId>\r\n      <artifactId>controlsfx</artifactId>\r\n      <version>11.2.1</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>com.dlsc.formsfx</groupId>\r\n      <artifactId>formsfx-core</artifactId>\r\n      <version>11.6.0</version>\r\n      <!-- Removed exclusions for org.openjfx -->\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>net.synedra</groupId>\r\n      <artifactId>validatorfx</artifactId>\r\n      <version>0.5.0</version>\r\n      <!-- Removed exclusions for org.openjfx -->\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>org.kordamp.ikonli</groupId>\r\n      <artifactId>ikonli-javafx</artifactId>\r\n      <version>12.3.1</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>org.kordamp.bootstrapfx</groupId>\r\n      <artifactId>bootstrapfx-core</artifactId>\r\n      <version>0.4.0</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>eu.hansolo</groupId>\r\n      <artifactId>tilesfx</artifactId>\r\n      <version>21.0.3</version>\r\n      <!-- Removed exclusions for org.openjfx -->\r\n    </dependency>\r\n\r\n    <!-- JUnit Dependencies -->\r\n    <dependency>\r\n      <groupId>org.junit.jupiter</groupId>\r\n      <artifactId>junit-jupiter-api</artifactId>\r\n      <version>${junit.version}</version>\r\n      <scope>test</scope>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>org.junit.jupiter</groupId>\r\n      <artifactId>junit-jupiter-engine</artifactId>\r\n      <version>${junit.version}</version>\r\n      <scope>test</scope>\r\n    </dependency>\r\n  </dependencies>\r\n\r\n  <build>\r\n    <plugins>\r\n      <!-- Maven Compiler Plugin -->\r\n      <plugin>\r\n        <groupId>org.apache.maven.plugins</groupId>\r\n        <artifactId>maven-compiler-plugin</artifactId>\r\n        <version>3.13.0</version>\r\n        <configuration>\r\n          <source>21</source>\r\n          <target>21</target>\r\n        </configuration>\r\n      </plugin>\r\n\r\n      <!-- JavaFX Maven Plugin -->\r\n      <plugin>\r\n        <groupId>org.openjfx</groupId>\r\n        <artifactId>javafx-maven-plugin</artifactId>\r\n        <version>0.0.8</version>\r\n        <executions>\r\n          <execution>\r\n            <id>default-cli</id>\r\n            <configuration>\r\n              <mainClass>com.example.umlscd/com.example.umlscd.Main</mainClass>\r\n              <launcher>app</launcher>\r\n              <jlinkZipName>app</jlinkZipName>\r\n              <jlinkImageName>app</jlinkImageName>\r\n              <noManPages>true</noManPages>\r\n              <stripDebug>true</stripDebug>\r\n              <noHeaderFiles>true</noHeaderFiles>\r\n            </configuration>\r\n          </execution>\r\n        </executions>\r\n      </plugin>\r\n    </plugins>\r\n  </build>\r\n</project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/UML-SCD/pom.xml b/UML-SCD/pom.xml
+--- a/UML-SCD/pom.xml	(revision 3beebef0f0d6a7ddb7f51af90123e1ea5f1e2753)
++++ b/UML-SCD/pom.xml	(date 1732970803864)
+@@ -85,6 +85,12 @@
+       <version>${junit.version}</version>
+       <scope>test</scope>
+     </dependency>
++    <dependency>
++      <groupId>org.junit.jupiter</groupId>
++      <artifactId>junit-jupiter-api</artifactId>
++      <version>5.11.3</version>
++      <scope>compile</scope>
++    </dependency>
+   </dependencies>
+ 
+   <build>
