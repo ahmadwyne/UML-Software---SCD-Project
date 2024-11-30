@@ -25,10 +25,60 @@ public class WelcomePage {
         // Load the logo image
         logoImageView.setImage(new Image(getClass().getResourceAsStream("/images/Team.png")));
 
+        // Add hover effects for Class Diagram button
+        btnClassDiagram.setOnMouseEntered(event -> applyHoverEffect(btnClassDiagram));
+        btnClassDiagram.setOnMouseExited(event -> removeHoverEffect(btnClassDiagram));
+
+        // Add hover effects for Use Case Diagram button
+        btnUseCaseDiagram.setOnMouseEntered(event -> applyHoverEffect(btnUseCaseDiagram));
+        btnUseCaseDiagram.setOnMouseExited(event -> removeHoverEffect(btnUseCaseDiagram));
+
+
         // Button actions
         btnClassDiagram.setOnAction(event -> loadClassDiagram());
         btnUseCaseDiagram.setOnAction(event -> loadUseCaseDiagram());
     }
+
+    private void applyHoverEffect(Button button) {
+        button.setStyle("-fx-font-size: 18px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
+                "-fx-background-color: #012677; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-pref-width: 230; -fx-pref-height: 60; -fx-background-radius: 15;");
+    }
+
+    private void removeHoverEffect(Button button) {
+        button.setStyle("-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
+                "-fx-background-color: #0066cc; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;");
+    }
+
+    @FXML
+    private void onMouseEnterClassDiagram() {
+        btnClassDiagram.setStyle("-fx-font-size: 18px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
+                "-fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-pref-width: 230; -fx-pref-height: 60; -fx-background-radius: 15;");
+    }
+
+    @FXML
+    private void onMouseExitClassDiagram() {
+        btnClassDiagram.setStyle("-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
+                "-fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;");
+    }
+
+    @FXML
+    private void onMouseEnterUseCaseDiagram() {
+        btnUseCaseDiagram.setStyle("-fx-font-size: 18px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
+                "-fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-pref-width: 230; -fx-pref-height: 60; -fx-background-radius: 15;");
+    }
+
+    @FXML
+    private void onMouseExitUseCaseDiagram() {
+        btnUseCaseDiagram.setStyle("-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
+                "-fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;");
+    }
+
 
     private void loadUseCaseDiagram() {
         try {
@@ -40,7 +90,7 @@ public class WelcomePage {
             Parent root = loader.load();
 
             // Set the Use Case Diagram scene in the current stage
-            Scene useCaseScene = new Scene(root, 800, 600);
+            Scene useCaseScene = new Scene(root, 1366, 768);
             stage.setScene(useCaseScene);
             stage.setTitle("UML Editor: Use Case Diagram");
         } catch (Exception e) {
@@ -58,7 +108,7 @@ public class WelcomePage {
             Parent root = loader.load();
 
             // Set the Class Diagram scene in the current stage
-            Scene classDiagramScene = new Scene(root, 1000, 600);
+            Scene classDiagramScene = new Scene(root, 1366, 768);
             stage.setScene(classDiagramScene);
             stage.setTitle("UML Editor: Class Diagram");
 
