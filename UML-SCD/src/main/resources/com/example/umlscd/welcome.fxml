@@ -5,31 +5,42 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.control.Button?>
 
+<?import javafx.scene.layout.HBox?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.umlscd.WelcomePage"
       alignment="CENTER" spacing="20"
-      style="-fx-padding: 20; -fx-background-color: linear-gradient(to bottom, #f1f1f1, #e0e0e0);">
+      style="-fx-padding: 20; -fx-background-color: #B5C0D0">
 
     <!-- Logo -->
     <ImageView fx:id="logoImageView" fitWidth="200" fitHeight="200"/>
 
     <!-- Welcome Text -->
-    <Text text="Welcome to the UML Editor"
-          style="-fx-font-size: 32px; -fx-fill: #333333; -fx-font-weight: bold; -fx-text-alignment: center;"/>
+    <!-- Welcome Text -->
+    <Text
+            text="Welcome to the UML Editor"
+            style="-fx-font-size: 32px; -fx-fill: #000000; -fx-font-family: 'Elephant'; -fx-font-weight: bold; -fx-text-alignment: center;" />
 
     <!-- Stylish Description -->
     <Text text="Design and visualize your software architecture effortlessly."
-          style="-fx-font-size: 18px; -fx-fill: #444444; -fx-font-style: italic; -fx-text-alignment: center; -fx-effect: dropshadow(gaussian, #aaaaaa, 2, 0.5, 1, 1);"/>
+          style="-fx-font-size: 18px; -fx-fill: #000000; -fx-font-family: 'Verdana'; -fx-font-weight: bold; -fx-text-alignment: center; " />
     <Text text="Create intuitive and elegant Class and Use Case diagrams"
-          style="-fx-font-size: 18px; -fx-fill: #444444; -fx-font-style: italic; -fx-text-alignment: center; -fx-effect: dropshadow(gaussian, #aaaaaa, 2, 0.5, 1, 1);"/>
+          style="-fx-font-size: 18px; -fx-fill: #000000; -fx-font-family: 'Verdana'; -fx-font-weight: bold; -fx-text-alignment: center;" />
     <Text text="to bring your software ideas to life!"
-          style="-fx-font-size: 18px; -fx-fill: #444444; -fx-font-style: italic; -fx-text-alignment: center; -fx-effect: dropshadow(gaussian, #aaaaaa, 2, 0.5, 1, 1);"/>
+          style="-fx-font-size: 18px; -fx-fill: #000000; -fx-font-family: 'Verdana'; -fx-font-weight: bold; -fx-text-alignment: center; " />
 
     <!-- Buttons -->
+    <HBox alignment="CENTER" spacing="20">
     <Button text="Class Diagram"
             fx:id="btnClassDiagram"
-            style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #0066cc; -fx-text-fill: white; -fx-cursor: hand; -fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;"/>
+            style="-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; -fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; -fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;"
+            onMouseEntered="#onMouseEnterClassDiagram"
+            onMouseExited="#onMouseExitClassDiagram" />
     <Button text="Use Case Diagram"
             fx:id="btnUseCaseDiagram"
-            style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #0066cc; -fx-text-fill: white; -fx-cursor: hand; -fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;"/>
+            style="-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; -fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; -fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;"
+            onMouseEntered="#onMouseEnterUseCaseDiagram"
+            onMouseExited="#onMouseExitUseCaseDiagram" />
+    </HBox>
+
+
 </VBox>
