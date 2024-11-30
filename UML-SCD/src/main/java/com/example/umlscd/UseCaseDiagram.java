@@ -414,7 +414,7 @@ public class UseCaseDiagram {
         try {
             Stage stage = (Stage) btnHome.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("welcome.fxml"));
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(root, 1366, 768);
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
