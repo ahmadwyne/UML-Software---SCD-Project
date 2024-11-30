@@ -133,18 +133,18 @@ public class InterfaceEditorUI {
     private void applyChanges() {
 
 
-        // Collect text content from each Text node in methodsFlow
-        StringBuilder methodsContent = new StringBuilder();
+            // Collect text content from each Text node in methodsFlow
+            StringBuilder methodsContent = new StringBuilder();
 
-        // Iterate through all Text nodes in the TextFlow and concatenate their content
-        for (var child : methodsFlow.getChildren()) {
-            if (child instanceof Text) {
-                methodsContent.append(((Text) child).getText());
+            // Iterate through all Text nodes in the TextFlow and concatenate their content
+            for (var child : methodsFlow.getChildren()) {
+                if (child instanceof Text) {
+                    methodsContent.append(((Text) child).getText());
+                }
             }
-        }
 
-        // Apply changes to the interface (e.g., save changes to the model or update UI)
-        interfaceEditorManager.applyChanges(interfaceNameField.getText(), methodsContent.toString());
+            // Apply changes to the interface (e.g., save changes to the model or update UI)
+            interfaceEditorManager.applyChanges(interfaceNameField.getText(), methodsContent.toString());
 
 
     }
@@ -162,10 +162,9 @@ public class InterfaceEditorUI {
         // Get the methods from the interfaceBox and display them in the methodsFlow (using Labels)
         String methodsText = interfaceEditorManager.getMethods();
         for (String method : methodsText.split("\\n")) {
-            Label methodLabel = new Label(method);
+            Text methodLabel = new Text(method+ "\n");
             methodLabel.setStyle("-fx-font-style: italic;"); // Apply italic style
-            methodsFlow.getChildren().add(methodLabel); // Add to methodsFlow
+            methodsFlow.getChildren().add(methodLabel);// Add to methodsFlow
         }
     }
 }
-

@@ -13,7 +13,7 @@ import java.util.Optional;
 public class ClassDiagramRelationsManager {
 
     private boolean associationModeEnabled = false; // Flag to track association mode
-    private List<int[]> classBoundaryOccupations = new ArrayList<>(); // Track occupied boundary points for each class
+    private final List<int[]> classBoundaryOccupations = new ArrayList<>(); // Track occupied boundary points for each class
 
     public void enableAssociationMode() {
         associationModeEnabled = true;

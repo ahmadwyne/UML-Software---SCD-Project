@@ -30,51 +30,36 @@ public class InterfaceEditorManager {
 
     public String getMethods() {
         if (interfaceBox != null && interfaceBox.getChildren().size() > 1) {
-            VBox methodsBox = (VBox) interfaceBox.getChildren().get(2);
+            VBox methodsBox = (VBox) interfaceBox.getChildren().get(2); // Methods Box is the 3rd child
             StringBuilder methods = new StringBuilder();
             for (var node : methodsBox.getChildren()) {
                 if (node instanceof Label) {
-                    methods.append(((Label) node).getText()).append("\n");
+                    methods.append(((Label) node).getText()).append("\n"); // Collect method names
                 }
             }
             return methods.toString().trim();
         }
         return "";
     }
-    public String getMethodsFromInterfaceBox(VBox interfaceBox) {
-        StringBuilder methods = new StringBuilder();
 
-        // Check if the interfaceBox has a methods section
-        if (interfaceBox != null && interfaceBox.getChildren().size() > 2) {
-            VBox methodsBox = (VBox) interfaceBox.getChildren().get(2); // Methods section is the third child
-            for (var node : methodsBox.getChildren()) {
-                if (node instanceof Text) {
-                    // Append the method from Text node to methods string
-                    methods.append(((Text) node).getText()).append("\n");
-                }
-            }
-        }
-        return methods.toString().trim(); // Return the methods as a single string
-    }
-
+    // This method is used when applying changes to the interface, so we add methods in the normal style
     public void applyChanges(String interfaceName, String methodsText) {
         if (interfaceBox != null && !interfaceBox.getChildren().isEmpty()) {
-            // Update the interface name label
             Label interfaceNameLabel = (Label) interfaceBox.getChildren().get(1);
-            interfaceNameLabel.setText(interfaceName);
+            interfaceNameLabel.setText(interfaceName); // Update interface name
 
-            // Get the methods VBox
-            VBox methodsBox = (VBox) interfaceBox.getChildren().get(2);
+            VBox methodsBox = (VBox) interfaceBox.getChildren().get(2); // Get methods VBox
             methodsBox.getChildren().clear(); // Clear existing methods
 
-            // Split the methods text into individual lines and add each method as italicized text
             for (String line : methodsText.split("\\n")) {
-                Text methodText = new Text(line); // Create a new Text node for each method
-                methodText.setStyle("-fx-font-style: italic;"); // Apply italic style
-                methodsBox.getChildren().add(methodText); // Add the Text node to the VBox
+                // Add method to VBox as normal text
+                Label methodLabel = new Label(line);
+                methodLabel.setStyle("-fx-font-style: italic;");
+                methodsBox.getChildren().add(methodLabel);
             }
         }
     }
+
 
 
     // Method to handle adding a custom data type to a dropdown
@@ -116,4 +101,3 @@ public class InterfaceEditorManager {
         parameters.clear();
     }
 }
-

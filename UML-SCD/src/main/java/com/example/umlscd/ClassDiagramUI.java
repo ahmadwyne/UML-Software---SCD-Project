@@ -64,5 +64,18 @@ public class ClassDiagramUI {
             e.printStackTrace();
         }
     }
+    public void openInterfaceEditor(VBox interfaceBox) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/InterfaceEditor.fxml"));
+            VBox editor = loader.load();
 
+            InterfaceEditorUI controller = loader.getController();
+            controller.setInterface(interfaceBox);
+
+            editorsPane.getChildren().clear();
+            editorsPane.getChildren().add(editor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
