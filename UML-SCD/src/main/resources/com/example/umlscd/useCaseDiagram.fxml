@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
-
 <?import javafx.scene.layout.HBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.UseCaseDiagram" style="-fx-background-color: #D6D6D6;">
     <top>
@@ -20,21 +19,23 @@
             <VBox spacing="10" style="-fx-padding: 20px; -fx-background-color: #656565; -fx-border-color: #F1F1F1; -fx-border-width: 1;">
                 <Label text="Add Use Case Objects" style="-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; -fx-text-fill: #F1F1F1;" />
                 <TextField fx:id="txtActorName" promptText="Enter Actor Name" style="-fx-font-size: 14px; -fx-background-color: #F1F1F1; -fx-font-family: 'Verdana';" />
-                <Button fx:id="btnAddActor" text="Add Actor" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
+                <Button fx:id="btnAddActor" text="Add Actor" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;" />
                 <TextField fx:id="txtUseCaseName" promptText="Enter Use Case Name" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
-                <Button fx:id="btnAddUseCase" text="Add Use Case" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
+                <Button fx:id="btnAddUseCase" text="Add Use Case" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;" />
                 <TextField fx:id="txtSystemBoundaryName" promptText="Enter System Boundary Name" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
-
             </VBox>
+
             <VBox spacing="10" style="-fx-padding: 20px; -fx-background-color: #656565; -fx-border-color: #F1F1F1; -fx-border-width: 1;">
                 <Label text="Associations" style="-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; -fx-text-fill: #F1F1F1;" />
-                <ToggleButton fx:id="btnAssociation" text="Association" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
-                <ToggleButton fx:id="btnInclude" text="&lt;&lt;include&gt;&gt;" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'" />
-                <ToggleButton fx:id="btnExtend" text="&lt;&lt;extend&gt;&gt;" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
-                <ToggleButton fx:id="btnDrag" text="Drag" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
-                <ToggleButton fx:id="btnDelete" text="Delete" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
-                <ToggleButton fx:id="btnEdit" text="Edit" style="-fx-font-size: 14px; -fx-font-family: 'Verdana';" />
+                <ToggleButton fx:id="btnAssociation" text="Association" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;" />
+                <ToggleButton fx:id="btnInclude" text="&lt;&lt;include&gt;&gt;" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;" />
+                <ToggleButton fx:id="btnExtend" text="&lt;&lt;extend&gt;&gt;" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;" />
+                <ToggleButton fx:id="btnDrag" text="Drag" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;" />
+                <ToggleButton fx:id="btnDelete" text="Delete" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;" />
+                <ToggleButton fx:id="btnEdit" text="Edit" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;" />
             </VBox>
+
+
         </VBox>
     </left>
     <center>
