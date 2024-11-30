@@ -41,41 +41,41 @@ public class WelcomePage {
 
     private void applyHoverEffect(Button button) {
         button.setStyle("-fx-font-size: 18px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
-                "-fx-background-color: #012677; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-background-color: #111111; -fx-text-fill: white; -fx-cursor: hand; " +
                 "-fx-pref-width: 230; -fx-pref-height: 60; -fx-background-radius: 15;");
     }
 
     private void removeHoverEffect(Button button) {
         button.setStyle("-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
-                "-fx-background-color: #0066cc; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-background-color: #242424; -fx-text-fill: white; -fx-cursor: hand; " +
                 "-fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;");
     }
 
     @FXML
     private void onMouseEnterClassDiagram() {
         btnClassDiagram.setStyle("-fx-font-size: 18px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
-                "-fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-background-color: #242424; -fx-text-fill: white; -fx-cursor: hand; " +
                 "-fx-pref-width: 230; -fx-pref-height: 60; -fx-background-radius: 15;");
     }
 
     @FXML
     private void onMouseExitClassDiagram() {
         btnClassDiagram.setStyle("-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
-                "-fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-background-color: #242424; -fx-text-fill: white; -fx-cursor: hand; " +
                 "-fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;");
     }
 
     @FXML
     private void onMouseEnterUseCaseDiagram() {
         btnUseCaseDiagram.setStyle("-fx-font-size: 18px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
-                "-fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-background-color: #242424; -fx-text-fill: white; -fx-cursor: hand; " +
                 "-fx-pref-width: 230; -fx-pref-height: 60; -fx-background-radius: 15;");
     }
 
     @FXML
     private void onMouseExitUseCaseDiagram() {
         btnUseCaseDiagram.setStyle("-fx-font-size: 16px; -fx-font-family: 'Verdana'; -fx-font-weight: bold; " +
-                "-fx-background-color: #005bb5; -fx-text-fill: white; -fx-cursor: hand; " +
+                "-fx-background-color: #242424; -fx-text-fill: white; -fx-cursor: hand; " +
                 "-fx-pref-width: 220; -fx-pref-height: 55; -fx-background-radius: 15;");
     }
 
