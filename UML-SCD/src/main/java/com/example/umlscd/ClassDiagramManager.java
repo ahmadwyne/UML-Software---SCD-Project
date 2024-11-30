@@ -13,7 +13,9 @@ import javafx.scene.control.TextField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 public class ClassDiagramManager {
+
     private final ArrayList<Node> elements = new ArrayList<>();
     private VBox firstSelectedElement = null;
     private VBox secondSelectedElement = null;
@@ -31,9 +33,6 @@ public class ClassDiagramManager {
         if ("Class".equals(tool)) {
             disableDrag();
             createClassBox("Class" + (elements.size() + 1), drawingPane);
-        } else if ("Interface".equals(tool)) {
-            disableDrag();
-            createInterfaceBox("Interface" + (elements.size() + 1), drawingPane);
         } else if ("Association".equals(tool)) {
             disableDrag();
             enableAssociationMode(drawingPane);
@@ -69,39 +68,6 @@ public class ClassDiagramManager {
         drawingPane.getChildren().add(classBox);
         elements.add(classBox);
         setDraggable(classBox, false);
-    }
-
-    // New method for creating Interface Box
-    private void createInterfaceBox(String name, Pane drawingPane) {
-        VBox interfaceBox = new VBox();
-        interfaceBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        interfaceBox.setSpacing(0);
-
-        // Create the "<<Interface>>" label
-        Label interfaceLabel = new Label("<<Interface>>");
-        interfaceLabel.setStyle(" -fx-padding: 1;");
-        interfaceLabel.setAlignment(Pos.CENTER);
-
-        Label interfaceNameLabel = new Label(name);
-        interfaceNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 1;");
-        interfaceNameLabel.setAlignment(Pos.CENTER);
-
-        // Ensure the label takes the full width of the VBox
-        interfaceNameLabel.setMaxWidth(Double.MAX_VALUE);
-        interfaceNameLabel.setStyle("-fx-alignment: center; -fx-font-weight: bold; -fx-padding: 1;");
-
-        VBox methodsBox = new VBox();
-        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-
-
-        interfaceBox.getChildren().addAll(interfaceLabel,interfaceNameLabel, methodsBox);
-        interfaceBox.setLayoutX(100 + elements.size() * 50);
-        interfaceBox.setLayoutY(100);
-
-        interfaceBox.setOnMouseClicked(event -> uiController.openInterfaceEditor(interfaceBox));
-        drawingPane.getChildren().add(interfaceBox);
-        elements.add(interfaceBox);
-        setDraggable(interfaceBox, false);
     }
 
     private void enableAssociationMode(Pane drawingPane) {
