@@ -11,7 +11,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.UseCaseDiagram" style="-fx-background-color: #D6D6D6;">
     <top>
         <HBox style="-fx-background-color: #242424; -fx-padding: 5px; -fx-border-color: #F1F1F1; -fx-border-width: 1;  -fx-pref-width: 200px;">
-            <Button fx:id="btnHome" text="Home" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-padding: 5px;" />
+            <Button fx:id="btnHome" text="Home" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-padding: 5px; -fx-pref-width: 120; -fx-background-color: #AFAFAF;" />
         </HBox>
     </top>
     <left>
@@ -49,8 +49,9 @@
     </right>
     <bottom>
         <HBox spacing="10" alignment="center" style="-fx-padding: 20px; -fx-background-color: #242424; -fx-border-color: #F1F1F1; -fx-border-width: 1;">
-            <Button fx:id="btnSaveDiagram" text="Save Diagram" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120;" />
-            <Button fx:id="btnLoadDiagram" text="Load Diagram" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120;" />
+            <Button fx:id="btnSaveDiagram" text="Save Diagram" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;" />
+            <Button fx:id="btnLoadDiagram" text="Load Diagram" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;" />
         </HBox>
     </bottom>
+
 </BorderPane>
