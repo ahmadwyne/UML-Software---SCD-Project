@@ -9,11 +9,11 @@ module com.example.umlscd {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
-    useCaseLoadSerializer
+    //useCaseLoadSerializer
     requires org.junit.jupiter.api;
 
     requires java.desktop;
-    main
+    //main
 
     opens com.example.umlscd to javafx.fxml;
     exports com.example.umlscd;
