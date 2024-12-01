@@ -5,7 +5,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UseCaseDiagramObject implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -18,7 +22,11 @@ public class UseCaseDiagramObject implements Serializable {
     private transient TextField nameField; // Mark as transient
     private transient boolean isNameFieldVisible; // Transient field for visibility state
 
-    public UseCaseDiagramObject(String type, double x, double y, String name) {
+    @JsonCreator
+    public UseCaseDiagramObject(@JsonProperty("type") String type,
+                                @JsonProperty("x") double x,
+                                @JsonProperty("y") double y,
+                                @JsonProperty("name") String name) {
         this.type = type;
         this.x = x;
         this.y = y;
@@ -32,6 +40,7 @@ public class UseCaseDiagramObject implements Serializable {
         this.isNameFieldVisible = false;
     }
 
+    @Serial
     private void readObject(ObjectInputStream ois) throws Exception {
         ois.defaultReadObject(); // Deserialize non-transient fields
         initializeTransientFields(); // Reinitialize transient fields

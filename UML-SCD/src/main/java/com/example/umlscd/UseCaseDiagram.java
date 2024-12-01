@@ -12,7 +12,7 @@ import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 
 public class UseCaseDiagram {
@@ -61,7 +61,8 @@ public class UseCaseDiagram {
     private TreeItem<String> rootItem; // Root item for the explorer
 
     @FXML
-    private Button btnSaveDiagram, btnLoadDiagram;
+    private Button btnSaveDiagram, btnLoadDiagram, btnSaveJson, btnLoadJson;
+    ;
 
 
     private ArrayList<UseCaseDiagramObject> objects;
@@ -141,6 +142,9 @@ public class UseCaseDiagram {
         btnSaveDiagram.setOnAction(event -> saveDiagram());
         btnLoadDiagram.setOnAction(event -> loadDiagram());
 
+        // JSON Save and Load buttons
+        btnSaveJson.setOnAction(event -> saveDiagramToJson());
+        btnLoadJson.setOnAction(event -> loadDiagramFromJson());
 
 
         btnAssociation.setOnAction(event -> {
@@ -513,5 +517,95 @@ public class UseCaseDiagram {
         }
     }
 
+
+    // Save diagram as JSON
+    private void saveDiagramToJson() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+        File file = fileChooser.showSaveDialog(new Stage());
+
+        if (file != null) {
+            try {
+                // Create a UseCaseDiagramManager and populate it with objects and associations
+                UseCaseDiagramManager diagramManager = new UseCaseDiagramManager();
+                for (UseCaseDiagramObject object : objects) {
+                    diagramManager.addObject(object); // Add objects to diagram manager
+                }
+                for (Association association : associations) {
+                    diagramManager.addAssociation(association); // Add associations to diagram manager
+                }
+
+                // Set system boundary name if necessary
+                diagramManager.setSystemBoundaryName(systemBoundaryName);
+
+                // Save the diagram manager to a JSON file
+                UseCaseDiagramSerializer.saveDiagram(diagramManager, file.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Error", "Failed to save diagram to JSON.");
+            }
+        }
+    }
+
+    // Load diagram from JSON
+    private void loadDiagramFromJson() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+        File file = fileChooser.showOpenDialog(new Stage());
+
+        if (file != null) {
+            try {
+                // Load the diagram manager from the JSON file
+                UseCaseDiagramManager diagramManager = UseCaseDiagramSerializer.loadDiagram(file.getAbsolutePath());
+
+                // Update objects and associations from the loaded diagram
+                objects.clear();
+                associations.clear();
+                objects.addAll(diagramManager.getObjects());
+                associations.addAll(diagramManager.getAssociations());
+
+                // Step 2: Correctly associate the associations
+                for (Association assoc : diagramManager.getAssociations()) {
+                    // Find the objects by their names (or unique identifiers)
+                    UseCaseDiagramObject obj1 = findObjectByName(assoc.getObj1().getName());
+                    UseCaseDiagramObject obj2 = findObjectByName(assoc.getObj2().getName());
+
+                    // Link the association to the correct objects
+                    if (obj1 != null && obj2 != null) {
+                        assoc.setObj1(obj1);
+                        assoc.setObj2(obj2);
+                        associations.add(assoc);
+                    }
+                }
+
+                // Update the system boundary name
+                systemBoundaryName = diagramManager.getSystemBoundaryName();
+
+                // Redraw the canvas with the loaded data
+                redrawCanvas();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Error", "Failed to load diagram from JSON.");
+            }
+        }
+    }
+
+    // Helper function to find an object by its name (or unique identifier)
+    private UseCaseDiagramObject findObjectByName(String name) {
+        for (UseCaseDiagramObject obj : objects) {
+            if (obj.getName().equals(name)) {
+                return obj;
+            }
+        }
+        return null;
+    }
+
+    // Alert helper
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 }

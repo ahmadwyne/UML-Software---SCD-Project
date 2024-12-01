@@ -1,19 +1,35 @@
 package com.example.umlscd;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UseCaseDiagramManager implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
+    @JsonManagedReference // To prevent infinite recursion during serialization
     private ArrayList<UseCaseDiagramObject> objects;
     private ArrayList<Association> associations;
     private String systemBoundaryName; // Add field for system boundary name
 
-    public UseCaseDiagramManager(ArrayList<UseCaseDiagramObject> objects, ArrayList<Association> associations, String systemBoundaryName) {
+    public UseCaseDiagramManager() {
+        objects = new ArrayList<>();
+        associations = new ArrayList<>();
+    }
+
+    public UseCaseDiagramManager(@JsonProperty("objects") ArrayList<UseCaseDiagramObject> objects,
+                                 @JsonProperty("associations") ArrayList<Association> associations,
+                                 @JsonProperty("systemBoundaryName") String systemBoundaryName) {
         this.objects = objects;
         this.associations = associations;
-        this.systemBoundaryName = systemBoundaryName; // Initialize system boundary name
+        this.systemBoundaryName = systemBoundaryName;
     }
 
     public ArrayList<UseCaseDiagramObject> getObjects() {
@@ -22,6 +38,14 @@ public class UseCaseDiagramManager implements Serializable {
 
     public ArrayList<Association> getAssociations() {
         return associations;
+    }
+
+    public void addObject(UseCaseDiagramObject object) {
+        objects.add(object);
+    }
+
+    public void addAssociation(Association association) {
+        associations.add(association);
     }
 
     public String getSystemBoundaryName() {

@@ -11,9 +11,9 @@ module com.example.umlscd {
     requires eu.hansolo.tilesfx;
 
     requires org.junit.jupiter.api;
-    requires java.desktop;
+    requires com.fasterxml.jackson.databind;
+    requires com.google.gson;
 
-
-    opens com.example.umlscd to javafx.fxml;
+    opens com.example.umlscd to javafx.fxml, com.fasterxml.jackson.databind;
     exports com.example.umlscd;
 }
