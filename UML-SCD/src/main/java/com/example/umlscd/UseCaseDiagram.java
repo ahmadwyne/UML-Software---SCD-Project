@@ -454,9 +454,40 @@ public class UseCaseDiagram {
     }
 
     private void navigateToHome() {
+        // Create a confirmation dialog
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Save Diagram");
+        alert.setHeaderText("Do you want to save the diagram before exiting?");
+        alert.setContentText("Choose your option:");
+
+        // Add buttons to the alert
+        ButtonType saveAndExit = new ButtonType("Save and Exit");
+        ButtonType exitWithoutSaving = new ButtonType("Exit Without Saving");
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(saveAndExit, exitWithoutSaving, cancel);
+
+        // Show the alert and wait for user input
+        alert.showAndWait().ifPresent(response -> {
+            if (response == saveAndExit) {
+                // Trigger save button's action event to save the diagram
+                btnSaveDiagram.fire();
+                goToHomePage(); // Navigate to the homepage
+            } else if (response == exitWithoutSaving) {
+                goToHomePage(); // Navigate to the homepage without saving
+            }
+            // If "Cancel" is clicked, do nothing and stay on the page
+        });
+    }
+
+    // Method to navigate to the homepage
+    private void goToHomePage() {
         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml")); // Update with your FXML file path
+            Parent root = loader.load();
             Stage stage = (Stage) btnHome.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("welcome.fxml"));
+
+            // Create a scene with specific size
             Scene scene = new Scene(root, 1366, 768);
             stage.setScene(scene);
             stage.show();
@@ -464,6 +495,9 @@ public class UseCaseDiagram {
             e.printStackTrace();
         }
     }
+
+
+
 
     private void saveDiagram() {
         // Open a file chooser dialog for saving
