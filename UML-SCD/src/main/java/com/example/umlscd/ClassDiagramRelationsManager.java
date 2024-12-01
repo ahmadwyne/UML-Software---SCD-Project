@@ -271,7 +271,7 @@ public class ClassDiagramRelationsManager {
         addDynamicUpdateListener(line, start, end, compositionLabel, startMultiplicityLabel, endMultiplicityLabel);
     }
 
-    public void createAssociation(VBox start, VBox end, Pane drawingPane, String associationName, String startMultiplicity, String endMultiplicity) {
+    /*public void createAssociation(VBox start, VBox end, Pane drawingPane, String associationName, String startMultiplicity, String endMultiplicity) {
         // Disable association mode immediately after starting the process
         disableAssociationMode();
 
@@ -325,7 +325,7 @@ public class ClassDiagramRelationsManager {
 
         // Add listeners to update the line dynamically when either class is moved
         addDynamicUpdateListener(line, start, end, associationLabel, startMultiplicityLabel, endMultiplicityLabel);
-    }
+    }*/
 
     private int getAvailableBoundaryPoint(VBox classBox) {
         // Check for available boundary points (0: top, 1: right, 2: bottom, 3: left)
@@ -422,13 +422,13 @@ public class ClassDiagramRelationsManager {
         aggregationDiamond.setTranslateY(endY - aggregationDiamond.getBoundsInLocal().getHeight() / 2); // Adjust vertically
     }
 
-    private void bindAssociationLabelToLine(Text label, Line line) {
+    /*private void bindAssociationLabelToLine(Text label, Line line) {
         // Bind the association label to the midpoint of the line
         label.xProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
         label.yProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2).subtract(10)); // Slightly above the line
-    }
+    }*/
 
-    private void bindMultiplicityLabelToLine(Text label, Line line, boolean isStart) {
+    /*private void bindMultiplicityLabelToLine(Text label, Line line, boolean isStart) {
         if (isStart) {
             label.xProperty().bind(line.startXProperty().subtract(-15));
             label.yProperty().bind(line.startYProperty().subtract(5));
@@ -436,7 +436,7 @@ public class ClassDiagramRelationsManager {
             label.xProperty().bind(line.endXProperty().subtract(15));
             label.yProperty().bind(line.endYProperty().subtract(5));
         }
-    }
+    }*/
 
     private void setupLabelEditing(Text label, String dialogTitle) {
         label.setOnMouseClicked(event -> {
@@ -451,13 +451,13 @@ public class ClassDiagramRelationsManager {
         });
     }
 
-    private void addDynamicUpdateListener(Line line, VBox start, VBox end, Text associationLabel, Text startMultiplicityLabel, Text endMultiplicityLabel) {
+    /*private void addDynamicUpdateListener(Line line, VBox start, VBox end, Text associationLabel, Text startMultiplicityLabel, Text endMultiplicityLabel) {
         // Update the line and labels dynamically when either class is moved
         start.layoutXProperty().addListener((obs, oldVal, newVal) -> adjustLineToBorders(line, start, end));
         start.layoutYProperty().addListener((obs, oldVal, newVal) -> adjustLineToBorders(line, start, end));
         end.layoutXProperty().addListener((obs, oldVal, newVal) -> adjustLineToBorders(line, start, end));
         end.layoutYProperty().addListener((obs, oldVal, newVal) -> adjustLineToBorders(line, start, end));
-    }
+    }*/
 
     private void adjustLineToBorders(Line line, VBox start, VBox end) {
         // Adjust the line based on the class boundaries
@@ -521,7 +521,7 @@ public class ClassDiagramRelationsManager {
 
 
 
-    private void updateLinePosition(Line line, VBox start, VBox end, Text label, Text startMultiplicity, Text endMultiplicity) {
+    /*private void updateLinePosition(Line line, VBox start, VBox end, Text label, Text startMultiplicity, Text endMultiplicity) {
         // Update the position of the line and labels when either class is moved
         int startBoundaryIndex = getAvailableBoundaryPoint(start);
         int endBoundaryIndex = getAvailableBoundaryPoint(end);
@@ -529,6 +529,160 @@ public class ClassDiagramRelationsManager {
         bindAggregationLabelToLine(label, line);
         bindMultiplicityLabelToLine(startMultiplicity, line, true);
         bindMultiplicityLabelToLine(endMultiplicity, line, false);
-    }
+    }*/
+
+    /**
+    //NEW CODE Ahmad Wyne
+ */
+     // Method to create an association between two classes
+        public void createAssociation(VBox start, VBox end, Pane drawingPane, String associationName, String startMultiplicity, String endMultiplicity) {
+            // Disable association mode immediately after starting the process
+            disableAssociationMode();
+
+            // Set default values if fields are empty
+            if (associationName == null || associationName.isEmpty()) associationName = "AssociationName";
+            if (startMultiplicity == null || startMultiplicity.isEmpty()) startMultiplicity = "1";
+            if (endMultiplicity == null || endMultiplicity.isEmpty()) endMultiplicity = "1";
+
+            // Find the closest boundary points between the two classes
+            Point startPoint = getClosestBoundaryPoint(start, end);
+            Point endPoint = getClosestBoundaryPoint(end, start);
+
+            // Create the association line
+            Line line = new Line();
+            line.setStartX(startPoint.getX());
+            line.setStartY(startPoint.getY());
+            line.setEndX(endPoint.getX());
+            line.setEndY(endPoint.getY());
+
+            // Set line style (e.g., color, thickness)
+            line.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+            drawingPane.getChildren().add(line);
+
+            // Create the association label
+            Text associationLabel = new Text(associationName);
+            associationLabel.setStyle("-fx-font-style: italic; -fx-font-size: 12;");
+            bindAssociationLabelToLine(associationLabel, line);
+            drawingPane.getChildren().add(associationLabel);
+
+            // Create multiplicity labels
+            Text startMultiplicityText = new Text(startMultiplicity);
+            Text endMultiplicityText = new Text(endMultiplicity);
+            startMultiplicityText.setStyle("-fx-font-size: 10;");
+            endMultiplicityText.setStyle("-fx-font-size: 10;");
+            bindMultiplicityLabelToLine(startMultiplicityText, line, true);
+            bindMultiplicityLabelToLine(endMultiplicityText, line, false);
+            drawingPane.getChildren().addAll(startMultiplicityText, endMultiplicityText);
+
+            // Add listeners to update the line when either class is moved
+            addDynamicUpdateListener(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText);
+        }
+
+        // Add listeners to update the line dynamically when classes are moved
+        private void addDynamicUpdateListener(Line line, VBox start, VBox end, Text associationLabel, Text startMultiplicityText, Text endMultiplicityText) {
+            start.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText));
+            start.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText));
+            end.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText));
+            end.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText));
+        }
+
+        // Update the line and labels when either class is moved
+        private void updateLinePosition(Line line, VBox start, VBox end, Text associationLabel, Text startMultiplicityText, Text endMultiplicityText) {
+            // Recalculate the closest boundary points
+            Point startPoint = getClosestBoundaryPoint(start, end);
+            Point endPoint = getClosestBoundaryPoint(end, start);
+
+            // Update the line's position
+            line.setStartX(startPoint.getX());
+            line.setStartY(startPoint.getY());
+            line.setEndX(endPoint.getX());
+            line.setEndY(endPoint.getY());
+
+            // Rebind the association label and multiplicity labels to the new line
+            bindAssociationLabelToLine(associationLabel, line);
+            bindMultiplicityLabelToLine(startMultiplicityText, line, true);
+            bindMultiplicityLabelToLine(endMultiplicityText, line, false);
+        }
+
+        // Find the closest boundary point on the start class to the closest boundary point on the end class
+        private Point getClosestBoundaryPoint(VBox startClass, VBox endClass) {
+            Point closestPoint = null;
+            double minDistance = Double.MAX_VALUE;
+
+            // Get all boundary points for the start and end class
+            Point[] startPoints = getBoundaryPoints(startClass);
+            Point[] endPoints = getBoundaryPoints(endClass);
+
+            // Check the distance between all pairs of points (one from start and one from end)
+            for (Point startPoint : startPoints) {
+                for (Point endPoint : endPoints) {
+                    double distance = calculateDistance(startPoint, endPoint);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestPoint = startPoint;
+                    }
+                }
+            }
+
+            return closestPoint;
+        }
+
+        // Get the four boundary points of a class (VBox)
+        private Point[] getBoundaryPoints(VBox classBox) {
+            double x = classBox.getLayoutX();
+            double y = classBox.getLayoutY();
+            double width = classBox.getWidth();
+            double height = classBox.getHeight();
+
+            // Boundary points: top, right, bottom, left
+            return new Point[]{
+                    new Point(x + width / 2, y),            // Top center
+                    new Point(x + width, y + height / 2),   // Right center
+                    new Point(x + width / 2, y + height),   // Bottom center
+                    new Point(x, y + height / 2)            // Left center
+            };
+        }
+
+        // Calculate the Euclidean distance between two points
+        private double calculateDistance(Point p1, Point p2) {
+            return Math.sqrt(Math.pow(p1.getX() - p2.getX(), 2) + Math.pow(p1.getY() - p2.getY(), 2));
+        }
+
+        // Method to bind the association label to the midpoint of the line
+        private void bindAssociationLabelToLine(Text label, Line line) {
+            label.xProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
+            label.yProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2).subtract(10)); // Slightly above the line
+        }
+
+        // Method to bind multiplicity labels to the ends of the line
+        private void bindMultiplicityLabelToLine(Text label, Line line, boolean isStart) {
+            if (isStart) {
+                label.xProperty().bind(line.startXProperty().subtract(-15));
+                label.yProperty().bind(line.startYProperty().subtract(5));
+            } else {
+                label.xProperty().bind(line.endXProperty().subtract(15));
+                label.yProperty().bind(line.endYProperty().subtract(5));
+            }
+        }
+
+        // Point class to represent a coordinate in 2D space
+        public static class Point {
+            private final double x;
+            private final double y;
+
+            public Point(double x, double y) {
+                this.x = x;
+                this.y = y;
+            }
+
+            public double getX() {
+                return x;
+            }
+
+            public double getY() {
+                return y;
+            }
+        }
+
 
 }
