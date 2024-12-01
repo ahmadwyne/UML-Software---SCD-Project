@@ -2,25 +2,34 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassDiagramUI">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassDiagramUI" style="-fx-background-color: #242424;">
     <!-- Top Menu -->
     <top>
-        <HBox spacing="10" style="-fx-padding: 10;">
-            <Button text="Home" fx:id="homeButton" style="-fx-background-color: transparent; -fx-font-size: 14px; -fx-font-weight: bold;"/>
-            <MenuBar>
-                <Menu text="File">
-                    <MenuItem text="New"/>
-                    <MenuItem text="Open"/>
-                    <MenuItem text="Save"/>
-                    <MenuItem text="Exit"/>
+        <HBox spacing="10" style="-fx-padding: 10; -fx-border-color: #F5F5F5; -fx-border-width: 2; -fx-border-radius: 5;">
+            <Button text="Home" fx:id="homeButton"
+                    style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+            <MenuBar style = "-fx-background-color: #AFAFAF; -fx-border-radius: 5;">
+                <Menu text="File" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
+                    <MenuItem text="New"
+                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF; "/>
+                    <MenuItem text="Open"
+                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <MenuItem text="Save"
+                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <MenuItem text="Exit"
+                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                 </Menu>
-                <Menu text="Edit">
-                    <MenuItem text="Undo"/>
-                    <MenuItem text="Redo"/>
+                <Menu text="Edit" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
+                    <MenuItem text="Undo"
+                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <MenuItem text="Redo"
+                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                 </Menu>
-                <Menu text="Help">
-                    <MenuItem text="About"/>
+                <Menu text="Help" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
+                    <MenuItem text="About"
+                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                 </Menu>
             </MenuBar>
         </HBox>
@@ -28,26 +37,24 @@
 
     <!-- Left Panel with Fixed Width -->
     <left>
-        <VBox spacing="10" style="-fx-padding: 10;" prefWidth="220" maxWidth="220"> <!-- Set fixed width -->
+        <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #2B2B2B; -fx-border-color: #F5F5F5; -fx-border-width: 2; -fx-border-radius: 5;" prefWidth="220" maxWidth="220">
             <!-- Working Diagrams Section -->
-            <TitledPane text="Working Diagrams" expanded="true">
-                <VBox spacing="5" style="-fx-padding: 5;">
+            <TitledPane text="Working Diagrams" expanded="true" style="-fx-background-color: #444444; -fx-text-fill: #111111;">
+                <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
                     <ListView fx:id="diagramListView"/>
                 </VBox>
             </TitledPane>
 
             <!-- Toolbox Section -->
-            <TitledPane text="Toolbox" expanded="true">
-                <VBox spacing="5" style="-fx-padding: 5;">
-                    <Button text="Drag"  fx:id="btnDrag"  />
-                    <Button text="Class" fx:id="btnClass"/>
-                    <Button text="Interface" fx:id="btnInterface"/>
-                    <Button text="Association" fx:id="btnAssociation"/>
-                    <Button text="Aggregation" fx:id="btnAggregation"/>
-                    <Button text="Composition" fx:id="btnComposition"/>
-
-                    <!-- New Inheritance Button -->
-                    <Button text="Inheritance" fx:id="btnInheritance"/>
+            <TitledPane text="Toolbox" expanded="true" style="-fx-background-color: #444444; -fx-text-fill: #111111;">
+                <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
+                    <Button text="Drag" fx:id="btnDrag" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Class" fx:id="btnClass" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Interface" fx:id="btnInterface" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Association" fx:id="btnAssociation" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Aggregation" fx:id="btnAggregation" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Composition" fx:id="btnComposition" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Inheritance" fx:id="btnInheritance" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                 </VBox>
             </TitledPane>
         </VBox>
@@ -55,25 +62,28 @@
 
     <!-- Center Pane (Canvas for Drawing) -->
     <center>
-        <Pane fx:id="drawingPane" style="-fx-background-color: white; -fx-border-color: lightgrey;"/>
+        <Pane fx:id="drawingPane" style="-fx-background-color: #F1F1F1; -fx-border-color: #F5F5F5; -fx-border-width: 2;"/>
     </center>
 
     <!-- Right Panel -->
     <right>
-        <VBox spacing="10" style="-fx-padding: 10;" prefWidth="300" maxWidth="300"> <!-- Set fixed width -->
-
+        <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: #F5F5F5; -fx-border-width: 2; -fx-border-radius: 5;" prefWidth="300" maxWidth="300">
             <!-- Model Explorer Section -->
-            <TitledPane text="Model Explorer" expanded="true">
+            <TitledPane text="Model Explorer" expanded="true" style="-fx-font-size: 14px; -fx-background-color: #4B4B4B; -fx-font-family: 'Verdana';">
+                <ScrollPane fitToWidth="true" style="-fx-background-color: #4B4B4B;">
                 <VBox spacing="5">
                     <ListView fx:id="modelExplorerListView"/>
                 </VBox>
+                </ScrollPane>
             </TitledPane>
 
             <!-- Editors Section (For Class Editor) -->
-            <TitledPane text="Editors" expanded="true">
-                <VBox fx:id="editorsPane" spacing="5" style="-fx-padding: 5;">
-                    <!-- This pane will be dynamically populated with the Class Editor when a class is selected -->
-                </VBox>
+            <TitledPane text="Editors" expanded="true" style="-fx-font-size: 14px; -fx-background-color: #4B4B4B; -fx-font-family: 'Verdana';">
+                <ScrollPane fitToWidth="true" style="-fx-background-color: #4B4B4B;">
+                    <VBox fx:id="editorsPane" spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
+                        <!-- This pane will be dynamically populated with the Class Editor when a class is selected -->
+                    </VBox>
+                </ScrollPane>
             </TitledPane>
         </VBox>
     </right>
