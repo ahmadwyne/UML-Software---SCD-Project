@@ -43,10 +43,8 @@
                     <Button text="Class" fx:id="btnClass"/>
                     <Button text="Interface" fx:id="btnInterface"/>
                     <Button text="Association" fx:id="btnAssociation"/>
-                    <Button text="Directed Association" fx:id="btnDirectedAssociation"/>
                     <Button text="Aggregation" fx:id="btnAggregation"/>
                     <Button text="Composition" fx:id="btnComposition"/>
-                    <Button text="Dependency" fx:id="btnDependency"/>
 
                     <!-- New Inheritance Button -->
                     <Button text="Inheritance" fx:id="btnInheritance"/>
