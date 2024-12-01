@@ -3,44 +3,46 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassEditorUI" spacing="10" style="-fx-padding: 10;">
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassEditorUI" spacing="10" style="-fx-padding: 10; -fx-font-family: 'Verdana';">
+
     <!-- Centered Class Name Section -->
     <TextField fx:id="classNameField" promptText="Class Name" style="-fx-alignment: center;"/>
 
-    <!-- Attributes Section -->
-    <Label text="Attributes"/>
-    <TextArea fx:id="attributesArea" promptText="All attributes " wrapText="true" editable="false"/>
+    <!-- Attributes Section with Boundary -->
+    <VBox spacing="10" style="-fx-border-color: #AFAFAF; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+        <Label text="Attributes" style="-fx-text-fill: white; -fx-font-family: 'Verdana';"/>
+        <TextArea fx:id="attributesArea" promptText="All attributes " wrapText="true" editable="false"/>
 
-    <!-- New Attribute Controls (Data Type, Visibility, and Name) -->
-    <HBox spacing="5">
-        <ComboBox fx:id="dataTypeDropdown" promptText="Data Type" prefWidth="150"/>
-        <ComboBox fx:id="visibilityDropdown" promptText="Visibility" prefWidth="150"/>
-    </HBox>
+        <!-- New Attribute Controls (Data Type, Visibility, and Name) -->
+        <HBox spacing="5">
+            <ComboBox fx:id="dataTypeDropdown" promptText="Data Type" prefWidth="150"/>
+            <ComboBox fx:id="visibilityDropdown" promptText="Visibility" prefWidth="150"/>
+        </HBox>
+        <TextField fx:id="attributeNameField" promptText="Attribute Name"/>
 
-    <TextField fx:id="attributeNameField" promptText="Attribute Name"/>
+        <!-- Add Attribute Button -->
+        <Button text="Add Attribute" fx:id="addAttributeButton" style="-fx-background-color: #AFAFAF;"/>
+    </VBox>
 
-    <!-- Add Attribute Button - Below the Attribute Name Field -->
-    <Button text="Add Attribute" fx:id="addAttributeButton"/>
+    <!-- Methods Section with Boundary -->
+    <VBox spacing="10" style="-fx-border-color: #AFAFAF; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+        <Label text="Methods" style="-fx-text-fill: white; -fx-font-family: 'Verdana';"/>
+        <TextArea fx:id="methodsArea" promptText="All methods " wrapText="true" editable="false"/>
 
-    <!-- Methods Section -->
-    <Label text="Methods"/>
-    <TextArea fx:id="methodsArea" promptText="All methods " wrapText="true" editable="false"/>
+        <!-- Method Controls (Return Type, Visibility, and Method Name with Add Parameter Button) -->
+        <HBox spacing="5">
+            <ComboBox fx:id="returnTypeDropdown" promptText="Return Type" prefWidth="150"/>
+            <ComboBox fx:id="methodVisibilityDropdown" promptText="Visibility" prefWidth="150"/>
+        </HBox>
+        <HBox spacing="5">
+            <TextField fx:id="methodNameField" promptText="Method Name"/>
+            <Button text="Add Parameter" fx:id="addParameterButton" style="-fx-background-color: #AFAFAF;"/>
+        </HBox>
 
-    <!-- Method Controls (Return Type, Visibility, and Method Name with Add Parameter Button) -->
-    <HBox spacing="5">
-        <ComboBox fx:id="returnTypeDropdown" promptText="Return Type" prefWidth="150"/>
-        <ComboBox fx:id="methodVisibilityDropdown" promptText="Visibility" prefWidth="150"/>
-    </HBox>
-
-    <HBox spacing="5">
-        <TextField fx:id="methodNameField" promptText="Method Name"/>
-        <!-- Add Parameter Button - Positioned to the Right of the Method Name Field -->
-        <Button text="Add Parameter" fx:id="addParameterButton"/>
-    </HBox>
-
-    <!-- Add Method Button -->
-    <Button text="Add Method" fx:id="addMethodButton"/>
+        <!-- Add Method Button -->
+        <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF;"/>
+    </VBox>
 
     <!-- Apply Changes Button -->
-    <Button text="Apply Changes" fx:id="applyChangesButton"/>
+    <Button text="Apply Changes" fx:id="applyChangesButton" style="-fx-background-color: #AFAFAF;"/>
 </VBox>
