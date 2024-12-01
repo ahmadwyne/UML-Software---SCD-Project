@@ -20,7 +20,7 @@ public class Main extends Application {
             window.setTitle("Welcome to UML Editor");
             window.getIcons().add(new Image(Main.class.getResourceAsStream("/images/Team.png")));
             // Set the initial scene and show the primary stage
-            Scene welcomeScene = new Scene(root, 1000, 600);
+            Scene welcomeScene = new Scene(root, 1366, 768);
             primaryStage.setScene(welcomeScene);
             primaryStage.setTitle("Welcome to UML Editor");
             primaryStage.show();

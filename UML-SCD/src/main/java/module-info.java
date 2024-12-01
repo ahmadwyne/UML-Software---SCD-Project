@@ -9,6 +9,7 @@ module com.example.umlscd {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+
     requires org.junit.jupiter.api;
     requires java.desktop;
 

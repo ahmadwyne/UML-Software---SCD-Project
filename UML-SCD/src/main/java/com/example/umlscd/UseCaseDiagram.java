@@ -140,7 +140,50 @@ public class UseCaseDiagram {
 
         btnSaveDiagram.setOnAction(event -> saveDiagram());
         btnLoadDiagram.setOnAction(event -> loadDiagram());
+
+
+
+        btnAssociation.setOnAction(event -> {
+            associationType = "association";
+            toggleButtonColor(btnAssociation);
+        });
+        btnInclude.setOnAction(event -> {
+            associationType = "include";
+            toggleButtonColor(btnInclude);
+        });
+        btnExtend.setOnAction(event -> {
+            associationType = "extend";
+            toggleButtonColor(btnExtend);
+        });
+        btnDrag.setOnAction(event -> {
+            isInDragMode = btnDrag.isSelected();
+            toggleButtonColor(btnDrag);
+        });
+        btnDelete.setOnAction(event -> {
+            if (!btnDelete.isSelected()) {
+                objectBeingDragged = null;
+            }
+            toggleButtonColor(btnDelete);
+        });
+        btnEdit.setOnAction(event -> {
+            isInEditMode = btnEdit.isSelected();
+            if (!isInEditMode && selectedObject1 != null) {
+                selectedObject1.hideNameField();
+                redrawCanvas();
+            }
+            toggleButtonColor(btnEdit);
+        });
     }
+
+    private void toggleButtonColor(ToggleButton button) {
+        if (button.isSelected()) {
+            button.setStyle("-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #434343; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;");
+        } else {
+            button.setStyle("-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;");
+        }
+    }
+
+
 
     private void addActor() {
         String actorName = txtActorName.getText().trim();
@@ -414,7 +457,7 @@ public class UseCaseDiagram {
         try {
             Stage stage = (Stage) btnHome.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("welcome.fxml"));
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(root, 1366, 768);
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
