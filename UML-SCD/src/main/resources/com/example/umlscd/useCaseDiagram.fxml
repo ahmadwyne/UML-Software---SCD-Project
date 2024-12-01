@@ -53,6 +53,7 @@
             <Button fx:id="btnLoadDiagram" text="Load Diagram" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;" />
             <Button fx:id="btnSaveJson" text="Save JSON Diagram" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;" />
             <Button fx:id="btnLoadJson" text="Load JSON Diagram" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;" />
+            <Button fx:id="btnExportImage" text="Export Diagram Image" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;" />
         </HBox>
     </bottom>
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javafx.scene.canvas.Canvas;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UseCaseDiagramManager implements Serializable {
@@ -62,5 +62,11 @@ public class UseCaseDiagramManager implements Serializable {
 
     public void setSystemBoundaryName(String systemBoundaryName) {
         this.systemBoundaryName = systemBoundaryName;
+    }
+
+    // New method to export the diagram as an image
+    public void exportDiagramToImage(Canvas canvas) {
+        ExportImageService exportService = new ExportImageService();
+        exportService.exportToImage(canvas); // Pass the current manager and canvas to the service
     }
 }
