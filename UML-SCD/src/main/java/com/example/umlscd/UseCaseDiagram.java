@@ -61,7 +61,7 @@ public class UseCaseDiagram {
     private TreeItem<String> rootItem; // Root item for the explorer
 
     @FXML
-    private Button btnSaveDiagram, btnLoadDiagram, btnSaveJson, btnLoadJson;
+    private Button btnSaveDiagram, btnLoadDiagram, btnSaveJson, btnLoadJson, btnExportImage;
     ;
 
 
@@ -145,6 +145,9 @@ public class UseCaseDiagram {
         // JSON Save and Load buttons
         btnSaveJson.setOnAction(event -> saveDiagramToJson());
         btnLoadJson.setOnAction(event -> loadDiagramFromJson());
+
+        // Set the action for the Export Image button
+        btnExportImage.setOnAction(event -> exportDiagramToImage());
 
 
         btnAssociation.setOnAction(event -> {
@@ -640,6 +643,17 @@ public class UseCaseDiagram {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void exportDiagramToImage() {
+        // Create a UseCaseDiagramManager instance and set the current state of the diagram
+        UseCaseDiagramManager manager = new UseCaseDiagramManager();
+        manager.setObjects(new ArrayList<>(objects));  // Add objects
+        manager.setAssociations(new ArrayList<>(associations));  // Add associations
+        manager.setSystemBoundaryName(systemBoundaryName);  // Set system boundary name
+
+        // Call the export method in the manager
+        manager.exportDiagramToImage(canvas);
     }
 
 }
