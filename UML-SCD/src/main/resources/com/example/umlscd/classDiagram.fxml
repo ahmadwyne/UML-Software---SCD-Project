@@ -47,8 +47,9 @@
                     <Button text="Aggregation" fx:id="btnAggregation"/>
                     <Button text="Composition" fx:id="btnComposition"/>
                     <Button text="Dependency" fx:id="btnDependency"/>
-                    <Button text="Generalization" fx:id="btnGeneralization"/>
-                    <Button text="Interface Realization" fx:id="btnInterfaceRealization"/>
+
+                    <!-- New Inheritance Button -->
+                    <Button text="Inheritance" fx:id="btnInheritance"/>
                 </VBox>
             </TitledPane>
         </VBox>

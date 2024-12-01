@@ -3,28 +3,272 @@ package com.example.umlscd;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class ClassDiagramRelationsManager {
 
-    private boolean associationModeEnabled = false; // Flag to track association mode
     private final List<int[]> classBoundaryOccupations = new ArrayList<>(); // Track occupied boundary points for each class
 
-    public void enableAssociationMode() {
-        associationModeEnabled = true;
+        private boolean enabledAssociationModel = false;
+        private boolean enabledAggregationModel = false;
+        private boolean enabledCompositionModel = false;
+        private boolean inheritanceModeEnabled = false;
+
+        // Enable/Disable association mode
+        public void enableAssociationMode() {
+            this.enabledAssociationModel = true;
+        }
+
+        public void disableAssociationMode() {
+            this.enabledAssociationModel = false;
+        }
+
+        public boolean isAssociationModeEnabled() {
+            return enabledAssociationModel;
+        }
+
+        // Enable/Disable aggregation mode
+        public void enableAggregationMode() {
+            this.enabledAggregationModel = true;
+        }
+
+        public void disableAggregationMode() {
+            this.enabledAggregationModel = false;
+        }
+
+        public boolean isAggregationModeEnabled() {
+            return enabledAggregationModel;
+        }
+
+        // Enable/Disable composition mode
+        public void enableCompositionMode() {
+            this.enabledCompositionModel = true;
+        }
+
+        public void disableCompositionMode() {
+            this.enabledCompositionModel = false;
+        }
+
+        public boolean isCompositionModeEnabled() {
+            return enabledCompositionModel;
+        }
+
+    // Enable inheritance mode
+    public void enableInheritanceMode() {
+        inheritanceModeEnabled = true;
     }
 
-    public void disableAssociationMode() {
-        associationModeEnabled = false;
+    // Disable inheritance mode
+    public void disableInheritanceMode() {
+        inheritanceModeEnabled = false;
     }
 
-    public boolean isAssociationModeEnabled() {
-        return associationModeEnabled;
+    public boolean isInheritanceModeEnabled() {
+        return inheritanceModeEnabled;
+    }
+
+
+        public void createAggregation(VBox start, VBox end, Pane drawingPane, String aggregationName, String startMultiplicity, String endMultiplicity) {
+        // Disable aggregation mode immediately after starting the process
+        disableAggregationMode();
+
+        // Set default values if fields are empty
+        if (aggregationName == null || aggregationName.isEmpty()) aggregationName = "aggregationName";
+        if (startMultiplicity == null || startMultiplicity.isEmpty()) startMultiplicity = "1";
+        if (endMultiplicity == null || endMultiplicity.isEmpty()) endMultiplicity = "1";
+
+            // Find the nearest available boundary points for both start and end classes
+            int startBoundaryIndex = getAvailableBoundaryPoint(start);
+            int endBoundaryIndex = getAvailableBoundaryPoint(end);
+
+            // If no available boundary points, abort creating the aggregation
+            if (startBoundaryIndex == -1 || endBoundaryIndex == -1) {
+                System.out.println("No available boundary points for aggregation.");
+                return;
+            }
+
+            // Create the aggregation line (hollow diamond)
+            Line line = new Line();
+            bindLineToClassBoundaries(start, end, startBoundaryIndex, endBoundaryIndex, line);
+            line.setStyle("-fx-stroke: black; -fx-stroke-width: 2;"); // Styling the line
+            drawingPane.getChildren().add(line);
+
+            // Create the hollow diamond (aggregation)
+            Polygon aggregationDiamond = new Polygon();
+            aggregationDiamond.getPoints().addAll(
+                    0.0, 10.0,  // top point
+                    10.0, 0.0,  // right point
+                    20.0, 10.0,  // bottom point
+                    10.0, 20.0   // left point
+            );
+            aggregationDiamond.setFill(Color.WHITE);  // Hollow (transparent)
+            aggregationDiamond.setStroke(Color.BLACK);     // Black border
+
+            // Bind the aggregation diamond to the line and align it to the class boundary
+            bindAggregationDiamondToLine(aggregationDiamond, line, end);
+            drawingPane.getChildren().add(aggregationDiamond);
+
+            // Create labels for multiplicities and association name
+            Text aggregationLabel = new Text(aggregationName);
+            aggregationLabel.setStyle("-fx-font-style: italic; -fx-font-size: 12;");
+            bindAggregationLabelToLine(aggregationLabel, line); // Bind label to line position
+            drawingPane.getChildren().add(aggregationLabel);
+
+            // Place multiplicities before the diamond
+            Text startMultiplicityLabel = new Text(startMultiplicity);
+            Text endMultiplicityLabel = new Text(endMultiplicity);
+
+            startMultiplicityLabel.setStyle("-fx-font-size: 10;");
+            endMultiplicityLabel.setStyle("-fx-font-size: 10;");
+
+            // Place multiplicity labels before the diamond (before the line's start and end)
+            bindMultiplicityLabelToLine(startMultiplicityLabel, line, true);
+            bindMultiplicityLabelToLine(endMultiplicityLabel, line, false);
+            drawingPane.getChildren().addAll(startMultiplicityLabel, endMultiplicityLabel);
+
+            // Update the boundary occupation status for the classes
+            updateBoundaryOccupation(start, startBoundaryIndex);
+            updateBoundaryOccupation(end, endBoundaryIndex);
+
+            // Allow double-click editing for multiplicity and aggregation name
+            setupLabelEditing(startMultiplicityLabel, "Edit Start Multiplicity:");
+            setupLabelEditing(endMultiplicityLabel, "Edit End Multiplicity:");
+            setupLabelEditing(aggregationLabel, "Edit Aggregation Name:");
+
+            // Add listeners to update the line dynamically when either class is moved
+            addDynamicUpdateListener(line, start, end, aggregationLabel, startMultiplicityLabel, endMultiplicityLabel);
+        }
+    // Create the inheritance relationship (triangle shape)
+    public void createInheritance(VBox start, VBox end, Pane drawingPane) {
+        // Disable inheritance mode immediately after starting the process
+        disableInheritanceMode();
+
+        // Create the inheritance line
+        Line line = new Line();
+        bindLineToClassBoundaries(start, end, 0, 1, line);  // You can modify this binding for custom positioning
+
+        line.setStyle("-fx-stroke: black; -fx-stroke-width: 2;"); // Styling the line
+        drawingPane.getChildren().add(line);
+
+        // Create the triangle (inheritance) shape
+        Polygon inheritanceTriangle = new Polygon();
+        inheritanceTriangle.getPoints().addAll(
+                0.0, 0.0,   // top point
+                10.0, 20.0, // bottom right point
+                -10.0, 20.0 // bottom left point
+        );
+        inheritanceTriangle.setFill(Color.WHITE);  // Filled triangle
+        inheritanceTriangle.setStroke(Color.BLACK);  // Black border
+        bindInheritanceTriangleToLine(inheritanceTriangle, line,end);  // Bind triangle to the line
+        drawingPane.getChildren().add(inheritanceTriangle);
+    }
+
+    // Bind the inheritance triangle to the second selected class boundary
+    private void bindInheritanceTriangleToLine(Polygon inheritanceTriangle, Line line,VBox end) {
+        double endX = line.getEndX();
+        double endY = line.getEndY();
+
+        double boundaryX = endX;
+        double boundaryY = endY;
+
+        // Move the diamond such that its edge touches the boundary point of the end class
+        inheritanceTriangle.setTranslateX(boundaryX - inheritanceTriangle.getBoundsInLocal().getWidth() / 2);  // Align horizontally
+        inheritanceTriangle.setTranslateY(boundaryY - inheritanceTriangle.getBoundsInLocal().getHeight() / 2); // Align vertically
+
+        // Update dynamic position if the line is moved
+        line.endXProperty().addListener((observable, oldValue, newValue) -> {
+            updateAggregationDiamondPosition(inheritanceTriangle, line, end);
+        });
+
+        line.endYProperty().addListener((observable, oldValue, newValue) -> {
+            updateAggregationDiamondPosition(inheritanceTriangle, line, end);
+        });
+    }
+
+    private void updateInheritanceTrianglePosition(Polygon inheritanceTriangle, Line line) {
+        // Update triangle's position to the end of the line (second selected class boundary)
+        double lineEndX = line.getEndX();
+        double lineEndY = line.getEndY();
+
+        // Reposition triangle based on the line's endpoint
+        inheritanceTriangle.setTranslateX(lineEndX - 10); // Adjust for boundary X
+        inheritanceTriangle.setTranslateY(lineEndY - 10); // Adjust for boundary Y
+    }
+
+        public void createComposition(VBox start, VBox end, Pane drawingPane, String compositionName, String startMultiplicity, String endMultiplicity) {
+        // Disable composition mode immediately after starting the process
+        disableCompositionMode();
+        // Set default values if fields are empty
+
+        // Set default values if fields are empty
+        if (compositionName == null || compositionName.isEmpty()) compositionName = "compositionName";
+        if (startMultiplicity == null || startMultiplicity.isEmpty()) startMultiplicity = "1";
+        if (endMultiplicity == null || endMultiplicity.isEmpty()) endMultiplicity = "1";
+
+
+        // Find the nearest available boundary points for both start and end classes
+        int startBoundaryIndex = getAvailableBoundaryPoint(start);
+        int endBoundaryIndex = getAvailableBoundaryPoint(end);
+
+        // If no available boundary points, abort creating the composition
+        if (startBoundaryIndex == -1 || endBoundaryIndex == -1) {
+            System.out.println("No available boundary points for composition.");
+            return;
+        }
+
+        // Create the composition line (filled diamond)
+        Line line = new Line();
+        bindLineToClassBoundaries(start, end, startBoundaryIndex, endBoundaryIndex, line);
+        line.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+        drawingPane.getChildren().add(line);
+
+        // Create a hollow diamond (aggregation) shape
+        Polygon aggregationDiamond = new Polygon();
+        aggregationDiamond.getPoints().addAll(
+                0.0, 10.0,   // top point
+                10.0, 0.0,   // right point
+                20.0, 10.0,   // bottom point
+                10.0, 20.0    // left point
+        );
+        aggregationDiamond.setFill(Color.BLACK);
+        aggregationDiamond.setStroke(Color.BLACK);     // Black border
+        bindAggregationDiamondToLine(aggregationDiamond, line,end);
+        drawingPane.getChildren().add(aggregationDiamond);
+        // Create a label for the composition (filled diamond)
+        Text compositionLabel = new Text("Composition");
+        compositionLabel.setStyle("-fx-font-style: italic; -fx-font-size: 12;");
+        bindCompositionLabelToLine(compositionLabel, line); // Bind label to line position
+        drawingPane.getChildren().add(compositionLabel);
+
+        // Create multiplicity labels for the start and end of the line
+        Text startMultiplicityLabel = new Text("1");
+        Text endMultiplicityLabel = new Text("1");
+
+        startMultiplicityLabel.setStyle("-fx-font-size: 10;");
+        endMultiplicityLabel.setStyle("-fx-font-size: 10;");
+
+        // Bind the multiplicity labels to the ends of the line
+        bindMultiplicityLabelToLine(startMultiplicityLabel, line, true);
+        bindMultiplicityLabelToLine(endMultiplicityLabel, line, false);
+        drawingPane.getChildren().addAll(startMultiplicityLabel, endMultiplicityLabel);
+
+        // Update the boundary occupation status for the classes
+        updateBoundaryOccupation(start, startBoundaryIndex);
+        updateBoundaryOccupation(end, endBoundaryIndex);
+
+        // Allow double-click editing for multiplicity and composition name
+        setupLabelEditing(startMultiplicityLabel, "Edit Start Multiplicity:");
+        setupLabelEditing(endMultiplicityLabel, "Edit End Multiplicity:");
+        setupLabelEditing(compositionLabel, "Edit Composition Name:");
+
+        // Add listeners to update the line dynamically when either class is moved
+        addDynamicUpdateListener(line, start, end, compositionLabel, startMultiplicityLabel, endMultiplicityLabel);
     }
 
     public void createAssociation(VBox start, VBox end, Pane drawingPane, String associationName, String startMultiplicity, String endMultiplicity) {
@@ -145,6 +389,38 @@ public class ClassDiagramRelationsManager {
             default -> 0;
         };
     }
+    public void bindAggregationDiamondToLine(Polygon aggregationDiamond, Line line, VBox end) {
+        // Get the boundary point of the end class (second selected class)
+        double endX = line.getEndX();
+        double endY = line.getEndY();
+
+        // Adjust the position of the aggregation diamond so its edge touches the boundary point of the class
+        double boundaryX = endX;
+        double boundaryY = endY;
+
+        // Move the diamond such that its edge touches the boundary point of the end class
+        aggregationDiamond.setTranslateX(boundaryX - aggregationDiamond.getBoundsInLocal().getWidth() / 2);  // Align horizontally
+        aggregationDiamond.setTranslateY(boundaryY - aggregationDiamond.getBoundsInLocal().getHeight() / 2); // Align vertically
+
+        // Update dynamic position if the line is moved
+        line.endXProperty().addListener((observable, oldValue, newValue) -> {
+            updateAggregationDiamondPosition(aggregationDiamond, line, end);
+        });
+
+        line.endYProperty().addListener((observable, oldValue, newValue) -> {
+            updateAggregationDiamondPosition(aggregationDiamond, line, end);
+        });
+    }
+
+    private void updateAggregationDiamondPosition(Polygon aggregationDiamond, Line line, VBox end) {
+        // Get the updated position of the end point of the line
+        double endX = line.getEndX();
+        double endY = line.getEndY();
+
+        // Update the diamond’s position to match the updated line’s end position
+        aggregationDiamond.setTranslateX(endX - aggregationDiamond.getBoundsInLocal().getWidth() / 2); // Adjust for correct alignment
+        aggregationDiamond.setTranslateY(endY - aggregationDiamond.getBoundsInLocal().getHeight() / 2); // Adjust vertically
+    }
 
     private void bindAssociationLabelToLine(Text label, Line line) {
         // Bind the association label to the midpoint of the line
@@ -191,4 +467,68 @@ public class ClassDiagramRelationsManager {
         // Re-bind the start and end positions
         bindLineToClassBoundaries(start, end, startBoundaryIndex, endBoundaryIndex, line);
     }
+    public void bindAggregationLabelToLine(Text aggregationLabel, Line line) {
+        // Bind label to the midpoint of the line
+        aggregationLabel.setTranslateX((line.getStartX() + line.getEndX()) / 2);
+        aggregationLabel.setTranslateY((line.getStartY() + line.getEndY()) / 2 - 20);  // Position above the line (20px offset)
+
+        // Bind the label's position to the line's midpoint dynamically
+        line.startXProperty().addListener((observable, oldValue, newValue) -> {
+            updateAggregationLabelPosition(aggregationLabel, line);
+        });
+        line.startYProperty().addListener((observable, oldValue, newValue) -> {
+            updateAggregationLabelPosition(aggregationLabel, line);
+        });
+        line.endXProperty().addListener((observable, oldValue, newValue) -> {
+            updateAggregationLabelPosition(aggregationLabel, line);
+        });
+        line.endYProperty().addListener((observable, oldValue, newValue) -> {
+            updateAggregationLabelPosition(aggregationLabel, line);
+        });
+    }
+
+    private void updateAggregationLabelPosition(Text aggregationLabel, Line line) {
+        // Update the label's position to the midpoint of the line
+        aggregationLabel.setTranslateX((line.getStartX() + line.getEndX()) / 2);
+        aggregationLabel.setTranslateY((line.getStartY() + line.getEndY()) / 2 - 20);  // Keep it above the line (20px offset)
+    }
+
+    public void bindCompositionLabelToLine(Text compositionLabel, Line line) {
+        // Bind label to the midpoint of the line
+        compositionLabel.setTranslateX((line.getStartX() + line.getEndX()) / 2);
+        compositionLabel.setTranslateY((line.getStartY() + line.getEndY()) / 2 - 20);  // Position above the line (20px offset)
+
+        // Bind the label's position to the line's midpoint dynamically
+        line.startXProperty().addListener((observable, oldValue, newValue) -> {
+            updateCompositionLabelPosition(compositionLabel, line);
+        });
+        line.startYProperty().addListener((observable, oldValue, newValue) -> {
+            updateCompositionLabelPosition(compositionLabel, line);
+        });
+        line.endXProperty().addListener((observable, oldValue, newValue) -> {
+            updateCompositionLabelPosition(compositionLabel, line);
+        });
+        line.endYProperty().addListener((observable, oldValue, newValue) -> {
+            updateCompositionLabelPosition(compositionLabel, line);
+        });
+    }
+
+    private void updateCompositionLabelPosition(Text compositionLabel, Line line) {
+        // Update the label's position to the midpoint of the line
+        compositionLabel.setTranslateX((line.getStartX() + line.getEndX()) / 2);
+        compositionLabel.setTranslateY((line.getStartY() + line.getEndY()) / 2 - 20);  // Keep it above the line (20px offset)
+    }
+
+
+
+    private void updateLinePosition(Line line, VBox start, VBox end, Text label, Text startMultiplicity, Text endMultiplicity) {
+        // Update the position of the line and labels when either class is moved
+        int startBoundaryIndex = getAvailableBoundaryPoint(start);
+        int endBoundaryIndex = getAvailableBoundaryPoint(end);
+        bindLineToClassBoundaries(start, end, startBoundaryIndex, endBoundaryIndex, line);
+        bindAggregationLabelToLine(label, line);
+        bindMultiplicityLabelToLine(startMultiplicity, line, true);
+        bindMultiplicityLabelToLine(endMultiplicity, line, false);
+    }
+
 }

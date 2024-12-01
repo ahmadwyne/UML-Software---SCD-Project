@@ -19,6 +19,9 @@ public class ClassDiagramUI {
 
     @FXML
     private Button btnClass, btnInterface, btnAssociation, btnDrag;
+    @FXML private Button btnAggregation;
+    @FXML private Button btnComposition;
+    @FXML private Button btnInheritance;
 
     @FXML
     private VBox editorsPane;
@@ -44,6 +47,18 @@ public class ClassDiagramUI {
         btnInterface.setOnAction(e -> handleToolSelection("Interface"));
         btnAssociation.setOnAction(e -> handleToolSelection("Association"));
         btnDrag.setOnAction(e -> handleToolSelection("Drag"));
+        // Add event handlers for Aggregation and Composition
+        btnAggregation.setOnAction(event -> {
+            classDiagramManager.handleToolSelection("Aggregation", drawingPane, editorsPane);
+        });
+
+        btnComposition.setOnAction(event -> {
+            classDiagramManager.handleToolSelection("Composition", drawingPane, editorsPane);
+        });
+
+        btnInheritance.setOnAction(event -> {
+            classDiagramManager.handleToolSelection("Inheritance", drawingPane, editorsPane);
+        });
     }
 
     private void handleToolSelection(String tool) {
