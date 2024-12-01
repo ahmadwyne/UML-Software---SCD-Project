@@ -13,77 +13,51 @@ import javafx.scene.control.TextField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 public class ClassDiagramManager {
     private final ArrayList<Node> elements = new ArrayList<>();
     private VBox firstSelectedElement = null;
     private VBox secondSelectedElement = null;
 
     private final ClassDiagramUI uiController;
-    private final ClassDiagramRelationsManager relationsManager;
+    private ClassDiagramRelationsManager relationsManager;
     private boolean isDragEnabled = false;
 
     public ClassDiagramManager(ClassDiagramUI uiController) {
         this.uiController = uiController;
-        this.relationsManager = new ClassDiagramRelationsManager();
+        this.relationsManager = new AssociationManager(); // Set the correct manager
+        this.relationsManager= new AggregationManager();
+
+        this.relationsManager= new CompositionManager();
+        this.relationsManager= new InheritanceManager();
+
     }
 
-        public void handleToolSelection(String tool, Pane drawingPane, VBox editorsPane) {
-            if ("Class".equals(tool)) {
-                disableDrag();
-                createClassBox("Class" + (elements.size() + 1), drawingPane);
-            } else if ("Interface".equals(tool)) {
-                disableDrag();
-                createInterfaceBox("Interface" + (elements.size() + 1), drawingPane);
-            } else if ("Association".equals(tool)) {
-                disableDrag();
-                enableAssociationMode(drawingPane);
-            } else if ("Aggregation".equals(tool)) {
-                disableDrag();
-                enableAggregationMode(drawingPane);
-            } else if ("Composition".equals(tool)) {
-                disableDrag();
-                enableCompositionMode(drawingPane);
-            } else if ("Drag".equals(tool)) {
-                enableDragMode();
-            } else if ("Inheritance".equals(tool)) {
-                disableDrag();
-                enableInheritanceMode(drawingPane);  // Trigger inheritance mode
-            }
+    public void handleToolSelection(String tool, Pane drawingPane, VBox editorsPane) {
+        if ("Class".equals(tool)) {
+            disableDrag();
+            createClassBox("Class" + (elements.size() + 1), drawingPane);
+        } else if ("Interface".equals(tool)) {
+            disableDrag();
+            createInterfaceBox("Interface" + (elements.size() + 1), drawingPane);
+        } else if ("Association".equals(tool)) {
+            disableDrag();
+            enableAssociationMode(drawingPane) ;// Use the specific AssociationManager
+        } else if ("Drag".equals(tool)) {
+            enableDragMode();
         }
-
-// Method to enable Inheritance Mode
-    private void enableInheritanceMode(Pane drawingPane) {
-        relationsManager.enableInheritanceMode(); // Enable inheritance mode
-
-        drawingPane.setOnMouseClicked(event -> {
-            Node target = getParentVBox(event.getPickResult().getIntersectedNode());
-            if (target instanceof VBox && elements.contains(target)) {
-                if (!relationsManager.isInheritanceModeEnabled()) {
-                    return; // Skip if inheritance mode is not enabled
-                }
-
-                if (firstSelectedElement == null) {
-                    firstSelectedElement = (VBox) target;
-                    highlightClass(firstSelectedElement, true);
-                } else if (secondSelectedElement == null && target != firstSelectedElement) {
-                    secondSelectedElement = (VBox) target;
-                    highlightClass(secondSelectedElement, true);
-
-                    // Create Inheritance (Triangle)
-                    relationsManager.createInheritance(
-                            firstSelectedElement,
-                            secondSelectedElement,
-                            drawingPane
-                    );
-
-                    // Reset the selected elements
-                    highlightClass(firstSelectedElement, false);
-                    highlightClass(secondSelectedElement, false);
-                    firstSelectedElement = null;
-                    secondSelectedElement = null;
-                }
-            }
-        });
+        else if ("Aggregation".equals(tool)) {
+            disableDrag();
+            enableAggregationMode(drawingPane); // Use the specific AssociationManager
+        }
+        else if ("Composition".equals(tool)) {
+            disableDrag();
+            enableCompositionMode(drawingPane); // Use the specific AssociationManager
+        }
+        else if ("Inheritance".equals(tool)) {
+            disableDrag();
+            enableInheritanceMode(drawingPane); // Use the specific AssociationManager
+        }
     }
 
     private void createClassBox(String name, Pane drawingPane) {
@@ -137,8 +111,7 @@ public class ClassDiagramManager {
         VBox methodsBox = new VBox();
         methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
 
-
-        interfaceBox.getChildren().addAll(interfaceLabel,interfaceNameLabel, methodsBox);
+        interfaceBox.getChildren().addAll(interfaceLabel, interfaceNameLabel, methodsBox);
         interfaceBox.setLayoutX(100 + elements.size() * 50);
         interfaceBox.setLayoutY(100);
 
@@ -154,7 +127,7 @@ public class ClassDiagramManager {
         drawingPane.setOnMouseClicked(event -> {
             Node target = getParentVBox(event.getPickResult().getIntersectedNode());
             if (target instanceof VBox && elements.contains(target)) {
-                if (!relationsManager.isAssociationModeEnabled()) {
+                if (!(relationsManager instanceof AssociationManager)) {
                     return; // Skip if association mode is not enabled
                 }
 
@@ -207,7 +180,8 @@ public class ClassDiagramManager {
                         String startMultiplicity = values.get(1).isEmpty() ? "1" : values.get(1);
                         String endMultiplicity = values.get(2).isEmpty() ? "1" : values.get(2);
 
-                        relationsManager.createAssociation(
+                        // Use AssociationManager to create the relationship
+                        ((AssociationManager) relationsManager).createRelationship(
                                 firstSelectedElement,
                                 secondSelectedElement,
                                 drawingPane,
@@ -227,15 +201,14 @@ public class ClassDiagramManager {
         });
     }
 
-
     private void enableAggregationMode(Pane drawingPane) {
         relationsManager.enableAggregationMode(); // Enable aggregation mode
 
         drawingPane.setOnMouseClicked(event -> {
             Node target = getParentVBox(event.getPickResult().getIntersectedNode());
             if (target instanceof VBox && elements.contains(target)) {
-                if (!relationsManager.isAggregationModeEnabled()) {
-                    return; // Skip if aggregation mode is not enabled
+                if (!(relationsManager instanceof AggregationManager)) {
+                    return; // Skip if association mode is not enabled
                 }
 
                 if (firstSelectedElement == null) {
@@ -287,7 +260,85 @@ public class ClassDiagramManager {
                         String startMultiplicity = values.get(1).isEmpty() ? "1" : values.get(1);
                         String endMultiplicity = values.get(2).isEmpty() ? "1" : values.get(2);
 
-                        relationsManager.createAggregation(
+                        ((AggregationManager) relationsManager).createRelationship(
+                                firstSelectedElement,
+                                secondSelectedElement,
+                                drawingPane,
+                                aggregationName,
+                                startMultiplicity,
+                                endMultiplicity
+                        );
+                    });
+
+                    // Reset the selected elements
+                    highlightClass(firstSelectedElement, false);
+                    highlightClass(secondSelectedElement, false);
+                    firstSelectedElement = null;
+                    secondSelectedElement = null;
+                }
+            }
+        });
+    }
+    private void enableCompositionMode(Pane drawingPane) {
+        relationsManager.enableAggregationMode(); // Enable aggregation mode
+
+        drawingPane.setOnMouseClicked(event -> {
+            Node target = getParentVBox(event.getPickResult().getIntersectedNode());
+            if (target instanceof VBox && elements.contains(target)) {
+                if (!(relationsManager instanceof CompositionManager)) {
+                    return; // Skip if association mode is not enabled
+                }
+
+                if (firstSelectedElement == null) {
+                    firstSelectedElement = (VBox) target;
+                    highlightClass(firstSelectedElement, true);
+                } else if (secondSelectedElement == null && target != firstSelectedElement) {
+                    secondSelectedElement = (VBox) target;
+                    highlightClass(secondSelectedElement, true);
+
+                    // Show dialog for Aggregation details
+                    Dialog<List<String>> dialog = new Dialog<>();
+                    dialog.setTitle("Set Composition Details");
+                    dialog.setHeaderText("Enter Composition Name and Multiplicities");
+
+                    TextField aggregationNameField = new TextField();
+                    aggregationNameField.setPromptText("Composition Name");
+                    TextField startMultiplicityField = new TextField();
+                    startMultiplicityField.setPromptText("Start Multiplicity");
+                    TextField endMultiplicityField = new TextField();
+                    endMultiplicityField.setPromptText("End Multiplicity");
+
+                    GridPane grid = new GridPane();
+                    grid.setHgap(10);
+                    grid.setVgap(10);
+                    grid.add(new Label("Composition Name:"), 0, 0);
+                    grid.add(aggregationNameField, 1, 0);
+                    grid.add(new Label("Start Multiplicity:"), 0, 1);
+                    grid.add(startMultiplicityField, 1, 1);
+                    grid.add(new Label("End Multiplicity:"), 0, 2);
+                    grid.add(endMultiplicityField, 1, 2);
+
+                    dialog.getDialogPane().setContent(grid);
+                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                    dialog.setResultConverter(dialogButton -> {
+                        if (dialogButton == ButtonType.OK) {
+                            List<String> result = new ArrayList<>();
+                            result.add(aggregationNameField.getText());
+                            result.add(startMultiplicityField.getText());
+                            result.add(endMultiplicityField.getText());
+                            return result;
+                        }
+                        return null;
+                    });
+
+                    Optional<List<String>> result = dialog.showAndWait();
+                    result.ifPresent(values -> {
+                        String aggregationName = values.get(0).isEmpty() ? "compositionName" : values.get(0);
+                        String startMultiplicity = values.get(1).isEmpty() ? "1" : values.get(1);
+                        String endMultiplicity = values.get(2).isEmpty() ? "1" : values.get(2);
+
+                        ((CompositionManager) relationsManager).createRelationship(
                                 firstSelectedElement,
                                 secondSelectedElement,
                                 drawingPane,
@@ -307,14 +358,14 @@ public class ClassDiagramManager {
         });
     }
 
-    private void enableCompositionMode(Pane drawingPane) {
-        relationsManager.enableCompositionMode(); // Enable composition mode
+    private void enableInheritanceMode(Pane drawingPane) {
+        relationsManager.enableInheritanceMode(); // Enable aggregation mode
 
         drawingPane.setOnMouseClicked(event -> {
             Node target = getParentVBox(event.getPickResult().getIntersectedNode());
             if (target instanceof VBox && elements.contains(target)) {
-                if (!relationsManager.isCompositionModeEnabled()) {
-                    return; // Skip if composition mode is not enabled
+                if (!(relationsManager instanceof InheritanceManager)) {
+                    return; // Skip if association mode is not enabled
                 }
 
                 if (firstSelectedElement == null) {
@@ -324,113 +375,70 @@ public class ClassDiagramManager {
                     secondSelectedElement = (VBox) target;
                     highlightClass(secondSelectedElement, true);
 
-                    // Show dialog for Composition details
-                    Dialog<List<String>> dialog = new Dialog<>();
-                    dialog.setTitle("Set Composition Details");
-                    dialog.setHeaderText("Enter Composition Name and Multiplicities");
 
-                    TextField compositionNameField = new TextField();
-                    compositionNameField.setPromptText("Composition Name");
-                    TextField startMultiplicityField = new TextField();
-                    startMultiplicityField.setPromptText("Start Multiplicity");
-                    TextField endMultiplicityField = new TextField();
-                    endMultiplicityField.setPromptText("End Multiplicity");
+                    ((InheritanceManager) relationsManager).createRelationship(
+                            firstSelectedElement,
+                            secondSelectedElement,
+                            drawingPane, "", "", ""
 
-                    GridPane grid = new GridPane();
-                    grid.setHgap(10);
-                    grid.setVgap(10);
-                    grid.add(new Label("Composition Name:"), 0, 0);
-                    grid.add(compositionNameField, 1, 0);
-                    grid.add(new Label("Start Multiplicity:"), 0, 1);
-                    grid.add(startMultiplicityField, 1, 1);
-                    grid.add(new Label("End Multiplicity:"), 0, 2);
-                    grid.add(endMultiplicityField, 1, 2);
-
-                    dialog.getDialogPane().setContent(grid);
-                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                    dialog.setResultConverter(dialogButton -> {
-                        if (dialogButton == ButtonType.OK) {
-                            List<String> result = new ArrayList<>();
-                            result.add(compositionNameField.getText());
-                            result.add(startMultiplicityField.getText());
-                            result.add(endMultiplicityField.getText());
-                            return result;
-                        }
-                        return null;
-                    });
-
-                    Optional<List<String>> result = dialog.showAndWait();
-                    result.ifPresent(values -> {
-                        String compositionName = values.get(0).isEmpty() ? "compositionName" : values.get(0);
-                        String startMultiplicity = values.get(1).isEmpty() ? "1" : values.get(1);
-                        String endMultiplicity = values.get(2).isEmpty() ? "1" : values.get(2);
-
-                        relationsManager.createComposition(
-                                firstSelectedElement,
-                                secondSelectedElement,
-                                drawingPane,
-                                compositionName,
-                                startMultiplicity,
-                                endMultiplicity
-                        );
-                    });
-
-                    // Reset the selected elements
-                    highlightClass(firstSelectedElement, false);
-                    highlightClass(secondSelectedElement, false);
-                    firstSelectedElement = null;
-                    secondSelectedElement = null;
+                    );
                 }
+
+                // Reset the selected elements
+                highlightClass(firstSelectedElement, false);
+                highlightClass(secondSelectedElement, false);
+                firstSelectedElement = null;
+                secondSelectedElement = null;
             }
         });
     }
-    private Node getParentVBox(Node node) {
-        while (node != null && !(node instanceof VBox)) {
-            node = node.getParent();
-        }
-        return node;
-    }
 
-    private void enableDragMode() {
-        isDragEnabled = true;
-        for (Node element : elements) {
-            if (element instanceof VBox) {
-                setDraggable((VBox) element, true);
-            }
-        }
+private Node getParentVBox(Node node) {
+    while (node != null && !(node instanceof VBox)) {
+        node = node.getParent();
     }
+    return node;
+}
 
-    private void disableDrag() {
-        isDragEnabled = false;
-        for (Node element : elements) {
-            if (element instanceof VBox) {
-                setDraggable((VBox) element, false);
-            }
+private void enableDragMode() {
+    isDragEnabled = true;
+    for (Node element : elements) {
+        if (element instanceof VBox) {
+            setDraggable((VBox) element, true);
         }
     }
+}
 
-    private void setDraggable(VBox pane, boolean enable) {
-        if (enable) {
-            pane.setOnMousePressed(event -> pane.setUserData(new double[]{event.getSceneX(), event.getSceneY(), pane.getLayoutX(), pane.getLayoutY()}));
-            pane.setOnMouseDragged(event -> {
-                double[] data = (double[]) pane.getUserData();
-                double offsetX = event.getSceneX() - data[0];
-                double offsetY = event.getSceneY() - data[1];
-                pane.setLayoutX(data[2] + offsetX);
-                pane.setLayoutY(data[3] + offsetY);
-            });
-        } else {
-            pane.setOnMousePressed(null);
-            pane.setOnMouseDragged(null);
+private void disableDrag() {
+    isDragEnabled = false;
+    for (Node element : elements) {
+        if (element instanceof VBox) {
+            setDraggable((VBox) element, false);
         }
     }
+}
 
-    private void highlightClass(VBox classBox, boolean highlight) {
-        if (highlight) {
-            classBox.setStyle("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-style: solid;");
-        } else {
-            classBox.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;");
-        }
+private void setDraggable(VBox pane, boolean enable) {
+    if (enable) {
+        pane.setOnMousePressed(event -> pane.setUserData(new double[]{event.getSceneX(), event.getSceneY(), pane.getLayoutX(), pane.getLayoutY()}));
+        pane.setOnMouseDragged(event -> {
+            double[] data = (double[]) pane.getUserData();
+            double offsetX = event.getSceneX() - data[0];
+            double offsetY = event.getSceneY() - data[1];
+            pane.setLayoutX(data[2] + offsetX);
+            pane.setLayoutY(data[3] + offsetY);
+        });
+    } else {
+        pane.setOnMousePressed(null);
+        pane.setOnMouseDragged(null);
     }
+}
+
+private void highlightClass(VBox classBox, boolean highlight) {
+    if (highlight) {
+        classBox.setStyle("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-style: solid;");
+    } else {
+        classBox.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;");
+    }
+}
 }
