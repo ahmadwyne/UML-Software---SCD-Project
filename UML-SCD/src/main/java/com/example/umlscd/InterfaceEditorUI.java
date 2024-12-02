@@ -167,4 +167,18 @@ public class InterfaceEditorUI {
             methodsFlow.getChildren().add(methodLabel);// Add to methodsFlow
         }
     }
+    public void applyHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #C0C0C0; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
+    }
+
+    public void removeHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #AFAFAF; -fx-font-size: 12px;  -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
+
+    public void applyClickEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
 }

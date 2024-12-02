@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+
 <?import javafx.scene.text.TextFlow?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.InterfaceEditorUI" spacing="10" style="-fx-padding: 10; -fx-font-family: 'Verdana';">
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.umlscd.InterfaceEditorUI">
-    <!-- Centered Class Name Section -->
-    <TextField fx:id="interfaceNameField" promptText="Class Name" style="-fx-alignment: center;"/>
+    <!-- Centered Interface Name Section -->
+    <TextField fx:id="interfaceNameField" promptText="Interface Name" style="-fx-alignment: center;"/>
 
-    <!-- Methods Section -->
-    <Label text="Methods"/>
-    <TextFlow fx:id="methodsFlow" style="-fx-font-size: 14px;" />
+    <!-- Methods Section with Boundary -->
+    <VBox spacing="10" style="-fx-border-color: #AFAFAF; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+        <Label text="Methods" style="-fx-text-fill: white; -fx-font-family: 'Verdana';"/>
+        <TextFlow fx:id="methodsFlow" style="-fx-font-size: 14px;"/>
 
-    <!-- Method Controls (Return Type, Visibility, and Method Name with Add Parameter Button) -->
-    <HBox spacing="5">
-        <ComboBox fx:id="returnTypeDropdown" promptText="Return Type" prefWidth="150"/>
-        <ComboBox fx:id="methodVisibilityDropdown" promptText="Visibility" prefWidth="150"/>
-    </HBox>
+        <!-- Method Controls (Return Type, Visibility, and Method Name) -->
+        <HBox spacing="5">
+            <ComboBox fx:id="returnTypeDropdown" promptText="Return Type" prefWidth="150"
+                      style="-fx-font-size: 12px;"/>
+            <ComboBox fx:id="methodVisibilityDropdown" promptText="Visibility" prefWidth="150"
+                      style="-fx-font-size: 12px;"/>
+        </HBox>
+        <HBox spacing="5">
+            <TextField fx:id="methodNameField" promptText="Method Name"/>
+        </HBox>
 
-    <HBox spacing="5">
-        <TextField fx:id="methodNameField" promptText="Method Name"/>
-        <Button text="Add Parameter" fx:id="addParameterButton"/>
-    </HBox>
+        <HBox spacing="5">
+            <Button text="Add Parameter" fx:id="addParameterButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+                    onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+        </HBox>
 
-    <!-- Add Method Button -->
-    <Button text="Add Method" fx:id="addMethodButton"/>
+        <!-- Add Method Button -->
+        <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+                onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+    </VBox>
 
     <!-- Apply Changes Button -->
-    <Button text="Apply Changes" fx:id="applyChangesButton"/>
+    <Button text="Apply Changes" fx:id="applyChangesButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
 </VBox>
