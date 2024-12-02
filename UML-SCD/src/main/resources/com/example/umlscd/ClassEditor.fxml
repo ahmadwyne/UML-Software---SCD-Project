@@ -15,8 +15,10 @@
 
         <!-- New Attribute Controls (Data Type, Visibility, and Name) -->
         <HBox spacing="5">
-            <ComboBox fx:id="dataTypeDropdown" promptText="Data Type" prefWidth="150"/>
-            <ComboBox fx:id="visibilityDropdown" promptText="Visibility" prefWidth="150"/>
+            <ComboBox fx:id="dataTypeDropdown" promptText="Data Type" prefWidth="150"
+            style = "-fx-font-size: 12px"/>
+            <ComboBox fx:id="visibilityDropdown" promptText="Visibility" prefWidth="150"
+                      style = "-fx-font-size: 12px"/>
         </HBox>
         <TextField fx:id="attributeNameField" promptText="Attribute Name"/>
 
@@ -31,13 +33,19 @@
 
         <!-- Method Controls (Return Type, Visibility, and Method Name with Add Parameter Button) -->
         <HBox spacing="5">
-            <ComboBox fx:id="returnTypeDropdown" promptText="Return Type" prefWidth="150"/>
-            <ComboBox fx:id="methodVisibilityDropdown" promptText="Visibility" prefWidth="150"/>
+            <ComboBox fx:id="returnTypeDropdown" promptText="Return Type" prefWidth="150"
+                      style = "-fx-font-size: 12px"/>
+            <ComboBox fx:id="methodVisibilityDropdown" promptText="Visibility" prefWidth="150"
+                      style = "-fx-font-size: 12px"/>
         </HBox>
         <HBox spacing="5">
             <TextField fx:id="methodNameField" promptText="Method Name"/>
-            <Button text="Add Parameter" fx:id="addParameterButton" style="-fx-background-color: #AFAFAF;"/>
         </HBox>
+
+        <HBox spacing="5">
+            <Button text="Add Parameter" fx:id="addParameterButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px"/>
+        </HBox>
+
 
         <!-- Add Method Button -->
         <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF;"/>
