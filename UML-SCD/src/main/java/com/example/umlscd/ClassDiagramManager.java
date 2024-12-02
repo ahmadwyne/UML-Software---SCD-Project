@@ -193,7 +193,7 @@ public class ClassDiagramManager {
                                 endMultiplicity
                         );
                     });
-
+                    relationsManager=null;
                     // Reset the selected elements
                     highlightClass(firstSelectedElement, false);
                     highlightClass(secondSelectedElement, false);
