@@ -18,7 +18,7 @@ public class ClassDiagramUI {
     private ListView<String> diagramListView, modelExplorerListView;
 
     @FXML
-    private Button btnClass, btnInterface, btnAssociation, btnDrag;
+    private Button btnClass, btnInterface, btnAssociation, btnDrag,btnDelete;
     @FXML private Button btnAggregation;
     @FXML private Button btnComposition;
     @FXML private Button btnInheritance;
@@ -59,6 +59,10 @@ public class ClassDiagramUI {
         btnInheritance.setOnAction(event -> {
             classDiagramManager.handleToolSelection("Inheritance", drawingPane, editorsPane);
         });
+        btnDelete.setOnAction(event -> {
+            classDiagramManager.handleToolSelection("Delete", drawingPane, editorsPane);
+        });
+
     }
 
     private void handleToolSelection(String tool) {

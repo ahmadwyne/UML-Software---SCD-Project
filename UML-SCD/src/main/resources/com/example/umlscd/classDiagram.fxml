@@ -51,6 +51,8 @@
                     <Button text="Drag" fx:id="btnDrag" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                     <Button text="Class" fx:id="btnClass" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                     <Button text="Interface" fx:id="btnInterface" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Delete" fx:id="btnDelete" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+
                     <Button text="Association" fx:id="btnAssociation" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                     <Button text="Aggregation" fx:id="btnAggregation" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                     <Button text="Composition" fx:id="btnComposition" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>

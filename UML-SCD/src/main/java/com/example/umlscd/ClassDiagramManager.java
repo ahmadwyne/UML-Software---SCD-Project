@@ -1,5 +1,6 @@
 package com.example.umlscd;
 
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 
+import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,7 @@ public class ClassDiagramManager {
     private final ClassDiagramUI uiController;
     private ClassDiagramRelationsManager relationsManager;
     private boolean isDragEnabled = false;
+    private boolean deleteModeEnabled = false;
 
     public ClassDiagramManager(ClassDiagramUI uiController) {
         this.uiController = uiController;
@@ -59,6 +62,11 @@ public class ClassDiagramManager {
             relationsManager = new InheritanceManager();  // Correctly assign InheritanceManager
             enableInheritanceMode(drawingPane); // Enable inheritance mode
         }
+        else if ("Delete".equals(tool)) {
+            enableDeleteMode(drawingPane);
+            toggleDeleteMode();// Enable delete mode
+        }
+
 
     }
 
@@ -360,6 +368,90 @@ public class ClassDiagramManager {
             }
         });
     }
+    private void enableDeleteMode(Pane drawingPane) {
+        drawingPane.setOnMousePressed(event -> {
+            // Get the clicked node from the event
+            Node clickedNode = (Node) event.getTarget();
+
+            // Log the clicked node for debugging purposes
+            System.out.println("Clicked Node: " + clickedNode);
+
+            // Check if clickedNode is valid
+            if (clickedNode != null) {
+                if (clickedNode instanceof VBox) {
+                    // If the clicked node is a VBox (class box), delete the class
+                    VBox classBox = (VBox) clickedNode;
+                    deleteClass(classBox, drawingPane); // Delete the class and relationships
+                } else if (clickedNode instanceof Line) {
+                    // If the clicked node is a Line (relationship), delete the relationship
+                    Line relationshipLine = (Line) clickedNode;
+                    System.out.println("Clicked Line: " + relationshipLine);
+                    deleteRelationship(relationshipLine, drawingPane); // Delete the relationship
+                } else {
+                    System.out.println("No function called for clicked node");
+                }
+            } else {
+                System.out.println("No node clicked, clickedNode is null.");
+            }
+        });
+    }
+
+    public void toggleDeleteMode() {
+        deleteModeEnabled = !deleteModeEnabled; // Toggle delete mode
+        System.out.println("Delete mode is now " + (deleteModeEnabled ? "enabled" : "disabled"));
+    }
+
+    public void deleteClass(VBox classBox, Pane drawingPane) {
+        // Remove the class from the drawing pane
+        drawingPane.getChildren().remove(classBox);
+        elements.remove(classBox);
+
+        // Also remove any relationships associated with this class
+        for (Node element : drawingPane.getChildren()) {
+            if (element instanceof Line) {
+                Line relationshipLine = (Line) element;
+
+                // Check if the relationship line is connected to the classBox
+                if (isLineConnectedToClass(relationshipLine, classBox)) {
+                    deleteRelationship(relationshipLine, drawingPane); // Delete the relationship
+                }
+            }
+        }
+    }
+
+    private boolean isLineConnectedToClass(Line relationshipLine, VBox classBox) {
+        // Get the coordinates of the start and end points of the relationship line
+        //double startX = relationshipLine.getStartX();
+        //double startY = relationshipLine.getStartY();
+        //double endX = relationshipLine.getEndX();
+        //double endY = relationshipLine.getEndY();
+
+        // Get the layout of the class box
+        double classX = classBox.getLayoutX();
+        double classY = classBox.getLayoutY();
+        double classWidth = classBox.getWidth();
+        double classHeight = classBox.getHeight();
+
+        // Define a tolerance for proximity checking (e.g., 10 pixels)
+        double tolerance = 10;
+
+        // Check if either the start or end point of the relationship line is near the class box
+        return (isPointNearClass(classX, classY, classX, classY, classWidth, classHeight, tolerance) ||
+                isPointNearClass(classX, classY, classX, classY, classWidth, classHeight, tolerance));
+    }
+
+    private boolean isPointNearClass(double pointX, double pointY, double classX, double classY, double classWidth, double classHeight, double tolerance) {
+        // Check if a point (start or end of a relationship line) is near the class box (within a tolerance)
+        return (pointX >= classX - tolerance && pointX <= classX + classWidth + tolerance &&
+                pointY >= classY - tolerance && pointY <= classY + classHeight + tolerance);
+    }
+
+    public void deleteRelationship(Line relationshipLine, Pane drawingPane) {
+        // Remove the relationship line from the canvas
+        drawingPane.getChildren().remove(relationshipLine);
+    }
+
+
 
     /*private void enableInheritanceMode(Pane drawingPane) {
         relationsManager.enableInheritanceMode(); // Enable aggregation mode
