@@ -28,7 +28,7 @@ public class ClassDiagramManager {
         this.relationsManager = new AssociationManager(); // Set the correct manager
         this.relationsManager= new AggregationManager();
 
-        this.relationsManager= new CompositionManager();
+       this.relationsManager= new CompositionManager();
         this.relationsManager= new InheritanceManager();
 
     }
@@ -42,22 +42,24 @@ public class ClassDiagramManager {
             createInterfaceBox("Interface" + (elements.size() + 1), drawingPane);
         } else if ("Association".equals(tool)) {
             disableDrag();
-            enableAssociationMode(drawingPane) ;// Use the specific AssociationManager
+            relationsManager = new AssociationManager();  // Assign AssociationManager
+            enableAssociationMode(drawingPane); // Enable association mode
         } else if ("Drag".equals(tool)) {
             enableDragMode();
-        }
-        else if ("Aggregation".equals(tool)) {
+        } else if ("Aggregation".equals(tool)) {
             disableDrag();
-            enableAggregationMode(drawingPane); // Use the specific AssociationManager
-        }
-        else if ("Composition".equals(tool)) {
+            relationsManager = new AggregationManager();  // Assign AggregationManager
+            enableAggregationMode(drawingPane);
+        } else if ("Composition".equals(tool)) {
             disableDrag();
-            enableCompositionMode(drawingPane); // Use the specific AssociationManager
-        }
-        else if ("Inheritance".equals(tool)) {
+            relationsManager = new CompositionManager();  // Assign CompositionManager
+            enableCompositionMode(drawingPane);
+        } else if ("Inheritance".equals(tool)) {
             disableDrag();
-            enableInheritanceMode(drawingPane); // Use the specific AssociationManager
+            relationsManager = new InheritanceManager();  // Correctly assign InheritanceManager
+            enableInheritanceMode(drawingPane); // Enable inheritance mode
         }
+
     }
 
     private void createClassBox(String name, Pane drawingPane) {
@@ -130,6 +132,7 @@ public class ClassDiagramManager {
                 if (!(relationsManager instanceof AssociationManager)) {
                     return; // Skip if association mode is not enabled
                 }
+
 
                 if (firstSelectedElement == null) {
                     firstSelectedElement = (VBox) target;
@@ -280,7 +283,7 @@ public class ClassDiagramManager {
         });
     }
     private void enableCompositionMode(Pane drawingPane) {
-        relationsManager.enableAggregationMode(); // Enable aggregation mode
+        relationsManager.enableCompositionMode(); // Enable aggregation mode
 
         drawingPane.setOnMouseClicked(event -> {
             Node target = getParentVBox(event.getPickResult().getIntersectedNode());
@@ -379,7 +382,7 @@ public class ClassDiagramManager {
                     ((InheritanceManager) relationsManager).createRelationship(
                             firstSelectedElement,
                             secondSelectedElement,
-                            drawingPane, "", "", ""
+                            drawingPane, null, null, null
 
                     );
                 }
@@ -399,6 +402,13 @@ private Node getParentVBox(Node node) {
     }
     return node;
 }
+/*    private VBox getParentVBox(Node node) {
+        while (node != null && !(node instanceof VBox)) {
+            node = node.getParent();
+        }
+        return (VBox) node;
+    }
+*/
 
 private void enableDragMode() {
     isDragEnabled = true;

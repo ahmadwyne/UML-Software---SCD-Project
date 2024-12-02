@@ -7,10 +7,10 @@ import javafx.scene.layout.VBox;
 
 public abstract class ClassDiagramRelationsManager {
 
-    protected boolean enabledAssociationModel = false;
-    protected boolean enabledAggregationModel = false;
-    protected boolean enabledCompositionModel = false;
-    protected boolean inheritanceModeEnabled = false;
+    public boolean enabledAssociationModel = false;
+    public boolean enabledAggregationModel = false;
+    public boolean enabledCompositionModel = false;
+    public boolean inheritanceModeEnabled = false;
 
     // Enable/Disable association mode
     public void enableAssociationMode() {
@@ -21,9 +21,7 @@ public abstract class ClassDiagramRelationsManager {
         this.enabledAssociationModel = false;
     }
 
-    public boolean isAssociationModeEnabled() {
-        return enabledAssociationModel;
-    }
+
 
     // Enable/Disable aggregation mode
     public void enableAggregationMode() {
@@ -34,9 +32,6 @@ public abstract class ClassDiagramRelationsManager {
         this.enabledAggregationModel = false;
     }
 
-    public boolean isAggregationModeEnabled() {
-        return enabledAggregationModel;
-    }
 
     // Enable/Disable composition mode
     public void enableCompositionMode() {
@@ -47,9 +42,7 @@ public abstract class ClassDiagramRelationsManager {
         this.enabledCompositionModel = false;
     }
 
-    public boolean isCompositionModeEnabled() {
-        return enabledCompositionModel;
-    }
+
 
     // Enable inheritance mode
     public void enableInheritanceMode() {
@@ -61,9 +54,6 @@ public abstract class ClassDiagramRelationsManager {
         inheritanceModeEnabled = false;
     }
 
-    public boolean isInheritanceModeEnabled() {
-        return inheritanceModeEnabled;
-    }
 
     // Abstract method to create relationships
     public abstract void createRelationship(VBox start, VBox end, Pane drawingPane, String relationshipName, String startMultiplicity, String endMultiplicity);
