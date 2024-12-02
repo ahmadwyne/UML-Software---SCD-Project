@@ -369,33 +369,35 @@ public class ClassDiagramManager {
         });
     }
     private void enableDeleteMode(Pane drawingPane) {
-        drawingPane.setOnMousePressed(event -> {
-            // Get the clicked node from the event
-            Node clickedNode = (Node) event.getTarget();
+        // Handle click event for deletion
+        drawingPane.setOnMouseClicked(event -> {
+            if(!deleteModeEnabled)
+            {
+                return;
+            }
+            Node clickedNode = event.getPickResult().getIntersectedNode();
 
-            // Log the clicked node for debugging purposes
+            // Print the clicked node for debugging
             System.out.println("Clicked Node: " + clickedNode);
 
-            // Check if clickedNode is valid
-            if (clickedNode != null) {
-                if (clickedNode instanceof VBox) {
-                    // If the clicked node is a VBox (class box), delete the class
-                    VBox classBox = (VBox) clickedNode;
-                    deleteClass(classBox, drawingPane); // Delete the class and relationships
-                } else if (clickedNode instanceof Line) {
-                    // If the clicked node is a Line (relationship), delete the relationship
-                    Line relationshipLine = (Line) clickedNode;
-                    System.out.println("Clicked Line: " + relationshipLine);
-                    deleteRelationship(relationshipLine, drawingPane); // Delete the relationship
-                } else {
-                    System.out.println("No function called for clicked node");
-                }
+            // Traverse up the hierarchy until we find the actual VBox (class) or Line (relationship)
+            while (clickedNode != null && !(clickedNode instanceof VBox) && !(clickedNode instanceof Line)) {
+                clickedNode = clickedNode.getParent();
+            }
+
+            // Check if it's a class (VBox) or relationship (Line)
+            if (clickedNode instanceof VBox) {
+                VBox classBox = (VBox) clickedNode;
+                deleteClass(classBox, drawingPane); // Delete the class and its relationships
+            } else if (clickedNode instanceof Line) {
+                Line relationshipLine = (Line) clickedNode;
+                deleteRelationship(relationshipLine, drawingPane); // Delete the relationship
             } else {
-                System.out.println("No node clicked, clickedNode is null.");
+                System.out.println("No function called: " + clickedNode.getClass().getName());
             }
         });
-    }
 
+    }
     public void toggleDeleteMode() {
         deleteModeEnabled = !deleteModeEnabled; // Toggle delete mode
         System.out.println("Delete mode is now " + (deleteModeEnabled ? "enabled" : "disabled"));
