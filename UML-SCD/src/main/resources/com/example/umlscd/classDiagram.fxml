@@ -9,27 +9,29 @@
     <top>
         <HBox spacing="10" style="-fx-padding: 10; -fx-border-color: #F5F5F5; -fx-border-width: 2; -fx-border-radius: 5;">
             <Button text="Home" fx:id="homeButton"
-                    style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF; -fx-font-weight: bold; -fx-cursor: hand;"
+                    onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
             <MenuBar style = "-fx-background-color: #AFAFAF; -fx-border-radius: 5;">
-                <Menu text="File" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
+                <Menu text="File" style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
                     <MenuItem text="New"
-                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF; "/>
+                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF; "/>
                     <MenuItem text="Open"
-                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                     <MenuItem text="Save"
-                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                     <MenuItem text="Exit"
-                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+
                 </Menu>
-                <Menu text="Edit" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
+                <Menu text="Edit" style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
                     <MenuItem text="Undo"
-                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                     <MenuItem text="Redo"
-                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                 </Menu>
-                <Menu text="Help" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
+                <Menu text="Help" style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
                     <MenuItem text="About"
-                              style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
                 </Menu>
             </MenuBar>
         </HBox>
@@ -48,13 +50,20 @@
             <!-- Toolbox Section -->
             <TitledPane text="Toolbox" expanded="true" style="-fx-background-color: #444444; -fx-text-fill: #111111;">
                 <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
-                    <Button text="Drag" fx:id="btnDrag" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <Button text="Class" fx:id="btnClass" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <Button text="Interface" fx:id="btnInterface" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <Button text="Association" fx:id="btnAssociation" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <Button text="Aggregation" fx:id="btnAggregation" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <Button text="Composition" fx:id="btnComposition" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <Button text="Inheritance" fx:id="btnInheritance" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Drag" fx:id="btnDrag" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+                    <Button text="Class" fx:id="btnClass" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+                    <Button text="Interface" fx:id="btnInterface" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+                    <Button text="Association" fx:id="btnAssociation" style="-fx-font-size: 12px; -fx-font-weight: bold;  -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+                    <Button text="Aggregation" fx:id="btnAggregation" style="-fx-font-size: 12px; -fx-font-weight: bold;  -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+                    <Button text="Composition" fx:id="btnComposition" style="-fx-font-size: 12px; -fx-font-weight: bold;  -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+                    <Button text="Inheritance" fx:id="btnInheritance" style="-fx-font-size: 12px; -fx-font-weight: bold;  -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
                 </VBox>
             </TitledPane>
         </VBox>
@@ -69,16 +78,16 @@
     <right>
         <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: #F5F5F5; -fx-border-width: 2; -fx-border-radius: 5;" prefWidth="300" maxWidth="300">
             <!-- Model Explorer Section -->
-            <TitledPane text="Model Explorer" expanded="true" style="-fx-font-size: 14px; -fx-background-color: #4B4B4B; -fx-font-family: 'Verdana';">
-                <ScrollPane fitToWidth="true" style="-fx-background-color: #4B4B4B;">
-                <VBox spacing="5">
-                    <ListView fx:id="modelExplorerListView"/>
-                </VBox>
-                </ScrollPane>
-            </TitledPane>
+            <!-- <TitledPane text="Model Explorer" expanded="true" style="-fx-font-size: 12px; -fx-background-color: #4B4B4B; -fx-font-family: 'Verdana';">
+                 <ScrollPane fitToWidth="true" style="-fx-background-color: #4B4B4B;">
+                 <VBox spacing="5">
+                     <ListView fx:id="modelExplorerListView"/>
+                 </VBox>
+                 </ScrollPane>
+             </TitledPane> -->
 
-            <!-- Editors Section (For Class Editor) -->
-            <TitledPane text="Editors" expanded="true" style="-fx-font-size: 14px; -fx-pref-width: 120; -fx-background-color: #4B4B4B; -fx-font-family: 'Verdana';">
+             <!-- Editors Section (For Class Editor) -->
+            <TitledPane text="Editors" expanded="true" style="-fx-font-size: 12px; -fx-pref-width: 120; -fx-background-color: #4B4B4B; -fx-font-family: 'Verdana';">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #4B4B4B;">
                     <VBox fx:id="editorsPane" spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
                         <!-- This pane will be dynamically populated with the Class Editor when a class is selected -->

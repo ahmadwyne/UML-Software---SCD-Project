@@ -16,14 +16,15 @@
         <!-- New Attribute Controls (Data Type, Visibility, and Name) -->
         <HBox spacing="5">
             <ComboBox fx:id="dataTypeDropdown" promptText="Data Type" prefWidth="150"
-            style = "-fx-font-size: 12px"/>
+                      style="-fx-font-size: 12px;"/>
             <ComboBox fx:id="visibilityDropdown" promptText="Visibility" prefWidth="150"
-                      style = "-fx-font-size: 12px"/>
+                      style="-fx-font-size: 12px;"/>
         </HBox>
         <TextField fx:id="attributeNameField" promptText="Attribute Name"/>
 
         <!-- Add Attribute Button -->
-        <Button text="Add Attribute" fx:id="addAttributeButton" style="-fx-background-color: #AFAFAF;"/>
+        <Button text="Add Attribute" fx:id="addAttributeButton" style="-fx-background-color: #AFAFAF;"
+                onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
     </VBox>
 
     <!-- Methods Section with Boundary -->
@@ -34,23 +35,25 @@
         <!-- Method Controls (Return Type, Visibility, and Method Name with Add Parameter Button) -->
         <HBox spacing="5">
             <ComboBox fx:id="returnTypeDropdown" promptText="Return Type" prefWidth="150"
-                      style = "-fx-font-size: 12px"/>
+                      style="-fx-font-size: 12px;"/>
             <ComboBox fx:id="methodVisibilityDropdown" promptText="Visibility" prefWidth="150"
-                      style = "-fx-font-size: 12px"/>
+                      style="-fx-font-size: 12px;"/>
         </HBox>
         <HBox spacing="5">
             <TextField fx:id="methodNameField" promptText="Method Name"/>
         </HBox>
 
         <HBox spacing="5">
-            <Button text="Add Parameter" fx:id="addParameterButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px"/>
+            <Button text="Add Parameter" fx:id="addParameterButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+                    onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
         </HBox>
 
-
         <!-- Add Method Button -->
-        <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF;"/>
+        <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+                onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
     </VBox>
 
     <!-- Apply Changes Button -->
-    <Button text="Apply Changes" fx:id="applyChangesButton" style="-fx-background-color: #AFAFAF;"/>
+    <Button text="Apply Changes" fx:id="applyChangesButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
 </VBox>

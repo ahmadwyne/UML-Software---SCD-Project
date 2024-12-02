@@ -7,6 +7,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class ClassDiagramUI {
@@ -38,6 +39,23 @@ public class ClassDiagramUI {
         loadWorkingDiagrams();
     }
 
+    @FXML
+    private void applyHoverEffect(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #C0C0C0; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
+    }
+
+    @FXML
+    private void removeHoverEffect(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #AFAFAF; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
+
+    @FXML
+    private void applyClickEffect(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #8C8C8C; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
     private void loadWorkingDiagrams() {
         diagramListView.getItems().addAll("Main Model", "ClassDiagram1", "UseCaseDiagram1");
     }
@@ -92,5 +110,20 @@ public class ClassDiagramUI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void applyHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #C0C0C0; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
+    }
+
+    public void removeHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #AFAFAF; -fx-font-size: 12px;  -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
+
+    public void applyClickEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
 }
