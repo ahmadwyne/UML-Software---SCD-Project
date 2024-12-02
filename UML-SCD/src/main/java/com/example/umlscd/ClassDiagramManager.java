@@ -361,7 +361,7 @@ public class ClassDiagramManager {
         });
     }
 
-    private void enableInheritanceMode(Pane drawingPane) {
+    /*private void enableInheritanceMode(Pane drawingPane) {
         relationsManager.enableInheritanceMode(); // Enable aggregation mode
 
         drawingPane.setOnMouseClicked(event -> {
@@ -394,14 +394,66 @@ public class ClassDiagramManager {
                 secondSelectedElement = null;
             }
         });
+    }*/
+    private void enableInheritanceMode(Pane drawingPane) {
+        relationsManager.enableInheritanceMode(); // Enable inheritance mode
+
+        drawingPane.setOnMouseClicked(event -> {
+            Node target = getParentVBox(event.getPickResult().getIntersectedNode());
+
+            if (target == null || !(target instanceof VBox)) {
+                return; // Exit if no VBox was clicked
+            }
+
+            if (elements.contains(target)) {
+                if (!(relationsManager instanceof InheritanceManager)) {
+                    return; // Skip if inheritance mode is not enabled
+                }
+
+                // Handle first selection
+                if (firstSelectedElement == null) {
+                    firstSelectedElement = (VBox) target;
+                    highlightClass(firstSelectedElement, true);  // Highlight the first selected element
+                }
+                // Handle second selection
+                else if (secondSelectedElement == null && target != firstSelectedElement) {
+                    secondSelectedElement = (VBox) target;
+                    highlightClass(secondSelectedElement, true);  // Highlight the second selected element
+
+                    // Create the inheritance relationship
+                    ((InheritanceManager) relationsManager).createRelationship(
+                            firstSelectedElement,
+                            secondSelectedElement,
+                            drawingPane, null, null, null
+                    );
+                }
+
+                // Reset the selected elements after the relationship is created
+                if (firstSelectedElement != null && secondSelectedElement != null) {
+                    highlightClass(firstSelectedElement, false);
+                    highlightClass(secondSelectedElement, false);
+                    firstSelectedElement = null;
+                    secondSelectedElement = null;
+                }
+            }
+        });
     }
 
-private Node getParentVBox(Node node) {
-    while (node != null && !(node instanceof VBox)) {
-        node = node.getParent();
+
+
+    /*private Node getParentVBox(Node node) {
+        while (node != null && !(node instanceof VBox)) {
+            node = node.getParent();
+        }
+        return node;
+    }*/
+    private VBox getParentVBox(Node node) {
+        while (node != null && !(node instanceof VBox)) {
+            node = node.getParent();
+        }
+        return (VBox) node; // Will return null if no VBox is found
     }
-    return node;
-}
+
 /*    private VBox getParentVBox(Node node) {
         while (node != null && !(node instanceof VBox)) {
             node = node.getParent();
@@ -444,11 +496,16 @@ private void setDraggable(VBox pane, boolean enable) {
     }
 }
 
-private void highlightClass(VBox classBox, boolean highlight) {
-    if (highlight) {
-        classBox.setStyle("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-style: solid;");
-    } else {
-        classBox.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;");
+    private void highlightClass(VBox classBox, boolean highlight) {
+        if (classBox == null) {
+            System.out.println("Attempting to highlight a null classBox!");
+            return;
+        }
+
+        if (highlight) {
+            classBox.setStyle("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-style: solid;");
+        } else {
+            classBox.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;");
+        }
     }
-}
 }

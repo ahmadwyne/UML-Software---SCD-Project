@@ -24,12 +24,12 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
         Point startPoint = getClosestBoundaryPoint(start, end);
         Point endPoint = getClosestBoundaryPoint(end, start);
 
-        // Create the triangle (inheritance) shape
+        // Create the triangle (inheritance) shape with a smaller size
         Polygon inheritanceTriangle = new Polygon();
         inheritanceTriangle.getPoints().addAll(
-                10.0, 0.0,  // Tip of the triangle (top point)
-                -10.0, 20.0, // Bottom-left point (base)
-                30.0, 20.0   // Bottom-right point (base)
+                5.0, 0.0,  // Tip of the triangle (top point)
+                -5.0, 15.0, // Bottom-left point (base)
+                15.0, 15.0   // Bottom-right point (base)
         );
         inheritanceTriangle.setFill(Color.WHITE);
         inheritanceTriangle.setStroke(Color.BLACK);
@@ -39,8 +39,8 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
         double tipY = endPoint.getY();
 
         // Offset the inheritanceTriangle to ensure its tip touches the class boundary
-        inheritanceTriangle.setLayoutX(tipX - 10); // Offset to position the inheritance triangle correctly
-        inheritanceTriangle.setLayoutY(tipY - 10); // Offset to position the inheritance triangle correctly
+        inheritanceTriangle.setLayoutX(tipX - 5); // Adjusted for smaller size
+        inheritanceTriangle.setLayoutY(tipY - 5); // Adjusted for smaller size
 
         // Create the line connecting the first selected element (start) to the inheritance triangle (base)
         Line inheritanceLine = new Line();
@@ -48,14 +48,24 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
         inheritanceLine.setStartY(start.getLayoutY() + start.getHeight() / 2);
 
         // Calculate the middle of the base of the inheritance triangle (where the second point of the line should attach)
-        double baseMiddleX = (inheritanceTriangle.getPoints().get(2) + inheritanceTriangle.getPoints().get(4)) / 2 + inheritanceTriangle.getLayoutX();
-        double baseMiddleY = (inheritanceTriangle.getPoints().get(3) + inheritanceTriangle.getPoints().get(5)) / 2 + inheritanceTriangle.getLayoutY();
+        double baseLeftX = inheritanceTriangle.getPoints().get(2) + inheritanceTriangle.getLayoutX();
+        double baseLeftY = inheritanceTriangle.getPoints().get(3) + inheritanceTriangle.getLayoutY();
+        double baseRightX = inheritanceTriangle.getPoints().get(4) + inheritanceTriangle.getLayoutX();
+        double baseRightY = inheritanceTriangle.getPoints().get(5) + inheritanceTriangle.getLayoutY();
+
+        // Calculate the midpoint of the base of the triangle (between the left and right base points)
+        double baseMiddleX = (baseLeftX + baseRightX) / 2;
+        double baseMiddleY = (baseLeftY + baseRightY) / 2;
 
         // Set the second endpoint of the line to the middle of the base of the inheritance triangle
         inheritanceLine.setEndX(baseMiddleX);
         inheritanceLine.setEndY(baseMiddleY);
 
         // Add the inheritance triangle and the line to the drawing pane
+
+        // Calculate the angle between the two classes to rotate the triangle correctly
+        double angle = Math.atan2(endPoint.getY() - startPoint.getY(), endPoint.getX() - startPoint.getX());
+        inheritanceTriangle.setRotate(Math.toDegrees(angle) + 90); // +90 to make the triangle face downward
         drawingPane.getChildren().addAll(inheritanceTriangle, inheritanceLine);
 
         // Add listeners to update the line and inheritance triangle dynamically when either class is moved
@@ -71,30 +81,8 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
         end.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, InheritanceLabel, startMultiplicityText, endMultiplicityText));
     }
 
-    // Function to find the closest point on the inheritance triangle from a given point
-    private Point getClosestPointOnInheritanceTriangle(Polygon inheritanceTriangle, double startX, double startY) {
-        double closestDistance = Double.MAX_VALUE;
-        Point closestPoint = null;
-
-        // Iterate through the vertices of the inheritance triangle
-        for (int i = 0; i < inheritanceTriangle.getPoints().size(); i += 2) {
-            double x = inheritanceTriangle.getPoints().get(i) + inheritanceTriangle.getLayoutX();
-            double y = inheritanceTriangle.getPoints().get(i + 1) + inheritanceTriangle.getLayoutY();
-
-            // Calculate the distance from the point to the start point
-            double distance = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
-
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestPoint = new Point(x, y);
-            }
-        }
-
-        return closestPoint;
-    }
-
     // Update the line and inheritance triangle's position when either class is moved
-    private void updateLineAndInheritanceTrianglePosition(Line line, Polygon inheritanceTriangle, VBox start, VBox end, Text InheritanceLabel, Text startMultiplicityText, Text endMultiplicityText) {
+    protected void updateLineAndInheritanceTrianglePosition(Line line, Polygon inheritanceTriangle, VBox start, VBox end, Text InheritanceLabel, Text startMultiplicityText, Text endMultiplicityText) {
         // Recalculate the closest boundary points
         Point startPoint = getClosestBoundaryPoint(start, end);
         Point endPoint = getClosestBoundaryPoint(end, start);
@@ -104,23 +92,40 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
         line.setStartY(startPoint.getY());
 
         // Calculate the middle of the base of the inheritance triangle (where the second point of the line should attach)
-        double baseMiddleX = (inheritanceTriangle.getPoints().get(2) + inheritanceTriangle.getPoints().get(4)) / 2 + inheritanceTriangle.getLayoutX();
-        double baseMiddleY = (inheritanceTriangle.getPoints().get(3) + inheritanceTriangle.getPoints().get(5)) / 2 + inheritanceTriangle.getLayoutY();
+        double baseLeftX = inheritanceTriangle.getPoints().get(2) + inheritanceTriangle.getLayoutX();
+        double baseLeftY = inheritanceTriangle.getPoints().get(3) + inheritanceTriangle.getLayoutY();
+        double baseRightX = inheritanceTriangle.getPoints().get(4) + inheritanceTriangle.getLayoutX();
+        double baseRightY = inheritanceTriangle.getPoints().get(5) + inheritanceTriangle.getLayoutY();
 
-        // Set the line's endpoint to the middle of the base of the inheritance triangle
+        // Calculate the midpoint of the base of the triangle (between the left and right base points)
+        double baseMiddleX = (baseLeftX + baseRightX) / 2;
+        double baseMiddleY = (baseLeftY + baseRightY) / 2;
+
+        // Set the second endpoint of the line to the middle of the base of the inheritance triangle
         line.setEndX(baseMiddleX);
         line.setEndY(baseMiddleY);
 
         // Update the inheritance triangle position, keeping its tip attached to the end class boundary
-        inheritanceTriangle.setLayoutX(endPoint.getX() - 10); // Offset to position the inheritance triangle correctly
-        inheritanceTriangle.setLayoutY(endPoint.getY() - 10); // Offset to position the inheritance triangle correctly
+        inheritanceTriangle.setLayoutX(endPoint.getX() - 5); // Adjusted for smaller size
+        inheritanceTriangle.setLayoutY(endPoint.getY() - 5); // Adjusted for smaller size
 
-        // Rebind the association label and multiplicity labels to the new line
-        bindAssociationLabelToLine(InheritanceLabel, line);
-        bindMultiplicityLabelToLine(startMultiplicityText, line, true);
-        bindMultiplicityLabelToLine(endMultiplicityText, line, false);
+        // Calculate the angle between the two classes to rotate the triangle correctly
+        double angle = Math.atan2(endPoint.getY() - startPoint.getY(), endPoint.getX() - startPoint.getX());
+        inheritanceTriangle.setRotate(Math.toDegrees(angle) + 90); // +90 to make the triangle face downward
+
+        // Only bind labels if they are not null
+        if (InheritanceLabel != null) {
+            bindAssociationLabelToLine(InheritanceLabel, line);
+        }
+        if (startMultiplicityText != null) {
+            bindMultiplicityLabelToLine(startMultiplicityText, line, true);
+        }
+        if (endMultiplicityText != null) {
+            bindMultiplicityLabelToLine(endMultiplicityText, line, false);
+        }
     }
 }
+
 
    /* @Override
     public void createRelationship(VBox start, VBox end, Pane drawingPane, String inheritanceName, String startMultiplicity, String endMultiplicity) {
