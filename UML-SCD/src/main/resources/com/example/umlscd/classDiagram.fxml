@@ -78,7 +78,7 @@
             </TitledPane>
 
             <!-- Editors Section (For Class Editor) -->
-            <TitledPane text="Editors" expanded="true" style="-fx-font-size: 14px; -fx-background-color: #4B4B4B; -fx-font-family: 'Verdana';">
+            <TitledPane text="Editors" expanded="true" style="-fx-font-size: 14px; -fx-pref-width: 120; -fx-background-color: #4B4B4B; -fx-font-family: 'Verdana';">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #4B4B4B;">
                     <VBox fx:id="editorsPane" spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
                         <!-- This pane will be dynamically populated with the Class Editor when a class is selected -->
