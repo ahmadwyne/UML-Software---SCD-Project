@@ -34,6 +34,8 @@ public class ClassDiagramManager {
     }
 
     public void handleToolSelection(String tool, Pane drawingPane, VBox editorsPane) {
+        clearDrawingPaneHandlers(drawingPane);
+
         if ("Class".equals(tool)) {
             disableDrag();
             createClassBox("Class" + (elements.size() + 1), drawingPane);
@@ -199,6 +201,8 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
+                    clearDrawingPaneHandlers(drawingPane);
+
                 }
             }
         });
@@ -278,6 +282,8 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
+                    clearDrawingPaneHandlers(drawingPane);
+
                 }
             }
         });
@@ -356,6 +362,8 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
+                    clearDrawingPaneHandlers(drawingPane);
+
                 }
             }
         });
@@ -434,6 +442,8 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
+                    clearDrawingPaneHandlers(drawingPane);
+
                 }
             }
         });
@@ -508,4 +518,11 @@ private void setDraggable(VBox pane, boolean enable) {
             classBox.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;");
         }
     }
+
+    private void clearDrawingPaneHandlers(Pane drawingPane) {
+        drawingPane.setOnMouseClicked(null);
+    }
+
+
+
 }
