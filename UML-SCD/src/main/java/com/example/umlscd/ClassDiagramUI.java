@@ -37,7 +37,7 @@ public class ClassDiagramUI {
     private Button btnInheritance;
 
     @FXML
-    private Button btnSave, btnLoad; // Added Save and Load buttons
+    private Button btnSave, btnLoad,btnCode; // Added Save and Load buttons
 
     @FXML
     private VBox editorsPane;
@@ -59,6 +59,8 @@ public class ClassDiagramUI {
         // Setup Save and Load handlers
         btnSave.setOnAction(e -> handleSave());
         btnLoad.setOnAction(e -> handleLoad());
+        btnCode.setOnAction(e -> handleGenerateCode());
+
     }
 
     private void loadWorkingDiagrams() {
@@ -183,6 +185,18 @@ public class ClassDiagramUI {
         if (file != null) {
             classDiagramManager.loadDiagram(file);
             showInformationAlert("Diagram loaded successfully.");
+        }
+    }
+    private void handleGenerateCode() {
+        // Specify the output file location (you can customize this as needed)
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        File file = fileChooser.showSaveDialog(primaryStage);
+
+        if (file != null) {
+            // Generate the Java code and save it to the file
+            ClassDiagramCodeGenerator codeGenerator = new ClassDiagramCodeGenerator();
+            codeGenerator.generateCodeFiles(classDiagramManager.getClassDiagram(), file.getAbsolutePath());
         }
     }
 

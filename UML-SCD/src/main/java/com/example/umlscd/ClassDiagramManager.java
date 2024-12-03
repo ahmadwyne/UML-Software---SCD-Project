@@ -43,6 +43,15 @@ public class ClassDiagramManager {
         this.classDiagram = new ClassDiagramD();
         this.serializer = new ClassDiagramSerializer();
     }
+    public ClassDiagramD getClassDiagram() {
+        return classDiagram;
+    }
+
+
+    public void generateJavaCode(String outputFile) {
+        ClassDiagramCodeGenerator generator = new ClassDiagramCodeGenerator();
+        generator.generateCodeFiles(this.classDiagram, outputFile);
+    }
 
     // Getters for serialization from classDiagram
 
