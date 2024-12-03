@@ -4,9 +4,13 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.shape.Line;
 
+/**
+ * Manages the creation and rendering of Association relationships.
+ */
 public class AssociationManager extends ClassDiagramRelationsManager {
 
     private final ClassDiagramManager classDiagramManager;
@@ -96,36 +100,55 @@ public class AssociationManager extends ClassDiagramRelationsManager {
         String startMultiplicity = umlRelationship.getStartMultiplicity();
         String endMultiplicity = umlRelationship.getEndMultiplicity();
 
-        /*VBox startBox = classDiagramManager.findClassBoxByName(startName);
-        if (startBox == null) startBox = classDiagramManager.findInterfaceBoxByName(startName);
-        VBox endBox = classDiagramManager.findClassBoxByName(endName);
-        if (endBox == null) endBox = classDiagramManager.findInterfaceBoxByName(endName);
+        // Retrieve UMLClassBox objects from the map
+        UMLElementBoxInterface startClass = classDiagramManager.getClassBoxMap().get(startName);
+        UMLElementBoxInterface endClass = classDiagramManager.getClassBoxMap().get(endName);
 
-        if (startBox == null || endBox == null) {
-            System.err.println("Could not find elements for relationship: " + name);
+        if (startClass == null || endClass == null) {
+            System.err.println("Cannot create association. One of the elements is missing.");
             return;
         }
 
-        // Create UI elements without invoking further deserialization
-        Line line = new Line();
-        line.startXProperty().bind(startBox.layoutXProperty().add(startBox.widthProperty().divide(2)));
-        line.startYProperty().bind(startBox.layoutYProperty().add(startBox.heightProperty()));
-        line.endXProperty().bind(endBox.layoutXProperty().add(endBox.widthProperty().divide(2)));
-        line.endYProperty().bind(endBox.layoutYProperty());
+        // Retrieve the VBox visual representations
+        VBox startBox = startClass.getVisualRepresentation();
+        VBox endBox = endClass.getVisualRepresentation();
 
+        if (startBox == null || endBox == null) {
+            System.err.println("Visual representation not available for one of the classes.");
+            return;
+        }
+
+        // Calculate the center positions of the start and end boxes
+        double startX = startBox.getLayoutX() + startBox.getWidth() / 2;
+        double startY = startBox.getLayoutY() + startBox.getHeight() / 2;
+
+        double endX = endBox.getLayoutX() + endBox.getWidth() / 2;
+        double endY = endBox.getLayoutY() + endBox.getHeight() / 2;
+
+        // Create a line representing the association
+        Line associationLine = new Line(startX, startY, endX, endY);
+        associationLine.setStroke(Color.BLACK);
+        associationLine.setStrokeWidth(2);
+
+        // Create a label for the relationship name
         Text label = new Text(name);
-        label.layoutXProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
-        label.layoutYProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2));
+        label.setX((startX + endX) / 2);
+        label.setY((startY + endY) / 2 - 5); // Slightly above the line
 
+        // Create multiplicity labels
         Text startMultiplicityText = new Text(startMultiplicity);
-        startMultiplicityText.layoutXProperty().bind(line.startXProperty());
-        startMultiplicityText.layoutYProperty().bind(line.startYProperty().subtract(5));
-
         Text endMultiplicityText = new Text(endMultiplicity);
-        endMultiplicityText.layoutXProperty().bind(line.endXProperty());
-        endMultiplicityText.layoutYProperty().bind(line.endYProperty().subtract(5));
+        startMultiplicityText.setX(startX - 10);
+        startMultiplicityText.setY(startY - 10);
 
-        drawingPane.getChildren().addAll(line, label, startMultiplicityText, endMultiplicityText);
+        endMultiplicityText.setX(endX + 10);
+        endMultiplicityText.setY(endY - 10);
+
+        // Add the line and labels to the drawing pane
+        drawingPane.getChildren().addAll(associationLine, label, startMultiplicityText, endMultiplicityText);
+
+        // Add listeners to update the line when either class is moved
+        addDynamicUpdateListener(associationLine, startBox, endBox, label, startMultiplicityText, endMultiplicityText);
 
         // Create UMLRelationshipBox
         UMLRelationshipBox relationshipBox = new UMLRelationshipBox(
@@ -135,15 +158,20 @@ public class AssociationManager extends ClassDiagramRelationsManager {
                 name,
                 startMultiplicity,
                 endMultiplicity,
-                line,
+                associationLine,
                 label,
                 startMultiplicityText,
                 endMultiplicityText
         );
 
-        // Add the relationship to the model without triggering deserialization
+        // Add the relationship to the manager
         classDiagramManager.addRelationshipBox(relationshipBox);
-        lastRelationshipBox = relationshipBox;*/
+
+        // Store the last created relationship
+        lastRelationshipBox = relationshipBox;
+
+        // **Debug Logging**
+        System.out.println("Created association: " + name + " between " + startName + " and " + endName);
     }
 
     /**
@@ -152,13 +180,31 @@ public class AssociationManager extends ClassDiagramRelationsManager {
      * @param box The VBox representing the UML element.
      * @return The name of the element.
      */
+    /**
+     * Retrieves the name of the UML element from the VBox.
+     *
+     * @param box The VBox representing the UML element.
+     * @return The name of the element.
+     */
     private String getElementName(VBox box) {
-        // Assuming the first child is the name label
         if (box.getChildren().isEmpty()) return "Unknown";
-        Node node = box.getChildren().get(0);
-        if (node instanceof Label) {
-            return ((Label) node).getText();
+
+        // Check if the first child is a label with the stereotype
+        Node firstNode = box.getChildren().get(0);
+        if (firstNode instanceof Label) {
+            Label firstLabel = (Label) firstNode;
+            if (firstLabel.getText().equals("<<Interface>>")) {
+                // For interfaces, the actual name is likely the second label
+                if (box.getChildren().size() > 1 && box.getChildren().get(1) instanceof Label) {
+                    Label nameLabel = (Label) box.getChildren().get(1);
+                    return nameLabel.getText();
+                }
+            } else {
+                // For classes, the first label is the name
+                return firstLabel.getText();
+            }
         }
+
         return "Unknown";
     }
 
@@ -171,12 +217,24 @@ public class AssociationManager extends ClassDiagramRelationsManager {
         return lastRelationshipBox;
     }
 
-    // Add listeners to update the line dynamically when classes are moved
-    private void addDynamicUpdateListener(Line line, VBox start, VBox end, Text associationLabel, Text startMultiplicityText, Text endMultiplicityText) {
-        start.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText));
-        start.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText));
-        end.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText));
-        end.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, start, end, associationLabel, startMultiplicityText, endMultiplicityText));
+    /**
+     * Adds dynamic listeners to update the association line and labels when classes are moved.
+     *
+     * @param line                   The association line.
+     * @param startBox               The starting class box.
+     * @param endBox                 The ending class box.
+     * @param associationLabel       The label for the association name.
+     * @param startMultiplicityText  The label for the start multiplicity.
+     * @param endMultiplicityText    The label for the end multiplicity.
+     */
+    private void addDynamicUpdateListener(Line line, VBox startBox, VBox endBox, Text associationLabel, Text startMultiplicityText, Text endMultiplicityText) {
+        // Listener for startBox position changes
+        startBox.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, startBox, endBox, associationLabel, startMultiplicityText, endMultiplicityText));
+        startBox.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, startBox, endBox, associationLabel, startMultiplicityText, endMultiplicityText));
+
+        // Listener for endBox position changes
+        endBox.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, startBox, endBox, associationLabel, startMultiplicityText, endMultiplicityText));
+        endBox.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, startBox, endBox, associationLabel, startMultiplicityText, endMultiplicityText));
     }
 
     // Update the line and labels when either class is moved

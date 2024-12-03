@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UMLClassBox {
+public class UMLClassBox implements UMLElementBoxInterface{
     @JsonProperty("name")
     private String name;
 
@@ -35,6 +35,16 @@ public class UMLClassBox {
         this.x = x;
         this.y = y;
         this.visualRepresentation = visualRepresentation;
+    }
+
+    // New Constructor that accepts attributes and methods
+    public UMLClassBox(String name, double x, double y, List<String> attributes, List<String> methods) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.attributes = attributes;
+        this.methods = methods;
+        // visualRepresentation is set separately
     }
 
     // Getters and Setters

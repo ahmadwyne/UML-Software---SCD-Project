@@ -1,20 +1,15 @@
 package com.example.umlscd;
 
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Manages the UML Class Diagram, including adding classes, interfaces, relationships,
@@ -31,6 +26,7 @@ public class ClassDiagramManager {
     private ClassDiagramRelationsManager relationsManager;
     private ClassDiagramD classDiagram;
     private boolean isDragEnabled = false;
+    private Map<String, UMLElementBoxInterface> classBoxMap = new HashMap<>();
 
     /**
      * Constructs a ClassDiagramManager with the specified UI controller.
@@ -147,12 +143,7 @@ public class ClassDiagramManager {
         classDiagram.getInterfaces().add(umlInterfaceBox);
     }
 
-    /**
-     * Creates a relationship based on serialized data.
-     *
-     * @param umlRelationship The UMLRelationship data.
-     */
-    public void createRelationshipFromSerialization(UMLRelationship umlRelationship) {
+    /*public void createRelationshipFromSerialization(UMLRelationship umlRelationship) {
         String type = umlRelationship.getType();
         String startName = umlRelationship.getStartElementName();
         System.out.println("Start Element Name: " + startName);
@@ -191,9 +182,9 @@ public class ClassDiagramManager {
                 inheritanceManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
                 break;*/
             /*default:
-                System.err.println("Unknown relationship type: " + type);*/
+                System.err.println("Unknown relationship type: " + type);
         }
-    }
+    }*/
 
     /**
      * Finds a class box by its name.
@@ -236,12 +227,12 @@ public class ClassDiagramManager {
      *
      * @param relationshipBox The UMLRelationshipBox to add.
      */
-    public void addRelationshipBox(UMLRelationshipBox relationshipBox) {
+    /*public void addRelationshipBox(UMLRelationshipBox relationshipBox) {
         if (relationshipBox != null) {
             classDiagram.getRelationships().add(relationshipBox.getUmlRelationship());
             // No separate relationships list, so no need to add to it
         }
-    }
+    }*/
 
     /**
      * Saves the current UML diagram to a JSON file.
@@ -765,7 +756,7 @@ public class ClassDiagramManager {
         }
         return null;
     }
-
+    /*
     public void reCreateClassBox(String name, double layoutX, double layoutY, List<String> attributes, List<String> methods) {
         VBox classBox = new VBox();
         classBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -832,8 +823,218 @@ public class ClassDiagramManager {
         // Update the ClassDiagram model
         UMLInterfaceBox umlInterfaceBox = new UMLInterfaceBox(name, layoutX, layoutY, interfaceBox);
         classDiagram.getInterfaces().add(umlInterfaceBox);
+    }*/
+
+    /**
+     * Creates a relationship based on serialized data.
+     *
+     * @param umlRelationship The UMLRelationship data.
+     */
+    public void createRelationshipFromSerialization(UMLRelationship umlRelationship) {
+        String type = umlRelationship.getType();
+        String startName = umlRelationship.getStartElementName();
+        System.out.println("Start Element Name: " + startName);
+        String endName = umlRelationship.getEndElementName();
+        System.out.println("End Element Name: " + endName);
+        String name = umlRelationship.getName();
+        String startMultiplicity = umlRelationship.getStartMultiplicity();
+        String endMultiplicity = umlRelationship.getEndMultiplicity();
+
+        // Debug Logging: Current classBoxMap Keys
+        System.out.println("Current classBoxMap keys: " + classBoxMap.keySet());
+
+        // Lookup the class boxes
+        UMLElementBoxInterface startClass = classBoxMap.get(startName);
+        if (startClass == null) {
+            System.out.println("ClassBox not found for: " + startName);
+        }
+        UMLElementBoxInterface endClass = classBoxMap.get(endName);
+        if (endClass == null) {
+            System.out.println("ClassBox not found for: " + endName);
+        }
+
+        if (startClass == null || endClass == null) {
+            System.err.println("Could not find elements for relationship: " + name);
+            return;
+        }
+
+        // Depending on the relationship type, use the appropriate manager
+        switch (type.toLowerCase()) {
+            case "association":
+                AssociationManager associationManager = new AssociationManager(this);
+                associationManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
+                break;
+            // Uncomment and implement other relationship types as needed
+            case "aggregation":
+                AggregationManager aggregationManager = new AggregationManager(this);
+                aggregationManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
+                break;
+            case "composition":
+                CompositionManager compositionManager = new CompositionManager(this);
+                compositionManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
+                break;
+            case "inheritance":
+                InheritanceManager inheritanceManager = new InheritanceManager(this);
+                inheritanceManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
+                break;
+            default:
+                System.err.println("Unknown relationship type: " + type);
+        }
     }
 
+    /**
+     * Recreates a UML Class Box in the UI and updates the internal model.
+     *
+     * @param name       The name of the class.
+     * @param layoutX    The X position.
+     * @param layoutY    The Y position.
+     * @param attributes The list of attributes.
+     * @param methods    The list of methods.
+     */
+    public void reCreateClassBox(String name, double layoutX, double layoutY, List<String> attributes, List<String> methods) {
+        VBox classBox = new VBox();
+        classBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
+        classBox.setSpacing(0);
+
+        Label classNameLabel = new Label(name);
+        classNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5;");
+        classNameLabel.setAlignment(Pos.CENTER);
+        classNameLabel.setMaxWidth(Double.MAX_VALUE);
+
+        VBox attributesBox = new VBox();
+        attributesBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
+        for (String attribute : attributes) {
+            attributesBox.getChildren().add(new Label(attribute));
+        }
+
+        VBox methodsBox = new VBox();
+        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
+        for (String method : methods) {
+            methodsBox.getChildren().add(new Label(method));
+        }
+
+        classBox.getChildren().addAll(classNameLabel, attributesBox, methodsBox);
+        classBox.setLayoutX(layoutX);
+        classBox.setLayoutY(layoutY);
+
+        classBox.setOnMouseClicked(event -> uiController.openClassEditor(classBox));
+        uiController.getDrawingPane().getChildren().add(classBox);
+        elements.add(classBox);
+        setDraggable(classBox, isDragEnabled);
+
+        // Use the corrected constructor
+        UMLClassBox umlClassBox = new UMLClassBox(name, layoutX, layoutY, attributes, methods);
+        umlClassBox.setVisualRepresentation(classBox);
+        classDiagram.getClasses().add(umlClassBox);
+
+        // Add to the mapping
+        classBoxMap.put(name, umlClassBox);
+
+        // Debug Logging
+        System.out.println("Added class to classBoxMap: " + name + " -> " + umlClassBox);
+    }
+
+    /**
+     * Recreates a UML Interface Box in the UI and updates the internal model.
+     *
+     * @param name    The name of the interface.
+     * @param layoutX The X position.
+     * @param layoutY The Y position.
+     */
+    public void reCreateInterfaceBox(String name, double layoutX, double layoutY) {
+        VBox interfaceBox = new VBox();
+        interfaceBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
+        interfaceBox.setSpacing(0);
+
+        Label interfaceLabel = new Label("<<Interface>>");
+        interfaceLabel.setStyle("-fx-padding: 1;");
+        interfaceLabel.setAlignment(Pos.CENTER);
+
+        Label interfaceNameLabel = new Label(name);
+        interfaceNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 1;");
+        interfaceNameLabel.setAlignment(Pos.CENTER);
+        interfaceNameLabel.setMaxWidth(Double.MAX_VALUE);
+
+        VBox methodsBox = new VBox();
+        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
+
+        interfaceBox.getChildren().addAll(interfaceLabel, interfaceNameLabel, methodsBox);
+        interfaceBox.setLayoutX(layoutX);
+        interfaceBox.setLayoutY(layoutY);
+
+        interfaceBox.setOnMouseClicked(event -> uiController.openInterfaceEditor(interfaceBox));
+        uiController.getDrawingPane().getChildren().add(interfaceBox);
+        elements.add(interfaceBox);
+        setDraggable(interfaceBox, isDragEnabled);
+
+        // Update the ClassDiagram model
+        UMLInterfaceBox umlInterfaceBox = new UMLInterfaceBox(name, layoutX, layoutY, interfaceBox);
+        classDiagram.getInterfaces().add(umlInterfaceBox);
+
+        // Add to the mapping
+        classBoxMap.put(name, umlInterfaceBox);
+
+        // Debug Logging
+        System.out.println("Added interface to classBoxMap: " + name + " -> " + umlInterfaceBox);
+    }
+
+    /**
+     * Getter for classBoxMap.
+     *
+     * @return The classBoxMap.
+     */
+    public Map<String, UMLElementBoxInterface> getClassBoxMap() {
+        return classBoxMap;
+    }
+
+    /**
+     * Adds a UMLRelationshipBox to the internal model.
+     *
+     * @param relationshipBox The UMLRelationshipBox to add.
+     */
+    public void addRelationshipBox(UMLRelationshipBox relationshipBox) {
+        classDiagram.getRelationships().add(relationshipBox.getUmlRelationship());
+    }
+
+    /**
+     * Updates all relationships that reference a renamed class.
+     *
+     * @param oldName The old name of the class.
+     * @param newName The new name of the class.
+     */
+    public void updateRelationshipsForRenamedClass(String oldName, String newName) {
+        for (UMLRelationship relationship : classDiagram.getRelationships()) {
+            boolean updated = false;
+            if (relationship.getStartElementName().equals(oldName)) {
+                relationship.setStartElementName(newName);
+                updated = true;
+            }
+            if (relationship.getEndElementName().equals(oldName)) {
+                relationship.setEndElementName(newName);
+                updated = true;
+            }
+            if (updated) {
+                // Optionally, update the visual representation if necessary
+                // For example, find the corresponding UMLRelationshipBox and update labels
+                // This depends on your implementation
+                // You might need to iterate over relationship boxes and update them
+            }
+        }
+    }
+
+    public ClassDiagramUI getUiController() {
+        return uiController;
+    }
+
+    /**
+     * Checks if a class or interface name already exists in the diagram.
+     *
+     * @param name The name to check.
+     * @return True if the name exists, false otherwise.
+     */
+    public boolean isClassNameExists(String name) {
+        return classBoxMap.containsKey(name);
+    }
 }
 
 

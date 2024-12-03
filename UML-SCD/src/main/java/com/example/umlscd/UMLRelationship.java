@@ -86,4 +86,16 @@ public class UMLRelationship {
     public void setEndMultiplicity(String endMultiplicity) {
         this.endMultiplicity = endMultiplicity;
     }
+
+    @Override
+    public String toString() {
+        return "UMLRelationship{" +
+                "type='" + type + '\'' +
+                ", startElementName='" + startElementName + '\'' +
+                ", endElementName='" + endElementName + '\'' +
+                ", name='" + name + '\'' +
+                ", startMultiplicity='" + startMultiplicity + '\'' +
+                ", endMultiplicity='" + endMultiplicity + '\'' +
+                '}';
+    }
 }

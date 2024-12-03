@@ -88,8 +88,11 @@ public class ClassDiagramUI {
         classDiagramManager.handleToolSelection(tool, drawingPane, editorsPane);
     }
 
-    // Inside ClassDiagramUI or wherever the ClassEditorUI is invoked
-
+    /**
+     * Opens the class editor for the specified class box.
+     *
+     * @param classBox The VBox representing the class.
+     */
     public void openClassEditor(VBox classBox) {
         // Retrieve the corresponding UMLClassBox
         UMLClassBox umlClassBox = classDiagramManager.getClassByVBox(classBox);
@@ -101,18 +104,15 @@ public class ClassDiagramUI {
         // Load the ClassEditorUI (Assuming you're using FXML)
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/ClassEditor.fxml"));
-            Parent root = loader.load();
+            VBox editor = loader.load();
 
             // Get the controller and set the classBox and UMLClassBox
             ClassEditorUI editorUI = loader.getController();
             editorUI.setClassBox(classBox, umlClassBox);
+            editorUI.setClassDiagramManager(classDiagramManager); // Inject ClassDiagramManager
 
-            // Display the editor (e.g., in a new window or a modal)
-            Stage stage = new Stage();
-            stage.setTitle("Class Editor");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            editorsPane.getChildren().clear();
+            editorsPane.getChildren().add(editor);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,6 +120,11 @@ public class ClassDiagramUI {
         }
     }
 
+    /**
+     * Opens the interface editor for the specified interface box.
+     *
+     * @param interfaceBox The VBox representing the interface.
+     */
     public void openInterfaceEditor(VBox interfaceBox) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/InterfaceEditor.fxml"));
@@ -132,6 +137,7 @@ public class ClassDiagramUI {
             editorsPane.getChildren().add(editor);
         } catch (IOException e) {
             e.printStackTrace();
+            showErrorAlert("Failed to open Interface Editor.");
         }
     }
 

@@ -42,7 +42,14 @@ public class ClassEditorUI {
     private List<String> currentParameters = new ArrayList<>();
     //private ArrayList<String> currentParameters = new ArrayList<>(); // List to store parameters
 
+    // Reference to ClassDiagramManager will be injected
+    private ClassDiagramManager classDiagramManager;
+
+    /**
+     * Default constructor required by FXMLLoader.
+     */
     public ClassEditorUI() {
+        // Initialize without ClassDiagramManager; it will be set later
         this.classEditorManager = new ClassEditorManager();
     }
 
@@ -76,6 +83,16 @@ public class ClassEditorUI {
         addMethodButton.setOnAction(event -> addMethod());
         addParameterButton.setOnAction(event -> addParameter());
         applyChangesButton.setOnAction(event -> applyChanges());
+    }
+
+    /**
+     * Sets the ClassDiagramManager reference and updates ClassEditorManager accordingly.
+     *
+     * @param manager The ClassDiagramManager instance.
+     */
+    public void setClassDiagramManager(ClassDiagramManager manager) {
+        this.classDiagramManager = manager;
+        this.classEditorManager.setClassDiagramManager(manager);
     }
 
     private void addAttribute() {
@@ -147,6 +164,12 @@ public class ClassEditorUI {
     }
 
 
+    /**
+     * Sets the class box and populates the editor fields with existing class data.
+     *
+     * @param classBox    The VBox representing the class.
+     * @param umlClassBox The UMLClassBox model object.
+     */
     public void setClassBox(VBox classBox, UMLClassBox umlClassBox) {
         classEditorManager.setClassBox(classBox, umlClassBox);
         classNameField.setText(umlClassBox.getName());
@@ -154,11 +177,29 @@ public class ClassEditorUI {
         methodsArea.setText(String.join("\n", umlClassBox.getMethods()));
     }
 
+    /**
+     * Applies changes made in the editor to the UML model.
+     */
     private void applyChanges() {
         classEditorManager.applyChanges(
                 classNameField.getText(),
                 attributesArea.getText(),
                 methodsArea.getText()
         );
+    }
+
+    /**
+     * Provides access to the root node of ClassEditorUI.
+     * This method should be implemented to return the root node (e.g., VBox) of the editor.
+     *
+     * @return The root node of ClassEditorUI.
+     */
+    public VBox getEditorNode() {
+        // This method should return the root node defined in ClassEditor.fxml
+        // For example:
+        // return (VBox) classNameField.getParent().getParent();
+        // Adjust based on your FXML structure
+        // Alternatively, load the FXML within this class and manage the root node internally
+        return null; // Placeholder; implement as needed
     }
 }
