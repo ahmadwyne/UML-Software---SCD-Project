@@ -72,7 +72,7 @@ public class ClassDiagramUI {
     private Button btnInheritance;
 
     @FXML
-    private Button btnSave, btnLoad, btnExportImage; // Added Save and Load buttons
+    private Button btnSave, btnLoad, btnExportImage,btnCode; // Added Save and Load buttons
 
     /**
      * The pane containing editors for classes and interfaces.
@@ -115,6 +115,7 @@ public class ClassDiagramUI {
 
         // Setup Export as Image Handler
         btnExportImage.setOnAction(e -> handleExportAsImage());
+        btnCode.setOnAction(e -> handleGenerateCode());
     }
 
     /**
@@ -339,7 +340,18 @@ public class ClassDiagramUI {
             showInformationAlert("Diagram saved successfully.");
         }
     }
+    private void handleGenerateCode() {
+        // Specify the output file location (you can customize this as needed)
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        File file = fileChooser.showSaveDialog(primaryStage);
 
+        if (file != null) {
+            // Generate the Java code and save it to the file
+            ClassDiagramCodeGenerator codeGenerator = new ClassDiagramCodeGenerator();
+            codeGenerator.generateCodeFiles(classDiagramManager.getClassDiagram(), file.getAbsolutePath());
+        }
+    }
     /**
      * Handles the Load action.
      *
