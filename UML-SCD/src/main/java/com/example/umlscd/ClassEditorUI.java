@@ -11,6 +11,8 @@ import java.util.Optional;
 import javafx.util.Pair;
 
 public class ClassEditorUI {
+    @FXML
+    private VBox root; // Root node with fx:id="root"
 
     @FXML
     private TextField classNameField;
@@ -189,21 +191,6 @@ public class ClassEditorUI {
         );
     }
 
-    /**
-     * Provides access to the root node of ClassEditorUI.
-     * This method should be implemented to return the root node (e.g., VBox) of the editor.
-     *
-     * @return The root node of ClassEditorUI.
-     */
-    public VBox getEditorNode() {
-        // This method should return the root node defined in ClassEditor.fxml
-        // For example:
-        // return (VBox) classNameField.getParent().getParent();
-        // Adjust based on your FXML structure
-        // Alternatively, load the FXML within this class and manage the root node internally
-        return null; // Placeholder; implement as needed
-    }
-
     public void applyHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #C0C0C0; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
@@ -217,5 +204,14 @@ public class ClassEditorUI {
     public void applyClickEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
+
+    /**
+     * Provides access to the root node of ClassEditorUI.
+     *
+     * @return The root VBox of ClassEditorUI.
+     */
+    public VBox getEditorNode() {
+        return root;
     }
 }
