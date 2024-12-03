@@ -15,6 +15,19 @@ import javafx.scene.Scene;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * <h1>Use Case Diagram Controller</h1>
+ *
+ * <p>The {@code UseCaseDiagram} class serves as the controller for the Use Case Diagram editor within the UML Editor application.
+ * It manages the creation, manipulation, and visualization of use case diagrams, including actors, use cases, and their relationships
+ * such as associations, includes, and extends. The class handles user interactions, rendering of diagram elements on the canvas,
+ * and provides functionalities to save, load, and export diagrams in both serialized and JSON formats.</p>
+ *
+ * <p><b>Authors:</b> Ahmad Wyne, Wahaj Asif, Muhammad Muneeb</p>
+ *
+ * <p><b>Version:</b> 1.0</p>
+ * <p><b>Since:</b> 2024-12-03</p>
+ */
 public class UseCaseDiagram {
 
     @FXML
@@ -43,6 +56,7 @@ public class UseCaseDiagram {
 
     @FXML
     private ToggleButton btnEdit;
+
     @FXML
     private Canvas canvas;
 
@@ -75,6 +89,12 @@ public class UseCaseDiagram {
     private boolean isInEditMode = false; // To track if the user is in edit mode
     private String systemBoundaryName = "System";  // Default name for the system boundary
 
+    /**
+     * Initializes the Use Case Diagram editor by setting up UI components, event handlers, and default configurations.
+     *
+     * <p>This method is automatically called after the FXML file has been loaded. It configures the object explorer,
+     * assigns actions to buttons, and sets up listeners for user interactions on the canvas and text fields.</p>
+     */
     @FXML
     private void initialize() {
         objects = new ArrayList<>();
@@ -147,7 +167,7 @@ public class UseCaseDiagram {
         // Set the action for the Export Image button
         btnExportImage.setOnAction(event -> exportDiagramToImage());
 
-
+        // Set hover effects for association buttons
         btnAssociation.setOnAction(event -> {
             associationType = "association";
             toggleButtonColor(btnAssociation);
@@ -180,6 +200,13 @@ public class UseCaseDiagram {
         });
     }
 
+    /**
+     * Toggles the visual appearance of a {@code ToggleButton} based on its selection state.
+     *
+     * <p>If the button is selected, it applies a highlighted style; otherwise, it reverts to the default style.</p>
+     *
+     * @param button The {@code ToggleButton} whose style is to be toggled.
+     */
     private void toggleButtonColor(ToggleButton button) {
         if (button.isSelected()) {
             button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
@@ -188,9 +215,12 @@ public class UseCaseDiagram {
         }
     }
 
-
-
-
+    /**
+     * Adds a new actor to the use case diagram based on the input provided in the actor name text field.
+     *
+     * <p>If the actor name is empty, it defaults to "Actor". The method creates a new {@code UseCaseDiagramObject},
+     * adds it to the list of objects, updates the object explorer, and redraws the canvas to reflect the new actor.</p>
+     */
     private void addActor() {
         String actorName = txtActorName.getText().trim();
         if (actorName.isEmpty()) {
@@ -206,6 +236,12 @@ public class UseCaseDiagram {
         redrawCanvas();
     }
 
+    /**
+     * Adds a new use case to the use case diagram based on the input provided in the use case name text field.
+     *
+     * <p>If the use case name is empty, it defaults to "Use Case". The method creates a new {@code UseCaseDiagramObject},
+     * adds it to the list of objects, updates the object explorer, and redraws the canvas to reflect the new use case.</p>
+     */
     private void addUseCase() {
         String useCaseName = txtUseCaseName.getText().trim();
         if (useCaseName.isEmpty()) {
@@ -221,7 +257,14 @@ public class UseCaseDiagram {
         redrawCanvas();
     }
 
-    // Select an object from the explorer
+    /**
+     * Selects an object (actor or use case) from the object explorer and highlights it on the canvas.
+     *
+     * <p>This method is invoked when a user selects an item from the object explorer tree view.
+     * It identifies the corresponding {@code UseCaseDiagramObject} and redraws the canvas to highlight the selected object.</p>
+     *
+     * @param objectName The name of the object selected in the explorer.
+     */
     private void selectObjectFromExplorer(String objectName) {
         for (UseCaseDiagramObject object : objects) {
             if (object.getName().equals(objectName)) {
@@ -232,6 +275,12 @@ public class UseCaseDiagram {
         }
     }
 
+    /**
+     * Draws the system boundary on the canvas, including the boundary rectangle and its name.
+     *
+     * <p>The system boundary defines the scope of the system being modeled. It is drawn as a rectangle with the
+     * specified system boundary name centered at the top.</p>
+     */
     private void drawSystemBoundary() {
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -244,11 +293,22 @@ public class UseCaseDiagram {
         gc.fillText(systemBoundaryName, (canvas.getWidth() - systemBoundaryName.length() * 6) / 2, 50 + 20);
     }
 
+    /**
+     * Handles changes to the system boundary name based on user input in the corresponding text field.
+     *
+     * <p>This method updates the {@code systemBoundaryName} variable and redraws the canvas to reflect the new name.</p>
+     */
     private void onSystemBoundaryNameChange() {
         systemBoundaryName = txtSystemBoundaryName.getText().trim();
         redrawCanvas();  // Redraw the canvas to reflect the updated name
     }
 
+    /**
+     * Handles mouse press events on the canvas to facilitate object selection, association creation,
+     * deletion, and editing based on the current mode (delete, edit, drag).
+     *
+     * @param event The {@code MouseEvent} triggered by the mouse press.
+     */
     private void onMousePressed(MouseEvent event) {
         boolean isInDeleteMode = btnDelete.isSelected();
         boolean isInEditMode = btnEdit.isSelected();
@@ -302,6 +362,12 @@ public class UseCaseDiagram {
         }
     }
 
+    /**
+     * Handles changes to the name of a selected object based on user input in the corresponding text field.
+     *
+     * <p>This method updates the name of the selected {@code UseCaseDiagramObject}, hides the name editing field,
+     * and redraws the canvas to reflect the updated name.</p>
+     */
     @FXML
     private void onNameChange() {
         if (selectedObject1 != null) {
@@ -324,6 +390,14 @@ public class UseCaseDiagram {
         }
     }
 
+    /**
+     * Handles mouse drag events on the canvas to facilitate dragging of diagram objects.
+     *
+     * <p>If dragging mode is enabled and an object is being dragged, this method updates the object's position
+     * based on the current mouse coordinates and redraws the canvas to reflect the movement.</p>
+     *
+     * @param event The {@code MouseEvent} triggered by the mouse drag.
+     */
     private void onMouseDragged(MouseEvent event) {
         if (isInDragMode && objectBeingDragged != null) {
             objectBeingDragged.setX(event.getX());
@@ -332,6 +406,14 @@ public class UseCaseDiagram {
         }
     }
 
+    /**
+     * Handles mouse release events on the canvas to finalize dragging of diagram objects.
+     *
+     * <p>This method resets the {@code objectBeingDragged} reference when dragging mode is disabled,
+     * ensuring that objects are no longer moved after the mouse is released.</p>
+     *
+     * @param event The {@code MouseEvent} triggered by the mouse release.
+     */
     private void onMouseReleased(MouseEvent event) {
         if (isInDragMode) {
             if (objectBeingDragged != null) {
@@ -341,6 +423,15 @@ public class UseCaseDiagram {
         }
     }
 
+    /**
+     * Retrieves the {@code UseCaseDiagramObject} located at the specified canvas coordinates.
+     *
+     * <p>This method iterates through all objects in the diagram to determine if any contain the given (x, y) point.</p>
+     *
+     * @param x The X-coordinate on the canvas.
+     * @param y The Y-coordinate on the canvas.
+     * @return The {@code UseCaseDiagramObject} at the specified location, or {@code null} if none found.
+     */
     private UseCaseDiagramObject getObjectAt(double x, double y) {
         for (UseCaseDiagramObject object : objects) {
             if (object.contains(x, y)) {
@@ -350,6 +441,16 @@ public class UseCaseDiagram {
         return null;
     }
 
+    /**
+     * Draws an association (relationship) between two use case diagram objects on the canvas.
+     *
+     * <p>The association can be of type "association", "include", or "extend". Depending on the type,
+     * the association line is styled differently, and appropriate labels or arrowheads are added.</p>
+     *
+     * @param obj1 The first {@code UseCaseDiagramObject} involved in the association.
+     * @param obj2 The second {@code UseCaseDiagramObject} involved in the association.
+     * @param type The type of association ("association", "include", or "extend").
+     */
     private void drawAssociation(UseCaseDiagramObject obj1, UseCaseDiagramObject obj2, String type) {
         double[] obj1End = getObjectEdge(obj1, obj2.getX(), obj2.getY());
         double[] obj2End = getObjectEdge(obj2, obj1.getX(), obj1.getY());
@@ -379,6 +480,16 @@ public class UseCaseDiagram {
         }
     }
 
+    /**
+     * Determines the edge point of an object closest to a given coordinate, facilitating accurate association line drawing.
+     *
+     * <p>This method calculates the intersection point on the object's boundary in the direction of another point.</p>
+     *
+     * @param object The {@code UseCaseDiagramObject} whose edge is to be determined.
+     * @param x      The X-coordinate towards which the edge point is calculated.
+     * @param y      The Y-coordinate towards which the edge point is calculated.
+     * @return An array containing the X and Y coordinates of the edge point.
+     */
     private double[] getObjectEdge(UseCaseDiagramObject object, double x, double y) {
         double objX = object.getX();
         double objY = object.getY();
@@ -403,6 +514,17 @@ public class UseCaseDiagram {
         return new double[]{objX, objY};
     }
 
+    /**
+     * Determines whether a given point is near an association line, facilitating association deletion.
+     *
+     * <p>This method calculates the perpendicular distance from the point to the association line and
+     * checks if it falls within a specified tolerance.</p>
+     *
+     * @param association The {@code Association} to check against.
+     * @param x           The X-coordinate of the point.
+     * @param y           The Y-coordinate of the point.
+     * @return {@code true} if the point is near the association line; {@code false} otherwise.
+     */
     private boolean isNearAssociation(Association association, double x, double y) {
         double x1 = association.getObj1().getX();
         double y1 = association.getObj1().getY();
@@ -415,6 +537,17 @@ public class UseCaseDiagram {
         return distToLine < tolerance;
     }
 
+    /**
+     * Draws an arrowhead at the end of an association line to indicate directionality.
+     *
+     * <p>This method calculates the position and orientation of the arrowhead based on the
+     * start and end coordinates of the association line.</p>
+     *
+     * @param x1 The X-coordinate of the start point of the association line.
+     * @param y1 The Y-coordinate of the start point of the association line.
+     * @param x2 The X-coordinate of the end point of the association line.
+     * @param y2 The Y-coordinate of the end point of the association line.
+     */
     private void drawArrowhead(double x1, double y1, double x2, double y2) {
         double angle = Math.atan2(y2 - y1, x2 - x1); // Get the angle of the line
         double arrowheadLength = 10; // Length of the arrowhead
@@ -435,8 +568,12 @@ public class UseCaseDiagram {
         gc.strokeLine(x2, y2, x4, y4); // Line from the end to the second side of the arrowhead
     }
 
-
-    // Redraw the canvas
+    /**
+     * Redraws the entire use case diagram on the canvas, including system boundary, objects, and associations.
+     *
+     * <p>This method clears the current canvas, redraws the system boundary, iterates through all objects to draw them,
+     * iterates through all associations to draw them, and highlights the selected object if any.</p>
+     */
     public void redrawCanvas() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         drawSystemBoundary();
@@ -459,6 +596,13 @@ public class UseCaseDiagram {
         }
     }
 
+    /**
+     * Navigates the user back to the home page of the UML Editor application.
+     *
+     * <p>This method prompts the user with a confirmation dialog to save the current diagram before exiting.
+     * Based on the user's choice, it either saves the diagram and navigates home, exits without saving,
+     * or cancels the navigation.</p>
+     */
     private void navigateToHome() {
         // Create a confirmation dialog
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -486,7 +630,12 @@ public class UseCaseDiagram {
         });
     }
 
-    // Method to navigate to the homepage
+    /**
+     * Navigates the user to the home page by loading the welcome FXML layout.
+     *
+     * <p>This method is called internally after confirming navigation actions. It loads the
+     * {@code welcome.fxml} file, sets up the scene with specified dimensions, and updates the stage.</p>
+     */
     private void goToHomePage() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml")); // Update with your FXML file path
@@ -502,9 +651,13 @@ public class UseCaseDiagram {
         }
     }
 
-
-
-
+    /**
+     * Saves the current use case diagram by serializing it to a file with a {@code .ser} extension.
+     *
+     * <p>This method opens a file chooser dialog, allowing the user to select the destination file.
+     * It ensures that the file has the correct extension and delegates the saving process
+     * to the {@code UseCaseDiagramDAO} class.</p>
+     */
     private void saveDiagram() {
         // Open a file chooser dialog for saving
         FileChooser fileChooser = new FileChooser();
@@ -529,8 +682,13 @@ public class UseCaseDiagram {
         }
     }
 
-
-
+    /**
+     * Loads a previously saved use case diagram by deserializing it from a {@code .ser} file.
+     *
+     * <p>This method opens a file chooser dialog, allowing the user to select the file to load.
+     * It delegates the loading process to the {@code UseCaseDiagramDAO} class and updates
+     * the internal state of the diagram accordingly.</p>
+     */
     private void loadDiagram() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load Use Case Diagram");
@@ -553,8 +711,13 @@ public class UseCaseDiagram {
         }
     }
 
-
-    // Save diagram as JSON
+    /**
+     * Saves the current use case diagram to a JSON file, facilitating interoperability and ease of sharing.
+     *
+     * <p>This method opens a file chooser dialog, allowing the user to select the destination JSON file.
+     * It creates a {@code UseCaseDiagramManager}, populates it with current objects and associations,
+     * and delegates the serialization process to the {@code UseCaseDiagramSerializer} class.</p>
+     */
     private void saveDiagramToJson() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
@@ -583,7 +746,13 @@ public class UseCaseDiagram {
         }
     }
 
-    // Load diagram from JSON
+    /**
+     * Loads a use case diagram from a JSON file, restoring objects, associations, and system boundary details.
+     *
+     * <p>This method opens a file chooser dialog, allowing the user to select the JSON file to load.
+     * It delegates the deserialization process to the {@code UseCaseDiagramSerializer} class and updates
+     * the internal state of the diagram accordingly.</p>
+     */
     private void loadDiagramFromJson() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
@@ -626,7 +795,14 @@ public class UseCaseDiagram {
         }
     }
 
-    // Helper function to find an object by its name (or unique identifier)
+    /**
+     * Finds and retrieves a {@code UseCaseDiagramObject} by its name.
+     *
+     * <p>This helper method iterates through the list of objects to locate one with the matching name.</p>
+     *
+     * @param name The name of the object to find.
+     * @return The {@code UseCaseDiagramObject} with the specified name, or {@code null} if not found.
+     */
     private UseCaseDiagramObject findObjectByName(String name) {
         for (UseCaseDiagramObject obj : objects) {
             if (obj.getName().equals(name)) {
@@ -636,7 +812,14 @@ public class UseCaseDiagram {
         return null;
     }
 
-    // Alert helper
+    /**
+     * Displays an alert dialog with the specified title and message.
+     *
+     * <p>This helper method is used to notify users of errors during save and load operations.</p>
+     *
+     * @param title   The title of the alert dialog.
+     * @param message The message content of the alert dialog.
+     */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -644,6 +827,12 @@ public class UseCaseDiagram {
         alert.showAndWait();
     }
 
+    /**
+     * Exports the current use case diagram as an image file based on the current state of the canvas.
+     *
+     * <p>This method creates a {@code UseCaseDiagramManager} instance, populates it with current objects
+     * and associations, sets the system boundary name, and delegates the export process to the manager.</p>
+     */
     private void exportDiagramToImage() {
         // Create a UseCaseDiagramManager instance and set the current state of the diagram
         UseCaseDiagramManager manager = new UseCaseDiagramManager();
@@ -655,16 +844,37 @@ public class UseCaseDiagram {
         manager.exportDiagramToImage(canvas);
     }
 
+    /**
+     * Applies a hover effect to a {@code Button} when the mouse enters its area.
+     *
+     * <p>This method changes the button's background color, font size, and scaling to indicate a hover state.</p>
+     *
+     * @param mouseEvent The {@code MouseEvent} triggered by the mouse entering the button area.
+     */
     public void applyHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #C0C0C0; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
     }
 
+    /**
+     * Removes the hover effect from a {@code Button} when the mouse exits its area.
+     *
+     * <p>This method reverts the button's background color, font size, and scaling to its default state.</p>
+     *
+     * @param mouseEvent The {@code MouseEvent} triggered by the mouse exiting the button area.
+     */
     public void removeHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #AFAFAF; -fx-font-size: 12px;  -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
 
+    /**
+     * Applies a click effect to a {@code Button} when it is clicked.
+     *
+     * <p>This method changes the button's background color and ensures its scaling is reset, indicating a clicked state.</p>
+     *
+     * @param mouseEvent The {@code MouseEvent} triggered by the button click.
+     */
     public void applyClickEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
