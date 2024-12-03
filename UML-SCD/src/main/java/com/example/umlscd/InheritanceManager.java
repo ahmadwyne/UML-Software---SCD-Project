@@ -1,5 +1,6 @@
 package com.example.umlscd;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -9,10 +10,20 @@ import javafx.scene.text.Text;
 
 public class InheritanceManager extends ClassDiagramRelationsManager {
 
+    private UMLRelationshipBox lastRelationshipBox = null; // To keep track of the last created relationship
+    private ClassDiagramManager classDiagramManager;
+
     // Constructor
     public InheritanceManager() {
         // Enable inheritance mode by default
         enableInheritanceMode();
+    }
+
+    // Constructor
+    public InheritanceManager(ClassDiagramManager manager) {
+        // Enable aggregation mode by default
+        enableAggregationMode();
+        this.classDiagramManager = manager;
     }
 
     @Override
@@ -70,8 +81,47 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
 
         // Add listeners to update the line and inheritance triangle dynamically when either class is moved
         addDynamicUpdateListener(inheritanceLine, inheritanceTriangle, start, end, null, null, null);
+
+        // After creating the aggregation elements (line, diamond, labels), create UMLRelationshipBox
+        UMLRelationshipBox relationshipBox = new UMLRelationshipBox(
+                "Inheritance",
+                getElementName(start),
+                getElementName(end),
+                null,
+                startMultiplicity,
+                endMultiplicity,
+                inheritanceLine,
+                null,
+                null,
+                null
+        );
+
+        // Add the relationship to the manager
+        classDiagramManager.createRelationshipFromSerialization(relationshipBox.getUmlRelationship());
+
+        // Store the last created relationship
+        lastRelationshipBox = relationshipBox;
     }
 
+    /**
+     * Retrieves the name of the UML element from the VBox.
+     *
+     * @param box The VBox representing the UML element.
+     * @return The name of the element.
+     */
+    private String getElementName(VBox box) {
+        Label label = (Label) box.getChildren().get(0);
+        return label.getText();
+    }
+
+    /**
+     * Gets the last created UMLRelationshipBox.
+     *
+     * @return The last UMLRelationshipBox.
+     */
+    public UMLRelationshipBox getLastRelationshipBox() {
+        return lastRelationshipBox;
+    }
     // Add listeners to update the line and inheritance triangle dynamically when classes are moved
     private void addDynamicUpdateListener(Line line, Polygon inheritanceTriangle, VBox start, VBox end, Text InheritanceLabel, Text startMultiplicityText, Text endMultiplicityText) {
         // Update position when the start or end class is moved

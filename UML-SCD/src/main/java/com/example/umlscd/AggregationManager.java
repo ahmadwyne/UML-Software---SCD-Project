@@ -1,5 +1,6 @@
 package com.example.umlscd;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -9,12 +10,20 @@ import javafx.scene.shape.Line;
 
 public class AggregationManager extends ClassDiagramRelationsManager {
 
+    private UMLRelationshipBox lastRelationshipBox = null; // To keep track of the last created relationship
+    private ClassDiagramManager classDiagramManager;
+
     // Constructor
     public AggregationManager() {
         // Enable aggregation mode by default
         enableAggregationMode();
     }
-
+    // Constructor
+    public AggregationManager(ClassDiagramManager manager) {
+        // Enable aggregation mode by default
+        enableAggregationMode();
+        this.classDiagramManager = manager;
+    }
     @Override
     public void createRelationship(VBox start, VBox end, Pane drawingPane, String aggregationName, String startMultiplicity, String endMultiplicity) {
         // Disable association mode immediately after starting the process
@@ -84,6 +93,47 @@ public class AggregationManager extends ClassDiagramRelationsManager {
 
         // Add listeners to update the line and diamond when either class is moved
         addDynamicUpdateListener(aggregationLine, diamond, start, end, aggregationLabel, startMultiplicityText, endMultiplicityText);
+
+        // After creating the aggregation elements (line, diamond, labels), create UMLRelationshipBox
+        UMLRelationshipBox relationshipBox = new UMLRelationshipBox(
+                "Aggregation",
+                getElementName(start),
+                getElementName(end),
+                aggregationName,
+                startMultiplicity,
+                endMultiplicity,
+                aggregationLine,
+                aggregationLabel,
+                startMultiplicityText,
+                endMultiplicityText
+        );
+
+        // Add the relationship to the manager
+        classDiagramManager.createRelationshipFromSerialization(relationshipBox.getUmlRelationship());
+
+        // Store the last created relationship
+        lastRelationshipBox = relationshipBox;
+
+    }
+
+    /**
+     * Retrieves the name of the UML element from the VBox.
+     *
+     * @param box The VBox representing the UML element.
+     * @return The name of the element.
+     */
+    private String getElementName(VBox box) {
+        Label label = (Label) box.getChildren().get(0);
+        return label.getText();
+    }
+
+    /**
+     * Gets the last created UMLRelationshipBox.
+     *
+     * @return The last UMLRelationshipBox.
+     */
+    public UMLRelationshipBox getLastRelationshipBox() {
+        return lastRelationshipBox;
     }
 
     // Add listeners to update the line and diamond dynamically when classes are moved

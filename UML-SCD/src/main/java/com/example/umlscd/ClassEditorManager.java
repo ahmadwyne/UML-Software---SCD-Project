@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +14,16 @@ public class ClassEditorManager {
 
     private VBox classBox;
     private List<String> parameters = new ArrayList<>(); // Temporary storage for parameters
+    private UMLClassBox umlClassBox; // Add this line to hold the reference
 
-    public void setClassBox(VBox classBox) {
+    // Constructor remains the same or can be overloaded if needed
+    public ClassEditorManager() {
+        // Initialization if necessary
+    }
+
+    public void setClassBox(VBox classBox, UMLClassBox umlClassBox) {
         this.classBox = classBox;
+        this.umlClassBox = umlClassBox;
     }
 
     public String getClassName() {
@@ -54,7 +62,28 @@ public class ClassEditorManager {
         return "";
     }
 
+    // Modify applyChanges to update the model
     public void applyChanges(String className, String attributesText, String methodsText) {
+        if (umlClassBox != null) {
+            // Update the model
+            umlClassBox.setName(className);
+
+            // Update attributes
+            List<String> attributes = new ArrayList<>();
+            if (!attributesText.isEmpty()) {
+                attributes = Arrays.asList(attributesText.split("\\n"));
+            }
+            umlClassBox.setAttributes(attributes);
+
+            // Update methods
+            List<String> methods = new ArrayList<>();
+            if (!methodsText.isEmpty()) {
+                methods = Arrays.asList(methodsText.split("\\n"));
+            }
+            umlClassBox.setMethods(methods);
+        }
+
+        // Update the UI as before
         if (classBox != null && !classBox.getChildren().isEmpty()) {
             Label classNameLabel = (Label) classBox.getChildren().get(0);
             classNameLabel.setText(className);
@@ -74,6 +103,7 @@ public class ClassEditorManager {
             }
         }
     }
+
     // Method to handle adding a custom data type to a dropdown
     public void handleCustomDataType(ComboBox<String> dropdown) {
         TextInputDialog dialog = new TextInputDialog();

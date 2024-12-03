@@ -62,8 +62,6 @@ public class UseCaseDiagram {
 
     @FXML
     private Button btnSaveDiagram, btnLoadDiagram, btnSaveJson, btnLoadJson, btnExportImage;
-    ;
-
 
     private ArrayList<UseCaseDiagramObject> objects;
     private ArrayList<Association> associations;
