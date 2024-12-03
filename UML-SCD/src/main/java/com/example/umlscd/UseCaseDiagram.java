@@ -184,11 +184,12 @@ public class UseCaseDiagram {
 
     private void toggleButtonColor(ToggleButton button) {
         if (button.isSelected()) {
-            button.setStyle("-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #434343; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;");
+            button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
         } else {
-            button.setStyle("-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF; -fx-background-radius: 10px; -fx-pref-width: 150px; -fx-pref-height: 40px;");
+            button.setStyle("-fx-font-size: 12px; -fx-font-family: 'Verdana';  -fx-font-weight: bold; -fx-background-color: #AFAFAF;  -fx-pref-width: 120px;");
         }
     }
+
 
 
 
@@ -654,6 +655,21 @@ public class UseCaseDiagram {
 
         // Call the export method in the manager
         manager.exportDiagramToImage(canvas);
+    }
+
+    public void applyHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #C0C0C0; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
+    }
+
+    public void removeHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #AFAFAF; -fx-font-size: 12px;  -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
+
+    public void applyClickEffect(javafx.scene.input.MouseEvent mouseEvent) {
+        Button button = (Button) mouseEvent.getSource();
+        button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
 
 }

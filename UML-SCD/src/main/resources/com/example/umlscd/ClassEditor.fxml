@@ -23,7 +23,7 @@
         <TextField fx:id="attributeNameField" promptText="Attribute Name"/>
 
         <!-- Add Attribute Button -->
-        <Button text="Add Attribute" fx:id="addAttributeButton" style="-fx-background-color: #AFAFAF;"
+        <Button text="Add Attribute" fx:id="addAttributeButton" style="-fx-background-color: #AFAFAF; -fx-font-weight: bold"
                 onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
     </VBox>
 
