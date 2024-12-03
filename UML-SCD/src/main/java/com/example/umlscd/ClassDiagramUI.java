@@ -18,14 +18,47 @@ import java.io.File;
 
 import java.io.IOException;
 
+/**
+ * <h1>Class Diagram User Interface Controller</h1>
+ *
+ * <p>The {@code ClassDiagramUI} class serves as the controller for the Class Diagram editor within the UML Editor application.
+ * It manages the user interface components, handles user interactions, and facilitates the creation, manipulation,
+ * and visualization of class diagrams. The class interacts with the {@code ClassDiagramManager} to perform operations
+ * such as adding classes, interfaces, associations, and exporting diagrams as images.</p>
+ *
+ * <p>Key functionalities include:
+ * <ul>
+ *     <li>Setting up event handlers for toolbox buttons (Class, Interface, Association, Aggregation, Composition, Inheritance, Drag)</li>
+ *     <li>Loading and displaying existing diagrams</li>
+ *     <li>Handling save and load operations for diagrams</li>
+ *     <li>Exporting diagrams as image files</li>
+ *     <li>Managing editors for classes and interfaces</li>
+ *     <li>Providing user feedback through alerts</li>
+ * </ul>
+ * </p>
+ *
+ * <p><b>Authors:</b> Ahmad Wyne, Wahaj Asif, Muhammad Muneeb</p>
+ *
+ * <p><b>Version:</b> 1.0</p>
+ * <p><b>Since:</b> 2024-12-03</p>
+ */
 public class ClassDiagramUI {
 
+    /**
+     * The pane where the class diagram is drawn.
+     */
     @FXML
     private Pane drawingPane;
 
+    /**
+     * The list view displaying available diagrams.
+     */
     @FXML
     private ListView<String> diagramListView, modelExplorerListView;
 
+    /**
+     * Buttons for selecting various tools in the toolbox.
+     */
     @FXML
     private Button btnClass, btnInterface, btnAssociation, btnDrag;
 
@@ -41,18 +74,36 @@ public class ClassDiagramUI {
     @FXML
     private Button btnSave, btnLoad, btnExportImage; // Added Save and Load buttons
 
+    /**
+     * The pane containing editors for classes and interfaces.
+     */
     @FXML
     private VBox editorsPane;
 
+    /**
+     * The manager responsible for handling class diagram operations.
+     */
     private ClassDiagramManager classDiagramManager;
 
+    /**
+     * Reference to the primary stage for file chooser dialogs.
+     */
     private Stage primaryStage; // Reference to primary stage for FileChooser
 
 
+    /**
+     * Constructs a {@code ClassDiagramUI} instance and initializes the {@code ClassDiagramManager}.
+     */
     public ClassDiagramUI() {
         this.classDiagramManager = new ClassDiagramManager(this);
     }
 
+    /**
+     * Initializes the UI components, sets up event handlers, and loads existing diagrams.
+     *
+     * <p>This method is automatically called after the FXML file has been loaded. It configures the toolbox handlers,
+     * loads predefined diagrams into the list view, and assigns actions to the save, load, and export buttons.</p>
+     */
     @FXML
     private void initialize() {
         setupToolboxHandlers();
@@ -64,35 +115,68 @@ public class ClassDiagramUI {
 
         // Setup Export as Image Handler
         btnExportImage.setOnAction(e -> handleExportAsImage());
-
     }
 
+    /**
+     * Applies a hover effect to a button when the mouse enters its area.
+     *
+     * <p>This method changes the button's background color and scales it slightly to indicate a hover state.</p>
+     *
+     * @param event The {@code MouseEvent} triggered by the mouse entering the button area.
+     */
     @FXML
     private void applyHoverEffect(MouseEvent event) {
         Button button = (Button) event.getSource();
         button.setStyle("-fx-background-color: #C0C0C0; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
     }
 
+    /**
+     * Removes the hover effect from a button when the mouse exits its area.
+     *
+     * <p>This method reverts the button's background color and scale to its default state.</p>
+     *
+     * @param event The {@code MouseEvent} triggered by the mouse exiting the button area.
+     */
     @FXML
     private void removeHoverEffect(MouseEvent event) {
         Button button = (Button) event.getSource();
         button.setStyle("-fx-background-color: #AFAFAF; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
 
+    /**
+     * Applies a click effect to a button when it is clicked.
+     *
+     * <p>This method changes the button's background color to indicate a clicked state.</p>
+     *
+     * @param event The {@code MouseEvent} triggered by the button click.
+     */
     @FXML
     private void applyClickEffect(MouseEvent event) {
         Button button = (Button) event.getSource();
         button.setStyle("-fx-background-color: #8C8C8C; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
+
+    /**
+     * Loads predefined diagrams into the diagram list view.
+     *
+     * <p>This method populates the {@code diagramListView} with a set of predefined diagram names for demonstration purposes.</p>
+     */
     private void loadWorkingDiagrams() {
         diagramListView.getItems().addAll("Main Model", "ClassDiagram1", "UseCaseDiagram1");
     }
 
+    /**
+     * Sets up event handlers for toolbox buttons.
+     *
+     * <p>This method assigns actions to each toolbox button, enabling the selection of different tools
+     * such as Class, Interface, Association, Aggregation, Composition, Inheritance, and Drag modes.</p>
+     */
     private void setupToolboxHandlers() {
         btnClass.setOnAction(e -> handleToolSelection("Class"));
         btnInterface.setOnAction(e -> handleToolSelection("Interface"));
         btnAssociation.setOnAction(e -> handleToolSelection("Association"));
         btnDrag.setOnAction(e -> handleToolSelection("Drag"));
+
         // Add event handlers for Aggregation and Composition
         btnAggregation.setOnAction(event -> {
             classDiagramManager.handleToolSelection("Aggregation", drawingPane, editorsPane);
@@ -107,6 +191,14 @@ public class ClassDiagramUI {
         });
     }
 
+    /**
+     * Handles the selection of a tool from the toolbox.
+     *
+     * <p>This method delegates the tool selection to the {@code ClassDiagramManager}, specifying the tool type
+     * and providing references to the drawing and editors panes.</p>
+     *
+     * @param tool The name of the tool selected (e.g., "Class", "Interface", "Association", "Drag").
+     */
     private void handleToolSelection(String tool) {
         classDiagramManager.handleToolSelection(tool, drawingPane, editorsPane);
     }
@@ -114,7 +206,10 @@ public class ClassDiagramUI {
     /**
      * Opens the class editor for the specified class box.
      *
-     * @param classBox The VBox representing the class.
+     * <p>This method loads the Class Editor UI, associates it with the corresponding {@code UMLClassBox},
+     * and displays it within the editors pane.</p>
+     *
+     * @param classBox The {@code VBox} representing the class to be edited.
      */
     public void openClassEditor(VBox classBox) {
         // Retrieve the corresponding UMLClassBox
@@ -146,7 +241,9 @@ public class ClassDiagramUI {
     /**
      * Opens the interface editor for the specified interface box.
      *
-     * @param interfaceBox The VBox representing the interface.
+     * <p>This method loads the Interface Editor UI and displays it within the editors pane.</p>
+     *
+     * @param interfaceBox The {@code VBox} representing the interface to be edited.
      */
     public void openInterfaceEditor(VBox interfaceBox) {
         try {
@@ -165,10 +262,12 @@ public class ClassDiagramUI {
     }
 
     /**
-     * Sets the primary stage reference.
-     * This method should be called from the main application class after loading the FXML.
+     * Sets the reference to the primary stage of the application.
      *
-     * @param primaryStage The primary Stage of the application.
+     * <p>This method should be called from the main application class after loading the FXML to provide
+     * a reference to the primary stage, enabling the use of file chooser dialogs.</p>
+     *
+     * @param primaryStage The primary {@code Stage} of the application.
      */
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -176,6 +275,10 @@ public class ClassDiagramUI {
 
     /**
      * Handles the Export as Image action.
+     *
+     * <p>This method opens a file chooser dialog, allowing the user to select the destination file and format.
+     * It then delegates the export process to the {@code ClassDiagramManager} and provides user feedback based
+     * on the success or failure of the operation.</p>
      */
     @FXML
     private void handleExportAsImage() {
@@ -214,6 +317,9 @@ public class ClassDiagramUI {
 
     /**
      * Handles the Save action.
+     *
+     * <p>This method opens a file chooser dialog, allowing the user to select the destination file path.
+     * It then delegates the save process to the {@code ClassDiagramManager} and provides user feedback upon completion.</p>
      */
     private void handleSave() {
         // Retrieve the Stage from the drawingPane (or any other node)
@@ -234,6 +340,12 @@ public class ClassDiagramUI {
         }
     }
 
+    /**
+     * Handles the Load action.
+     *
+     * <p>This method opens a file chooser dialog, allowing the user to select a JSON file containing a saved UML diagram.
+     * It then delegates the load process to the {@code ClassDiagramManager} and provides user feedback upon completion.</p>
+     */
     private void handleLoad() {
         // Retrieve the Stage from the drawingPane (or any other node)
         Stage stage = (Stage) drawingPane.getScene().getWindow();
@@ -254,7 +366,10 @@ public class ClassDiagramUI {
     }
 
     /**
-     * Shows an error alert to the user.
+     * Displays an error alert to the user with the specified message.
+     *
+     * <p>This method creates and shows an alert dialog of type {@code ERROR}, providing feedback to the user
+     * in case of failures or issues.</p>
      *
      * @param message The error message to display.
      */
@@ -267,7 +382,10 @@ public class ClassDiagramUI {
     }
 
     /**
-     * Shows an information alert to the user.
+     * Displays an information alert to the user with the specified message.
+     *
+     * <p>This method creates and shows an alert dialog of type {@code INFORMATION}, providing feedback to the user
+     * upon successful operations.</p>
      *
      * @param message The information message to display.
      */
@@ -282,22 +400,48 @@ public class ClassDiagramUI {
     /**
      * Provides access to the drawing pane.
      *
-     * @return The drawing Pane.
+     * <p>This method returns the {@code Pane} where the class diagram is drawn, allowing other components
+     * or controllers to interact with it.</p>
+     *
+     * @return The {@code Pane} representing the drawing area of the class diagram.
      */
     public Pane getDrawingPane() {
         return drawingPane;
     }
 
+    /**
+     * Applies a hover effect to a button when the mouse enters its area.
+     *
+     * <p>This method changes the button's background color, font size, font weight, font family, and scaling
+     * to indicate a hover state.</p>
+     *
+     * @param mouseEvent The {@code MouseEvent} triggered by the mouse entering the button area.
+     */
     public void applyHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #C0C0C0; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
     }
 
+    /**
+     * Removes the hover effect from a button when the mouse exits its area.
+     *
+     * <p>This method reverts the button's background color, font size, font weight, font family, and scaling
+     * to its default state.</p>
+     *
+     * @param mouseEvent The {@code MouseEvent} triggered by the mouse exiting the button area.
+     */
     public void removeHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #AFAFAF; -fx-font-size: 12px;  -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
 
+    /**
+     * Applies a click effect to a button when it is clicked.
+     *
+     * <p>This method changes the button's background color and ensures its scaling is reset, indicating a clicked state.</p>
+     *
+     * @param mouseEvent The {@code MouseEvent} triggered by the button click.
+     */
     public void applyClickEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
