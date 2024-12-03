@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +14,29 @@ public class ClassEditorManager {
 
     private VBox classBox;
     private List<String> parameters = new ArrayList<>(); // Temporary storage for parameters
+    private UMLClassBox umlClassBox; // Reference to the UMLClassBox
 
-    public void setClassBox(VBox classBox) {
+    private ClassDiagramManager classDiagramManager; // Reference to the manager
+
+    /**
+     * Default constructor.
+     */
+    public ClassEditorManager() {
+        // Initialization if necessary
+    }
+
+    /**
+     * Sets the ClassDiagramManager reference.
+     *
+     * @param manager The ClassDiagramManager instance.
+     */
+    public void setClassDiagramManager(ClassDiagramManager manager) {
+        this.classDiagramManager = manager;
+    }
+
+    public void setClassBox(VBox classBox, UMLClassBox umlClassBox) {
         this.classBox = classBox;
+        this.umlClassBox = umlClassBox;
     }
 
     public String getClassName() {
@@ -54,10 +75,52 @@ public class ClassEditorManager {
         return "";
     }
 
+    /**
+     * Applies changes from the editor to the model and updates relationships if necessary.
+     *
+     * @param className      The new class name.
+     * @param attributesText The updated attributes text.
+     * @param methodsText    The updated methods text.
+     */
     public void applyChanges(String className, String attributesText, String methodsText) {
-        if (classBox != null && !classBox.getChildren().isEmpty()) {
-            Label classNameLabel = (Label) classBox.getChildren().get(0);
-            classNameLabel.setText(className);
+        if (umlClassBox != null) {
+            String oldName = umlClassBox.getName();
+            String newName = className.trim();
+
+            if (newName.isEmpty()) {
+                // Optionally, enforce non-empty names
+                return;
+            }
+
+            // Check for unique class name
+            if (!oldName.equals(newName) && classDiagramManager.isClassNameExists(newName)) {
+                // Notify the user about duplicate class names
+                classDiagramManager.getUiController().showErrorAlert("A class with this name already exists.");
+                return;
+            }
+
+            // Update the model
+            umlClassBox.setName(newName);
+            classDiagramManager.getClassBoxMap().remove(oldName);
+            classDiagramManager.getClassBoxMap().put(newName, umlClassBox);
+
+            // Update attributes
+            List<String> attributes = new ArrayList<>();
+            if (!attributesText.isEmpty()) {
+                attributes = Arrays.asList(attributesText.split("\\n"));
+            }
+            umlClassBox.setAttributes(attributes);
+
+            // Update methods
+            List<String> methods = new ArrayList<>();
+            if (!methodsText.isEmpty()) {
+                methods = Arrays.asList(methodsText.split("\\n"));
+            }
+            umlClassBox.setMethods(methods);
+
+            // Update the UI
+            Label classNameLabel = (Label) classBox.getChildren().get(0); // Assuming the first label is the name
+            classNameLabel.setText(newName);
 
             VBox attributesBox = (VBox) classBox.getChildren().get(1);
             attributesBox.getChildren().clear();
@@ -72,8 +135,12 @@ public class ClassEditorManager {
                 Label method = new Label(line);
                 methodsBox.getChildren().add(method);
             }
+
+            // Update relationships in the ClassDiagramManager
+            classDiagramManager.updateRelationshipsForRenamedClass(oldName, newName);
         }
     }
+
     // Method to handle adding a custom data type to a dropdown
     public void handleCustomDataType(ComboBox<String> dropdown) {
         TextInputDialog dialog = new TextInputDialog();
@@ -83,13 +150,13 @@ public class ClassEditorManager {
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(customType -> {
-            if (!dropdown.getItems().contains(customType)) {
+            customType = customType.trim();
+            if (!customType.isEmpty() && !dropdown.getItems().contains(customType)) {
                 dropdown.getItems().add(customType);
             }
             dropdown.setValue(customType); // Set the custom type as the selected value
         });
     }
-
 
     // Add parameter to the temporary list of parameters for the current method
     public void addParameterToMethod(String parameter) {
