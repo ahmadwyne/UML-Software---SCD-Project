@@ -1,5 +1,7 @@
 package com.example.umlscd;
 
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -7,115 +9,333 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
+/**
+ * Manages the creation and rendering of Inheritance relationships.
+ */
 public class InheritanceManager extends ClassDiagramRelationsManager {
 
-    // Constructor
-    public InheritanceManager() {
-        // Enable inheritance mode by default
+    private final ClassDiagramManager classDiagramManager;
+    private UMLRelationshipBox lastRelationshipBox;
+
+    /**
+     * Constructor that initializes the InheritanceManager with a ClassDiagramManager.
+     *
+     * @param manager The ClassDiagramManager instance.
+     */
+    public InheritanceManager(ClassDiagramManager manager) {
+        this.classDiagramManager = manager;
         enableInheritanceMode();
     }
 
+    /**
+     * Creates an inheritance relationship between two UML elements.
+     *
+     * @param start            The starting UML element (child).
+     * @param end              The ending UML element (parent).
+     * @param drawingPane      The pane where the relationship is drawn.
+     * @param inheritanceName  The name of the inheritance relationship (optional).
+     * @param startMultiplicity The multiplicity at the start end (optional, typically not used in inheritance).
+     * @param endMultiplicity   The multiplicity at the end end (optional, typically not used in inheritance).
+     */
     @Override
     public void createRelationship(VBox start, VBox end, Pane drawingPane, String inheritanceName, String startMultiplicity, String endMultiplicity) {
         // Disable inheritance mode immediately after starting the process
         disableInheritanceMode();
 
+        // Set default values if fields are empty
+        if (inheritanceName == null || inheritanceName.isEmpty()) inheritanceName = "Inheritance";
+        if (startMultiplicity == null || startMultiplicity.isEmpty()) startMultiplicity = "";
+        if (endMultiplicity == null || endMultiplicity.isEmpty()) endMultiplicity = "";
+
         // Find the closest boundary points between the two classes
         Point startPoint = getClosestBoundaryPoint(start, end);
         Point endPoint = getClosestBoundaryPoint(end, start);
 
-        // Create the triangle (inheritance) shape with a smaller size
+        // Create the inheritance triangle (hollow triangle)
         Polygon inheritanceTriangle = new Polygon();
         inheritanceTriangle.getPoints().addAll(
-                5.0, 0.0,  // Tip of the triangle (top point)
-                -5.0, 15.0, // Bottom-left point (base)
-                15.0, 15.0   // Bottom-right point (base)
+                0.0, 0.0,      // Tip of the triangle (top point)
+                -10.0, 15.0,    // Bottom-left point (base)
+                10.0, 15.0      // Bottom-right point (base)
         );
-        inheritanceTriangle.setFill(Color.WHITE);
-        inheritanceTriangle.setStroke(Color.BLACK);
+        inheritanceTriangle.setFill(Color.WHITE); // Hollow triangle
+        inheritanceTriangle.setStroke(Color.BLACK); // Black border
 
-        // Position the tip of the triangle to the closest boundary point of Class 2
+        // Attach triangle to the parent class boundary (tip to the class boundary)
         double tipX = endPoint.getX();
         double tipY = endPoint.getY();
 
         // Offset the inheritanceTriangle to ensure its tip touches the class boundary
-        inheritanceTriangle.setLayoutX(tipX - 5); // Adjusted for smaller size
-        inheritanceTriangle.setLayoutY(tipY - 5); // Adjusted for smaller size
+        inheritanceTriangle.setLayoutX(tipX); // Position tip at endPoint
+        inheritanceTriangle.setLayoutY(tipY - 15); // Adjust Y to position the base below
 
-        // Create the line connecting the first selected element (start) to the inheritance triangle (base)
+        // Create the line connecting the child class (start) to the parent class (end)
         Line inheritanceLine = new Line();
-        inheritanceLine.setStartX(start.getLayoutX() + start.getWidth() / 2); // Start at the center of the first class
-        inheritanceLine.setStartY(start.getLayoutY() + start.getHeight() / 2);
+        inheritanceLine.setStartX(startPoint.getX()); // Start at the closest boundary point of the child class
+        inheritanceLine.setStartY(startPoint.getY());
+        inheritanceLine.setEndX(tipX); // End at the tip of the inheritance triangle
+        inheritanceLine.setEndY(tipY);
 
-        // Calculate the middle of the base of the inheritance triangle (where the second point of the line should attach)
-        double baseLeftX = inheritanceTriangle.getPoints().get(2) + inheritanceTriangle.getLayoutX();
-        double baseLeftY = inheritanceTriangle.getPoints().get(3) + inheritanceTriangle.getLayoutY();
-        double baseRightX = inheritanceTriangle.getPoints().get(4) + inheritanceTriangle.getLayoutX();
-        double baseRightY = inheritanceTriangle.getPoints().get(5) + inheritanceTriangle.getLayoutY();
+        // Style the inheritance line
+        inheritanceLine.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
 
-        // Calculate the midpoint of the base of the triangle (between the left and right base points)
-        double baseMiddleX = (baseLeftX + baseRightX) / 2;
-        double baseMiddleY = (baseLeftY + baseRightY) / 2;
-
-        // Set the second endpoint of the line to the middle of the base of the inheritance triangle
-        inheritanceLine.setEndX(baseMiddleX);
-        inheritanceLine.setEndY(baseMiddleY);
-
-        // Add the inheritance triangle and the line to the drawing pane
-
-        // Calculate the angle between the two classes to rotate the triangle correctly
-        double angle = Math.atan2(endPoint.getY() - startPoint.getY(), endPoint.getX() - startPoint.getX());
-        inheritanceTriangle.setRotate(Math.toDegrees(angle) + 90); // +90 to make the triangle face downward
+        // Add the inheritance triangle and line to the drawing pane
         drawingPane.getChildren().addAll(inheritanceTriangle, inheritanceLine);
 
-        // Add listeners to update the line and inheritance triangle dynamically when either class is moved
-        addDynamicUpdateListener(inheritanceLine, inheritanceTriangle, start, end, null, null, null);
+        // Optionally create the inheritance label if a name is provided
+        Text inheritanceLabel = null;
+        if (!inheritanceName.equals("Inheritance")) {
+            inheritanceLabel = new Text(inheritanceName);
+            inheritanceLabel.setStyle("-fx-font-style: italic; -fx-font-size: 12;");
+            bindAssociationLabelToLine(inheritanceLabel, inheritanceLine);
+            drawingPane.getChildren().add(inheritanceLabel);
+        }
+
+        // Typically, multiplicity labels are not used in inheritance, but included here for consistency
+        Text startMultiplicityText = null;
+        Text endMultiplicityText = null;
+        if (!startMultiplicity.isEmpty()) {
+            startMultiplicityText = new Text(startMultiplicity);
+            startMultiplicityText.setStyle("-fx-font-size: 10;");
+            bindMultiplicityLabelToLine(startMultiplicityText, inheritanceLine, true);
+            drawingPane.getChildren().add(startMultiplicityText);
+        }
+        if (!endMultiplicity.isEmpty()) {
+            endMultiplicityText = new Text(endMultiplicity);
+            endMultiplicityText.setStyle("-fx-font-size: 10;");
+            bindMultiplicityLabelToLine(endMultiplicityText, inheritanceLine, false);
+            drawingPane.getChildren().add(endMultiplicityText);
+        }
+
+        // Add listeners to update the line and inheritance triangle when either class is moved
+        addDynamicUpdateListener(inheritanceLine, inheritanceTriangle, start, end, inheritanceLabel, startMultiplicityText, endMultiplicityText);
+
+        // Create UMLRelationshipBox
+        UMLRelationshipBox relationshipBox = new UMLRelationshipBox(
+                "Inheritance",
+                getElementName(start),
+                getElementName(end),
+                inheritanceName,
+                startMultiplicity,
+                endMultiplicity,
+                inheritanceLine,
+                inheritanceLabel,
+                startMultiplicityText,
+                endMultiplicityText
+        );
+
+        // Add the relationship to the manager
+        classDiagramManager.addRelationshipBox(relationshipBox);
+
+        // Store the last created relationship
+        lastRelationshipBox = relationshipBox;
+
+        // Debug Logging
+        System.out.println("Created inheritance: " + inheritanceName + " between " + getElementName(start) + " and " + getElementName(end));
     }
 
-    // Add listeners to update the line and inheritance triangle dynamically when classes are moved
-    private void addDynamicUpdateListener(Line line, Polygon inheritanceTriangle, VBox start, VBox end, Text InheritanceLabel, Text startMultiplicityText, Text endMultiplicityText) {
+    /**
+     * Creates an inheritance relationship from a UMLRelationship model object during deserialization.
+     *
+     * @param umlRelationship The UMLRelationship data.
+     * @param drawingPane     The pane where the relationship is drawn.
+     */
+    public void createRelationshipFromModel(UMLRelationship umlRelationship, Pane drawingPane) {
+        String startName = umlRelationship.getStartElementName();
+        String endName = umlRelationship.getEndElementName();
+        String name = umlRelationship.getName();
+        String startMultiplicity = umlRelationship.getStartMultiplicity();
+        String endMultiplicity = umlRelationship.getEndMultiplicity();
+
+        // Retrieve UMLElementBox objects from the map
+        UMLElementBoxInterface startElement = classDiagramManager.getClassBoxMap().get(startName);
+        UMLElementBoxInterface endElement = classDiagramManager.getClassBoxMap().get(endName);
+
+        if (startElement == null || endElement == null) {
+            System.err.println("Cannot create inheritance. One of the elements is missing.");
+            return;
+        }
+
+        // Retrieve the VBox visual representations
+        VBox startBox = startElement.getVisualRepresentation();
+        VBox endBox = endElement.getVisualRepresentation();
+
+        if (startBox == null || endBox == null) {
+            System.err.println("Visual representation not available for one of the classes.");
+            return;
+        }
+
+        // Find the closest boundary points between the two classes
+        Point startPoint = getClosestBoundaryPoint(startBox, endBox);
+        Point endPoint = getClosestBoundaryPoint(endBox, startBox);
+
+        // Create the inheritance triangle (hollow triangle)
+        Polygon inheritanceTriangle = new Polygon();
+        inheritanceTriangle.getPoints().addAll(
+                0.0, 0.0,      // Tip of the triangle (top point)
+                -10.0, 15.0,    // Bottom-left point (base)
+                10.0, 15.0      // Bottom-right point (base)
+        );
+        inheritanceTriangle.setFill(Color.WHITE); // Hollow triangle
+        inheritanceTriangle.setStroke(Color.BLACK); // Black border
+
+        // Attach triangle to the parent class boundary (tip to the class boundary)
+        double tipX = endPoint.getX();
+        double tipY = endPoint.getY();
+
+        // Offset the inheritanceTriangle to ensure its tip touches the class boundary
+        inheritanceTriangle.setLayoutX(tipX); // Position tip at endPoint
+        inheritanceTriangle.setLayoutY(tipY - 15); // Adjust Y to position the base below
+
+        // Create the line connecting the child class (start) to the parent class (end)
+        Line inheritanceLine = new Line();
+        inheritanceLine.setStartX(startPoint.getX()); // Start at the closest boundary point of the child class
+        inheritanceLine.setStartY(startPoint.getY());
+        inheritanceLine.setEndX(tipX); // End at the tip of the inheritance triangle
+        inheritanceLine.setEndY(tipY);
+
+        // Style the inheritance line
+        inheritanceLine.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+
+        // Add the inheritance triangle and line to the drawing pane
+        drawingPane.getChildren().addAll(inheritanceTriangle, inheritanceLine);
+
+        // Optionally create the inheritance label if a name is provided
+        Text inheritanceLabel = null;
+        if (!name.equals("Inheritance")) {
+            inheritanceLabel = new Text(name);
+            inheritanceLabel.setStyle("-fx-font-style: italic; -fx-font-size: 12;");
+            bindAssociationLabelToLine(inheritanceLabel, inheritanceLine);
+            drawingPane.getChildren().add(inheritanceLabel);
+        }
+
+        // Typically, multiplicity labels are not used in inheritance, but included here for consistency
+        Text startMultiplicityText = null;
+        Text endMultiplicityText = null;
+        if (!startMultiplicity.isEmpty()) {
+            startMultiplicityText = new Text(startMultiplicity);
+            startMultiplicityText.setStyle("-fx-font-size: 10;");
+            bindMultiplicityLabelToLine(startMultiplicityText, inheritanceLine, true);
+            drawingPane.getChildren().add(startMultiplicityText);
+        }
+        if (!endMultiplicity.isEmpty()) {
+            endMultiplicityText = new Text(endMultiplicity);
+            endMultiplicityText.setStyle("-fx-font-size: 10;");
+            bindMultiplicityLabelToLine(endMultiplicityText, inheritanceLine, false);
+            drawingPane.getChildren().add(endMultiplicityText);
+        }
+
+        // Add listeners to update the line and inheritance triangle when either class is moved
+        addDynamicUpdateListener(inheritanceLine, inheritanceTriangle, startBox, endBox, inheritanceLabel, startMultiplicityText, endMultiplicityText);
+
+        // Create UMLRelationshipBox
+        UMLRelationshipBox relationshipBox = new UMLRelationshipBox(
+                "Inheritance",
+                startName,
+                endName,
+                name,
+                startMultiplicity,
+                endMultiplicity,
+                inheritanceLine,
+                inheritanceLabel,
+                startMultiplicityText,
+                endMultiplicityText
+        );
+
+        // Add the relationship to the manager
+        classDiagramManager.addRelationshipBox(relationshipBox);
+
+        // Store the last created relationship
+        lastRelationshipBox = relationshipBox;
+
+        // Debug Logging
+        System.out.println("Created inheritance: " + name + " between " + startName + " and " + endName);
+    }
+
+    /**
+     * Retrieves the name of the UML element from the VBox.
+     *
+     * @param box The VBox representing the UML element.
+     * @return The name of the element.
+     */
+    private String getElementName(VBox box) {
+        if (box.getChildren().isEmpty()) return "Unknown";
+        Node node = box.getChildren().get(0);
+        if (node instanceof Label) {
+            Label firstLabel = (Label) node;
+            if (firstLabel.getText().equals("<<Interface>>")) {
+                // For interfaces, the actual name is the second label
+                if (box.getChildren().size() > 1 && box.getChildren().get(1) instanceof Label) {
+                    Label nameLabel = (Label) box.getChildren().get(1);
+                    return nameLabel.getText();
+                }
+            } else {
+                // For classes, the first label is the name
+                return firstLabel.getText();
+            }
+        }
+        return "Unknown";
+    }
+
+    /**
+     * Gets the last created UMLRelationshipBox.
+     *
+     * @return The last UMLRelationshipBox.
+     */
+    public UMLRelationshipBox getLastRelationshipBox() {
+        return lastRelationshipBox;
+    }
+
+    /**
+     * Adds dynamic listeners to update the inheritance line and triangle when classes are moved.
+     *
+     * @param line                 The inheritance line.
+     * @param inheritanceTriangle  The inheritance triangle.
+     * @param start                The starting class box.
+     * @param end                  The ending class box.
+     * @param inheritanceLabel     The label for the inheritance (optional).
+     * @param startMultiplicityText The label for the start multiplicity (optional).
+     * @param endMultiplicityText   The label for the end multiplicity (optional).
+     */
+    private void addDynamicUpdateListener(Line line, Polygon inheritanceTriangle, VBox start, VBox end, Text inheritanceLabel, Text startMultiplicityText, Text endMultiplicityText) {
         // Update position when the start or end class is moved
-        start.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, InheritanceLabel, startMultiplicityText, endMultiplicityText));
-        start.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, InheritanceLabel, startMultiplicityText, endMultiplicityText));
-        end.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, InheritanceLabel, startMultiplicityText, endMultiplicityText));
-        end.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, InheritanceLabel, startMultiplicityText, endMultiplicityText));
+        start.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, inheritanceLabel, startMultiplicityText, endMultiplicityText));
+        start.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, inheritanceLabel, startMultiplicityText, endMultiplicityText));
+        end.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, inheritanceLabel, startMultiplicityText, endMultiplicityText));
+        end.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndInheritanceTrianglePosition(line, inheritanceTriangle, start, end, inheritanceLabel, startMultiplicityText, endMultiplicityText));
     }
 
-    // Update the line and inheritance triangle's position when either class is moved
-    protected void updateLineAndInheritanceTrianglePosition(Line line, Polygon inheritanceTriangle, VBox start, VBox end, Text InheritanceLabel, Text startMultiplicityText, Text endMultiplicityText) {
+    /**
+     * Updates the position of the inheritance line and triangle when either class is moved.
+     *
+     * @param line                 The inheritance line.
+     * @param inheritanceTriangle  The inheritance triangle.
+     * @param start                The starting class box.
+     * @param end                  The ending class box.
+     * @param inheritanceLabel     The label for the inheritance (optional).
+     * @param startMultiplicityText The label for the start multiplicity (optional).
+     * @param endMultiplicityText   The label for the end multiplicity (optional).
+     */
+    protected void updateLineAndInheritanceTrianglePosition(Line line, Polygon inheritanceTriangle, VBox start, VBox end, Text inheritanceLabel, Text startMultiplicityText, Text endMultiplicityText) {
         // Recalculate the closest boundary points
         Point startPoint = getClosestBoundaryPoint(start, end);
         Point endPoint = getClosestBoundaryPoint(end, start);
 
-        // Update the line's position
+        // Update the line's start position
         line.setStartX(startPoint.getX());
         line.setStartY(startPoint.getY());
 
-        // Calculate the middle of the base of the inheritance triangle (where the second point of the line should attach)
-        double baseLeftX = inheritanceTriangle.getPoints().get(2) + inheritanceTriangle.getLayoutX();
-        double baseLeftY = inheritanceTriangle.getPoints().get(3) + inheritanceTriangle.getLayoutY();
-        double baseRightX = inheritanceTriangle.getPoints().get(4) + inheritanceTriangle.getLayoutX();
-        double baseRightY = inheritanceTriangle.getPoints().get(5) + inheritanceTriangle.getLayoutY();
-
-        // Calculate the midpoint of the base of the triangle (between the left and right base points)
-        double baseMiddleX = (baseLeftX + baseRightX) / 2;
-        double baseMiddleY = (baseLeftY + baseRightY) / 2;
-
-        // Set the second endpoint of the line to the middle of the base of the inheritance triangle
-        line.setEndX(baseMiddleX);
-        line.setEndY(baseMiddleY);
+        // Update the line's end position to the tip of the inheritance triangle
+        line.setEndX(endPoint.getX());
+        line.setEndY(endPoint.getY());
 
         // Update the inheritance triangle position, keeping its tip attached to the end class boundary
-        inheritanceTriangle.setLayoutX(endPoint.getX() - 5); // Adjusted for smaller size
-        inheritanceTriangle.setLayoutY(endPoint.getY() - 5); // Adjusted for smaller size
+        inheritanceTriangle.setLayoutX(endPoint.getX()); // Position tip at endPoint
+        inheritanceTriangle.setLayoutY(endPoint.getY() - 15); // Adjust Y to position the base below
 
-        // Calculate the angle between the two classes to rotate the triangle correctly
-        double angle = Math.atan2(endPoint.getY() - startPoint.getY(), endPoint.getX() - startPoint.getX());
-        inheritanceTriangle.setRotate(Math.toDegrees(angle) + 90); // +90 to make the triangle face downward
-
-        // Only bind labels if they are not null
-        if (InheritanceLabel != null) {
-            bindAssociationLabelToLine(InheritanceLabel, line);
+        // Rebind the inheritance label and multiplicity labels to the new line positions
+        if (inheritanceLabel != null) {
+            bindAssociationLabelToLine(inheritanceLabel, line);
         }
         if (startMultiplicityText != null) {
             bindMultiplicityLabelToLine(startMultiplicityText, line, true);
@@ -123,71 +343,9 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
         if (endMultiplicityText != null) {
             bindMultiplicityLabelToLine(endMultiplicityText, line, false);
         }
+
+        // Optional: Update the rotation of the triangle based on the angle between start and end
+        double angle = Math.atan2(endPoint.getY() - startPoint.getY(), endPoint.getX() - startPoint.getX());
+        inheritanceTriangle.setRotate(Math.toDegrees(angle) + 90); // +90 to align the triangle correctly
     }
 }
-
-
-   /* @Override
-    public void createRelationship(VBox start, VBox end, Pane drawingPane, String inheritanceName, String startMultiplicity, String endMultiplicity) {
-        // Disable association mode immediately after starting the process
-        disableInheritanceMode();
-
-
-        // Create the triangle (inheritance) shape
-        Polygon inheritanceTriangle = new Polygon();
-        inheritanceTriangle.getPoints().addAll(
-                0.0, 0.0,  // Top point
-                10.0, 20.0, // Bottom left point
-                20.0, 0.0   // Bottom right point
-        );
-        inheritanceTriangle.setFill(Color.WHITE);
-        inheritanceTriangle.setStroke(Color.BLACK); // Border color of the triangle
-
-        // Create the line connecting the first selected element (source) and the inheritance triangle (inheritance point)
-        Line inheritanceLine = new Line();
-
-        // Add the triangle and line to the drawing pane
-        drawingPane.getChildren().addAll(inheritanceTriangle, inheritanceLine);
-
-        // Add listeners to update the line and triangle position dynamically when classes are moved
-        addDynamicUpdateListener(inheritanceTriangle, inheritanceLine, start, end, drawingPane);
-    }
-
-    // Add listeners to update the line and triangle dynamically when classes are moved
-    private void addDynamicUpdateListener(Polygon inheritanceTriangle, Line inheritanceLine, VBox start, VBox end, Pane drawingPane) {
-        // Listen to the X and Y properties of both classes (start and end) to update the line and triangle positions
-        start.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLineAndTrianglePosition(inheritanceTriangle, inheritanceLine, start, end, drawingPane));
-        start.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndTrianglePosition(inheritanceTriangle, inheritanceLine, start, end, drawingPane));
-
-        end.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLineAndTrianglePosition(inheritanceTriangle, inheritanceLine, start, end, drawingPane));
-        end.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndTrianglePosition(inheritanceTriangle, inheritanceLine, start, end, drawingPane));
-
-        // Initial position update when the diagram is first created
-        updateLineAndTrianglePosition(inheritanceTriangle, inheritanceLine, start, end, drawingPane);
-    }
-
-    // Update the line and triangle position dynamically
-    private void updateLineAndTrianglePosition(Polygon inheritanceTriangle, Line inheritanceLine, VBox start, VBox end, Pane drawingPane) {
-        // Get the closest points of both classes
-        Point startPoint = getClosestBoundaryPoint(start, end);
-        Point endPoint = getClosestBoundaryPoint(end, start);
-
-        // Position the inheritance triangle at the boundary of the second class (end)
-        double secondElementCenterX = end.getLayoutX() + end.getWidth() / 2;
-        double secondElementCenterY = end.getLayoutY() + end.getHeight() / 2;
-        double triangleX = secondElementCenterX - 10; // Adjust to center the triangle on the boundary
-        double triangleY = end.getLayoutY(); // Position triangle at the top boundary of the class
-
-        // Set the inheritance triangle's position to the calculated point
-        inheritanceTriangle.setLayoutX(triangleX);
-        inheritanceTriangle.setLayoutY(triangleY - 10); // Offset to position the triangle correctly
-
-        // Update the line's start and end positions
-        inheritanceLine.setStartX(start.getLayoutX() + start.getWidth() / 2);
-        inheritanceLine.setStartY(start.getLayoutY() + start.getHeight() / 2);
-        inheritanceLine.setEndX(triangleX); // End at the inheritance triangle's top point
-        inheritanceLine.setEndY(triangleY); // End at the inheritance triangle's top point
-
-    }
-}
-*/

@@ -43,7 +43,14 @@ public class ClassEditorUI {
     private List<String> currentParameters = new ArrayList<>();
     //private ArrayList<String> currentParameters = new ArrayList<>(); // List to store parameters
 
+    // Reference to ClassDiagramManager will be injected
+    private ClassDiagramManager classDiagramManager;
+
+    /**
+     * Default constructor required by FXMLLoader.
+     */
     public ClassEditorUI() {
+        // Initialize without ClassDiagramManager; it will be set later
         this.classEditorManager = new ClassEditorManager();
     }
 
@@ -79,14 +86,24 @@ public class ClassEditorUI {
         applyChangesButton.setOnAction(event -> applyChanges());
     }
 
+    /**
+     * Sets the ClassDiagramManager reference and updates ClassEditorManager accordingly.
+     *
+     * @param manager The ClassDiagramManager instance.
+     */
+    public void setClassDiagramManager(ClassDiagramManager manager) {
+        this.classDiagramManager = manager;
+        this.classEditorManager.setClassDiagramManager(manager);
+    }
+
     private void addAttribute() {
         String dataType = dataTypeDropdown.getValue();
         String visibility = visibilityDropdown.getValue();
         String attributeName = attributeNameField.getText();
 
         if (!attributeName.isEmpty()) {
-            String attribute = visibility.charAt(0) + attributeName + " : " + dataType;
-            attributesArea.appendText(attribute + "\n");
+            String attribute = visibility.charAt(0) + attributeName + " : " + dataType + "\n";
+            attributesArea.appendText(attribute);
             attributeNameField.clear();
         }
     }
@@ -97,8 +114,8 @@ public class ClassEditorUI {
         String methodName = methodNameField.getText();
 
         if (!methodName.isEmpty()) {
-            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType;
-            methodsArea.appendText(methodSignature + "\n");
+            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType + "\n";
+            methodsArea.appendText(methodSignature);
             methodNameField.clear();
             currentParameters.clear();  // Clear parameters after adding method
         }
@@ -148,15 +165,43 @@ public class ClassEditorUI {
     }
 
 
-    public void setClassBox(VBox classBox) {
-        classEditorManager.setClassBox(classBox);
-        classNameField.setText(classEditorManager.getClassName());
-        attributesArea.setText(classEditorManager.getAttributes());
-        methodsArea.setText(classEditorManager.getMethods());
+    /**
+     * Sets the class box and populates the editor fields with existing class data.
+     *
+     * @param classBox    The VBox representing the class.
+     * @param umlClassBox The UMLClassBox model object.
+     */
+    public void setClassBox(VBox classBox, UMLClassBox umlClassBox) {
+        classEditorManager.setClassBox(classBox, umlClassBox);
+        classNameField.setText(umlClassBox.getName());
+        attributesArea.setText(String.join("\n", umlClassBox.getAttributes()));
+        methodsArea.setText(String.join("\n", umlClassBox.getMethods()));
     }
 
+    /**
+     * Applies changes made in the editor to the UML model.
+     */
     private void applyChanges() {
-        classEditorManager.applyChanges(classNameField.getText(), attributesArea.getText(), methodsArea.getText());
+        classEditorManager.applyChanges(
+                classNameField.getText(),
+                attributesArea.getText(),
+                methodsArea.getText()
+        );
+    }
+
+    /**
+     * Provides access to the root node of ClassEditorUI.
+     * This method should be implemented to return the root node (e.g., VBox) of the editor.
+     *
+     * @return The root node of ClassEditorUI.
+     */
+    public VBox getEditorNode() {
+        // This method should return the root node defined in ClassEditor.fxml
+        // For example:
+        // return (VBox) classNameField.getParent().getParent();
+        // Adjust based on your FXML structure
+        // Alternatively, load the FXML within this class and manage the root node internally
+        return null; // Placeholder; implement as needed
     }
 
     public void applyHoverEffect(javafx.scene.input.MouseEvent mouseEvent) {
