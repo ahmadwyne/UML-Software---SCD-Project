@@ -39,7 +39,7 @@ public class ClassDiagramUI {
     private Button btnInheritance;
 
     @FXML
-    private Button btnSave, btnLoad; // Added Save and Load buttons
+    private Button btnSave, btnLoad, btnExportImage; // Added Save and Load buttons
 
     @FXML
     private VBox editorsPane;
@@ -61,6 +61,10 @@ public class ClassDiagramUI {
         // Setup Save and Load handlers
         btnSave.setOnAction(e -> handleSave());
         btnLoad.setOnAction(e -> handleLoad());
+
+        // Setup Export as Image Handler
+        btnExportImage.setOnAction(e -> handleExportAsImage());
+
     }
 
     @FXML
@@ -168,6 +172,44 @@ public class ClassDiagramUI {
      */
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    /**
+     * Handles the Export as Image action.
+     */
+    @FXML
+    private void handleExportAsImage() {
+        // Retrieve the Stage from the drawingPane (or any other node)
+        Stage stage = (Stage) drawingPane.getScene().getWindow();
+
+        if (stage == null) {
+            showErrorAlert("Cannot retrieve the primary stage.");
+            return;
+        }
+
+        // Create a FileChooser for saving the image
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export UML Diagram as Image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG Image", "*.png"),
+                new FileChooser.ExtensionFilter("JPEG Image", "*.jpg"),
+                new FileChooser.ExtensionFilter("All Images", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        // Show the save dialog
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            try {
+                classDiagramManager.exportAsImage(file);
+                showInformationAlert("Diagram exported successfully to " + file.getAbsolutePath());
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                showErrorAlert("Failed to export diagram: " + e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                showErrorAlert("An error occurred while saving the image.");
+            }
+        }
     }
 
     /**

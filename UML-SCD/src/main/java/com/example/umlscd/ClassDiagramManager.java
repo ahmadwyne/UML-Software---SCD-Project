@@ -1,12 +1,17 @@
 package com.example.umlscd;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -1034,6 +1039,55 @@ public class ClassDiagramManager {
      */
     public boolean isClassNameExists(String name) {
         return classBoxMap.containsKey(name);
+    }
+
+    /**
+     * Exports the current class diagram as an image file.
+     *
+     * @param file The destination file where the image will be saved.
+     * @throws IOException If an error occurs during writing the image.
+     */
+    public void exportAsImage(File file) throws IOException {
+        // Retrieve the drawing pane from the UI controller
+        Pane drawingPane = uiController.getDrawingPane();
+
+        // Ensure the drawingPane is not null
+        if (drawingPane == null) {
+            throw new IllegalStateException("Drawing pane is not initialized.");
+        }
+
+        // Apply CSS and layout to ensure the snapshot is accurate
+        drawingPane.applyCss();
+        drawingPane.layout();
+
+        // Create a WritableImage with the size of the drawing pane
+        WritableImage image = new WritableImage((int) drawingPane.getWidth(), (int) drawingPane.getHeight());
+
+        // Take a snapshot of the drawing pane
+        SnapshotParameters params = new SnapshotParameters();
+        // Optionally, set a background color if needed
+        // params.setFill(Color.TRANSPARENT);
+        image = drawingPane.snapshot(params, image);
+
+        // Convert WritableImage to BufferedImage
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+
+        // Determine the image format based on the file extension
+        String fileName = file.getName().toLowerCase();
+        String format;
+        if (fileName.endsWith(".png")) {
+            format = "png";
+        } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
+            format = "jpg";
+        } else {
+            // Default to PNG if the extension is unrecognized
+            format = "png";
+            // Append the default extension
+            file = new File(file.getAbsolutePath() + ".png");
+        }
+
+        // Write the BufferedImage to the file
+        ImageIO.write(bufferedImage, format, file);
     }
 }
 
