@@ -39,7 +39,7 @@ public class ClassDiagramUI {
     private Button btnInheritance;
 
     @FXML
-    private Button btnSave, btnLoad; // Added Save and Load buttons
+    private Button btnSave, btnLoad,btnCode; // Added Save and Load buttons
 
     @FXML
     private VBox editorsPane;
@@ -61,6 +61,7 @@ public class ClassDiagramUI {
         // Setup Save and Load handlers
         btnSave.setOnAction(e -> handleSave());
         btnLoad.setOnAction(e -> handleLoad());
+        btnCode.setOnAction(e -> handleGenerateCode());
     }
 
     @FXML
@@ -68,6 +69,19 @@ public class ClassDiagramUI {
         Button button = (Button) event.getSource();
         button.setStyle("-fx-background-color: #C0C0C0; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
     }
+    private void handleGenerateCode() {
+        // Specify the output file location (you can customize this as needed)
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        File file = fileChooser.showSaveDialog(primaryStage);
+
+        if (file != null) {
+            // Generate the Java code and save it to the file
+            ClassDiagramCodeGenerator codeGenerator = new ClassDiagramCodeGenerator();
+            codeGenerator.generateCodeFiles(classDiagramManager.getClassDiagram(), file.getAbsolutePath());
+        }
+    }
+
 
     @FXML
     private void removeHoverEffect(MouseEvent event) {

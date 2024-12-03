@@ -27,6 +27,9 @@ public class ClassDiagramManager {
     private ClassDiagramD classDiagram;
     private boolean isDragEnabled = false;
     private Map<String, UMLElementBoxInterface> classBoxMap = new HashMap<>();
+    public ClassDiagramD getClassDiagram() {
+        return classDiagram;
+    }
 
     /**
      * Constructs a ClassDiagramManager with the specified UI controller.
