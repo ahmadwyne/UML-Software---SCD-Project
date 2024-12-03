@@ -84,8 +84,8 @@ public class ClassEditorUI {
         String attributeName = attributeNameField.getText();
 
         if (!attributeName.isEmpty()) {
-            String attribute = visibility.charAt(0) + attributeName + " : " + dataType;
-            attributesArea.appendText(attribute + "\n");
+            String attribute = visibility.charAt(0) + attributeName + " : " + dataType + "\n";
+            attributesArea.appendText(attribute);
             attributeNameField.clear();
         }
     }
@@ -96,8 +96,8 @@ public class ClassEditorUI {
         String methodName = methodNameField.getText();
 
         if (!methodName.isEmpty()) {
-            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType;
-            methodsArea.appendText(methodSignature + "\n");
+            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType + "\n";
+            methodsArea.appendText(methodSignature);
             methodNameField.clear();
             currentParameters.clear();  // Clear parameters after adding method
         }
@@ -147,14 +147,18 @@ public class ClassEditorUI {
     }
 
 
-    public void setClassBox(VBox classBox) {
-        classEditorManager.setClassBox(classBox);
-        classNameField.setText(classEditorManager.getClassName());
-        attributesArea.setText(classEditorManager.getAttributes());
-        methodsArea.setText(classEditorManager.getMethods());
+    public void setClassBox(VBox classBox, UMLClassBox umlClassBox) {
+        classEditorManager.setClassBox(classBox, umlClassBox);
+        classNameField.setText(umlClassBox.getName());
+        attributesArea.setText(String.join("\n", umlClassBox.getAttributes()));
+        methodsArea.setText(String.join("\n", umlClassBox.getMethods()));
     }
 
     private void applyChanges() {
-        classEditorManager.applyChanges(classNameField.getText(), attributesArea.getText(), methodsArea.getText());
+        classEditorManager.applyChanges(
+                classNameField.getText(),
+                attributesArea.getText(),
+                methodsArea.getText()
+        );
     }
 }
