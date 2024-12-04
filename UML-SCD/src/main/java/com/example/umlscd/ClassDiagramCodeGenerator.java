@@ -21,7 +21,7 @@ public class ClassDiagramCodeGenerator {
             // Iterate through each class and handle relationships, attributes, and methods
             for (UMLClassBox umlClass : diagram.getClasses()) {
                 // Generate the class code with relationships first
-                writer.write(generateClassWithRelationships(umlClass, diagram.getRelationships()));
+                writer.write(generateClassWithRelationships(umlClass, diagram.getRelationships(),diagram));
                 writer.newLine();
 
                 // Now add attributes and methods (to be done after relationships are handled)
@@ -50,46 +50,64 @@ public class ClassDiagramCodeGenerator {
      * @param relationships The relationships for the UML diagram.
      * @return The Java code for the class, including its relationships.
      */
-    private String generateClassWithRelationships(UMLClassBox umlClass, List<UMLRelationship> relationships) {
+    private String generateClassWithRelationships(UMLClassBox umlClass, List<UMLRelationship> relationships,ClassDiagramD diagram) {
         StringBuilder classCode = new StringBuilder();
-        // Start the class definition
         classCode.append("public class ").append(umlClass.getName());
-        // Handle inheritance (extends)
+
+        boolean hasInheritance = false;
+
+        // Handle inheritance (extends or implements)
         for (UMLRelationship relationship : relationships) {
-            if(relationship.getType().equalsIgnoreCase("Association")||relationship.getType().equalsIgnoreCase("Aggregation")||relationship.getType().equalsIgnoreCase("Composition"))
-            {
-                 classCode.append(" {");
+            if (relationship.getType().equalsIgnoreCase("Inheritance") &&
+                    relationship.getStartElementName().equals(umlClass.getName())) {
+                String parentName = relationship.getEndElementName();
 
+                // Check if the parent is an interface
+                boolean isInterface = diagram.getInterfaces().stream()
+                        .anyMatch(umlInterface -> umlInterface.getName().equals(parentName));
+
+                if (isInterface) {
+                    classCode.append(" implements ").append(parentName);
+                } else {
+                    classCode.append(" extends ").append(parentName);
+                }
+
+                hasInheritance = true;
             }
-
-            if (relationship.getType().equalsIgnoreCase("Inheritance") && relationship.getStartElementName().equals(umlClass.getName())) {
+        }
+        // Open the class body
+        classCode.append(" {");
+        // Handle inheritance (extends)
+        /*for (UMLRelationship relationship : relationships) {
+            if (relationship.getType().equalsIgnoreCase("Inheritance") &&
+                    relationship.getStartElementName().equals(umlClass.getName())) {
                 classCode.append(" extends ").append(relationship.getEndElementName());
-                classCode.append(" {");
-            }
-            else if (relationship.getType().equalsIgnoreCase("Association") && relationship.getStartElementName().equals(umlClass.getName())) {
-                // Add association field
-                String associationType = relationship.getEndElementName(); // Class that is being associated
-                String associationField = relationship.getStartElementName().toLowerCase(); // Use lower case for the field name (e.g., "class2" for association with Class2)
-                classCode.append(" \n   private ").append(associationType).append(" ").append(associationField).append(";");
-            }
-            else if (relationship.getType().equalsIgnoreCase("Aggregation") && relationship.getStartElementName().equals(umlClass.getName())) {
-                // Add association field
-                String associationType = relationship.getEndElementName(); // Class that is being associated
-                String associationField = relationship.getStartElementName().toLowerCase(); // Use lower case for the field name (e.g., "class2" for association with Class2)
-                classCode.append(" \n   private ").append(associationType).append(" *").append(associationField).append(";");
-            }
-            else if (relationship.getType().equalsIgnoreCase("Composition") && relationship.getStartElementName().equals(umlClass.getName())) {
-                // Add association field
-                String associationType = relationship.getEndElementName(); // Class that is being associated
-                String associationField = relationship.getStartElementName().toLowerCase(); // Use lower case for the field name (e.g., "class2" for association with Class2)
-                classCode.append(" \n   private ").append(associationType).append(" *").append(associationField).append(";");
             }
         }
 
+        // Open the class body
+        classCode.append(" {");*/
 
+        // Handle associations, aggregations, and compositions
+        for (UMLRelationship relationship : relationships) {
+            if (relationship.getStartElementName().equals(umlClass.getName())) {
+                String associationType = relationship.getEndElementName(); // Associated class name
+                String fieldName = relationship.getStartElementName();//Character.toLowerCase(associationType.charAt(0)) + associationType.substring(1);
 
+                if (relationship.getType().equalsIgnoreCase("Association")) {
+                    classCode.append("\n    private ").append(associationType).append(" ").append(fieldName).append(";");
+                } else if (relationship.getType().equalsIgnoreCase("Aggregation")) {
+                    classCode.append("\n    private ").append(associationType).append(" *").append(fieldName).append(";");
+                } else if (relationship.getType().equalsIgnoreCase("Composition")) {
+                    classCode.append("\n    private ").append(associationType).append(" *").append(fieldName).append(";");
+                }
+            }
+        }
+
+        //classCode.append("\n}"); // Close the class
         return classCode.toString();
     }
+
 
     /**
      * Generates the attributes and methods for the class.
@@ -146,7 +164,7 @@ public class ClassDiagramCodeGenerator {
                     String[] paramParts = param.trim().split(":");  // Split parameter into type and name
 
                     if (paramParts.length == 2) {
-                        formattedParams.append(paramParts[0].trim()).append(" ").append(paramParts[1].trim()).append(", ");
+                        formattedParams.append(paramParts[1].trim()).append(" ").append(paramParts[0].trim()).append(", ");
                     }
                 }
                 // Remove trailing comma and space if present
@@ -208,13 +226,37 @@ public class ClassDiagramCodeGenerator {
 
         // Add methods
         for (String method : umlInterface.getMethods()) {
-            interfaceCode.append("\n    public void ").append(method).append("();");
+            // Remove visibility symbols if present
+            String visibility = method.substring(0, 1);  // "+" for public, "-" for private, "#" for protected
+
+            String methodName = method.trim();
+            if (methodName.startsWith("+") || methodName.startsWith("-") || methodName.startsWith("#")) {
+                methodName = methodName.substring(1).trim();
+            }
+
+            // Add the method to the interface code
+            interfaceCode.append(getVisibility(visibility)).append("\n    void ").append(methodName).append("();");
         }
 
         interfaceCode.append("\n}");
 
         return interfaceCode.toString();
     }
+
+    /*private String generateInterfaceCode(UMLInterfaceBox umlInterface) {
+        StringBuilder interfaceCode = new StringBuilder();
+
+        // Start the interface definition
+        interfaceCode.append("public interface ").append(umlInterface.getName()).append(" {");
+        // Add methods
+        for (String method : umlInterface.getMethods()) {
+            interfaceCode.append("\n    public void ").append(method).append("();");
+        }
+
+        interfaceCode.append("\n}");
+
+        return interfaceCode.toString();
+    }*/
 
 
 
