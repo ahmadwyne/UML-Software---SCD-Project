@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.shape.Line;
+import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
 /**
  * Manages the creation and rendering of Association relationships.
@@ -172,6 +173,42 @@ public class AssociationManager extends ClassDiagramRelationsManager {
 
         // **Debug Logging**
         System.out.println("Created association: " + name + " between " + startName + " and " + endName);
+
+        /*// Add a mouse click listener to the line for selection
+        associationLine.setOnMouseClicked(event -> {
+            System.out.println("Line selected");
+            // Toggle the selection of the line (change color to red for selection)
+            if (associationLine.getStroke().equals(Color.RED)) {
+                // If the line is already selected (red), unselect it (reset to black)
+                associationLine.setStroke(Color.BLACK);
+            } else {
+                // If the line is not selected, select it by changing the color to red
+                associationLine.setStroke(Color.RED);
+            }
+
+            // Optionally, you can store the selected line and keep track of it if needed
+            // classDiagramManager.setSelectedRelationship(associationLine);
+        });
+    }*/
+
+        // Add a mouse click listener to the line for deletion
+        associationLine.setOnMouseClicked(event -> {
+            System.out.println("Line clicked");
+            System.out.println("Line clicked");
+            if (associationLine.getStroke().equals(Color.RED)) {
+                associationLine.setStroke(Color.BLACK); // Unselect
+            } else {
+                associationLine.setStroke(Color.RED); // Highlight
+            }
+            // Call deleteSelectedRelationship to remove the relationship
+            classDiagramManager.deleteSelectedRelationship(associationLine);
+        });
+        associationLine.setPickOnBounds(true); // Enables broader click detection
+       // ass.setMouseTransparent(true);
+        startMultiplicityText.setMouseTransparent(true);
+        endMultiplicityText.setMouseTransparent(true);
+
+
     }
 
     /**

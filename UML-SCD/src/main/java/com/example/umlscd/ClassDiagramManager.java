@@ -6,10 +6,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Manages the UML Class Diagram, including adding classes, interfaces, relationships,
@@ -54,16 +56,8 @@ public class ClassDiagramManager {
         return classDiagram.getRelationships();
     }
 
-    /**
-     * Clears all elements from the diagram.
-     */
-    public void clearDiagram() {
-        uiController.getDrawingPane().getChildren().clear();
-        classDiagram.getClasses().clear();
-        classDiagram.getInterfaces().clear();
-        classDiagram.getRelationships().clear();
-        elements.clear();
-    }
+
+
 
     /**
      * Creates a class box at the specified position and adds it to the diagram.
@@ -143,48 +137,7 @@ public class ClassDiagramManager {
         classDiagram.getInterfaces().add(umlInterfaceBox);
     }
 
-    /*public void createRelationshipFromSerialization(UMLRelationship umlRelationship) {
-        String type = umlRelationship.getType();
-        String startName = umlRelationship.getStartElementName();
-        System.out.println("Start Element Name: " + startName);
-        String endName = umlRelationship.getEndElementName();
-        System.out.println("End Element Name: " + endName);
-        String name = umlRelationship.getName();
-        String startMultiplicity = umlRelationship.getStartMultiplicity();
-        String endMultiplicity = umlRelationship.getEndMultiplicity();
 
-        VBox startBox = findClassBoxByName(startName);
-        if (startBox == null) startBox = findInterfaceBoxByName(startName);
-        VBox endBox = findClassBoxByName(endName);
-        if (endBox == null) endBox = findInterfaceBoxByName(endName);
-
-        if (startBox == null || endBox == null) {
-            System.err.println("Could not find elements for relationship: " + name);
-            return;
-        }
-
-        // Depending on the relationship type, use the appropriate manager
-        switch (type.toLowerCase()) {
-            case "association":
-                AssociationManager associationManager = new AssociationManager(this);
-                associationManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
-                break;
-            /*case "aggregation":
-                AggregationManager aggregationManager = new AggregationManager(this);
-                aggregationManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
-                break;
-            case "composition":
-                CompositionManager compositionManager = new CompositionManager(this);
-                compositionManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
-                break;
-            case "inheritance":
-                InheritanceManager inheritanceManager = new InheritanceManager(this);
-                inheritanceManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
-                break;*/
-            /*default:
-                System.err.println("Unknown relationship type: " + type);
-        }
-    }*/
 
     /**
      * Finds a class box by its name.
@@ -227,12 +180,7 @@ public class ClassDiagramManager {
      *
      * @param relationshipBox The UMLRelationshipBox to add.
      */
-    /*public void addRelationshipBox(UMLRelationshipBox relationshipBox) {
-        if (relationshipBox != null) {
-            classDiagram.getRelationships().add(relationshipBox.getUmlRelationship());
-            // No separate relationships list, so no need to add to it
-        }
-    }*/
+
 
     /**
      * Saves the current UML diagram to a JSON file.
@@ -756,74 +704,7 @@ public class ClassDiagramManager {
         }
         return null;
     }
-    /*
-    public void reCreateClassBox(String name, double layoutX, double layoutY, List<String> attributes, List<String> methods) {
-        VBox classBox = new VBox();
-        classBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        classBox.setSpacing(0);
 
-        Label classNameLabel = new Label(name);
-        classNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5;");
-        classNameLabel.setAlignment(Pos.CENTER);
-        classNameLabel.setMaxWidth(Double.MAX_VALUE);
-
-        VBox attributesBox = new VBox();
-        attributesBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-        for (String attribute : attributes) {
-            attributesBox.getChildren().add(new Label(attribute));
-        }
-
-        VBox methodsBox = new VBox();
-        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-        for (String method : methods) {
-            methodsBox.getChildren().add(new Label(method));
-        }
-
-        classBox.getChildren().addAll(classNameLabel, attributesBox, methodsBox);
-        classBox.setLayoutX(layoutX);
-        classBox.setLayoutY(layoutY);
-
-        classBox.setOnMouseClicked(event -> uiController.openClassEditor(classBox));
-        uiController.getDrawingPane().getChildren().add(classBox);
-        elements.add(classBox);
-        setDraggable(classBox, isDragEnabled);
-
-        // Update the ClassDiagram model
-        UMLClassBox umlClassBox = new UMLClassBox(name, layoutX, layoutY, classBox);
-        umlClassBox.setVisualRepresentation(classBox);
-        classDiagram.getClasses().add(umlClassBox);
-    }
-
-    public void reCreateInterfaceBox(String name, double layoutX, double layoutY) {
-        VBox interfaceBox = new VBox();
-        interfaceBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        interfaceBox.setSpacing(0);
-
-        Label interfaceLabel = new Label("<<Interface>>");
-        interfaceLabel.setStyle("-fx-padding: 1;");
-        interfaceLabel.setAlignment(Pos.CENTER);
-
-        Label interfaceNameLabel = new Label(name);
-        interfaceNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 1;");
-        interfaceNameLabel.setAlignment(Pos.CENTER);
-        interfaceNameLabel.setMaxWidth(Double.MAX_VALUE);
-
-        VBox methodsBox = new VBox();
-        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-
-        interfaceBox.getChildren().addAll(interfaceLabel, interfaceNameLabel, methodsBox);
-        interfaceBox.setLayoutX(layoutX);
-        interfaceBox.setLayoutY(layoutY);
-
-        interfaceBox.setOnMouseClicked(event -> uiController.openInterfaceEditor(interfaceBox));
-        uiController.getDrawingPane().getChildren().add(interfaceBox);
-        elements.add(interfaceBox);
-        setDraggable(interfaceBox, isDragEnabled);
-
-        // Update the ClassDiagram model
-        UMLInterfaceBox umlInterfaceBox = new UMLInterfaceBox(name, layoutX, layoutY, interfaceBox);
-        classDiagram.getInterfaces().add(umlInterfaceBox);
-    }*/
 
     /**
      * Creates a relationship based on serialized data.
@@ -1035,755 +916,165 @@ public class ClassDiagramManager {
     public boolean isClassNameExists(String name) {
         return classBoxMap.containsKey(name);
     }
+
+
+   /* // Method to delete the selected element (class)
+    public void deleteSelectedElement(VBox selectedElement) {
+        if (selectedElement != null) {
+            String className = selectedElement.getId();  // Assuming each VBox has a unique ID (class name)
+
+            // Remove the element from the drawing pane
+            uiController.getDrawingPane().getChildren().remove(selectedElement);
+
+            // Remove the element from the classBoxMap
+            classBoxMap.remove(className);
+
+            // Optionally, remove related relationships if any
+           // deleteRelatedRelationships(className);
+        }
+    }*/
+
+    // Method to delete the selected element (class) and any related relationships
+    public void deleteSelectedElement(VBox selectedElement) {
+        if (selectedElement != null) {
+            String className = selectedElement.getId();  // Assuming each VBox has a unique ID (class name)
+
+            // Remove the class from the drawing pane
+            uiController.getDrawingPane().getChildren().remove(selectedElement);
+
+            for(UMLRelationship rel : classDiagram.getRelationships()){
+
+            }
+
+            // Remove the class from the classBoxMap
+            classBoxMap.remove(className);
+
+            // Remove the class from the model (classDiagram) if it's part of the model
+            classDiagram.removeRelationshipsByClassName(className);
+
+            // Optionally, remove related relationships if any
+            deleteRelatedRelationships(className);
+
+            // You can add a confirmation or alert that the class has been deleted
+            showDeletionConfirmation(className);
+        }
+    }
+
+    /*// Helper method to delete related relationships of the class
+    private void deleteRelatedRelationships(String className) {
+        // Find and delete any relationships that involve this class
+        List<UMLRelationship> relationshipsToRemove = new ArrayList<>();
+
+        // Iterate over all the relationships in the class diagram
+        for (UMLRelationship relationship : classDiagram.getRelationships()) {
+            System.out.println(relationship.getStartElementName());
+            System.out.println(relationship.getEndElementName());
+
+            // Check if the relationship involves the class being deleted
+            if (relationship.getStartElementName().equals(className) || relationship.getEndElementName().equals(className)) {
+                relationshipsToRemove.add(relationship);
+                System.out.println(relationship.getType());
+            }
+        }
+
+        // Remove the relationships from the diagram
+        for (UMLRelationship relationship : relationshipsToRemove) {
+            // Remove from the drawing pane (if the relationship is represented visually)
+            uiController.getDrawingPane().getChildren().remove(relationship.getType());
+
+            // Remove from the class diagram model
+            classDiagram.getRelationships().remove(relationship);  // This removes the relationship from the model
+        }
+    }*/
+
+
+    private void deleteRelatedRelationships(String className) {
+        // Collect relationships to remove
+        List<UMLRelationship> relationshipsToRemove = classDiagram.getRelationships().stream()
+                .filter(relationship -> relationship.getStartElementName().equals(className)
+                        || relationship.getEndElementName().equals(className))
+                .collect(Collectors.toList());
+
+        // Remove each relationship from the diagram and UI
+        for (UMLRelationship relationship : relationshipsToRemove) {
+            // Remove the visual representation
+            String visualElement = relationship.getType(); // Assuming getType() returns the Line/Node for the UI.
+            if (visualElement != null) {
+                uiController.getDrawingPane().getChildren().remove(visualElement);
+            }
+
+            // Remove the relationship from the data model
+            classDiagram.getRelationships().remove(relationship);
+        }
+    }
+
+
+    // Helper method to show a confirmation alert after deletion (optional)
+    private void showDeletionConfirmation(String className) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Class " + className + " and its related relationships have been deleted.", ButtonType.OK);
+        alert.showAndWait();
+    }
+
+
+
+
+
+
+    /*// Method to delete the selected relationship
+    public void deleteSelectedRelationship(Node selectedRelationship) {
+        if (selectedRelationship != null) {
+            // Remove the relationship from the drawing pane
+            uiController.getDrawingPane().getChildren().remove(selectedRelationship);
+
+            // Remove the relationship from the model (ClassDiagramD)
+            if (selectedRelationship instanceof Line) {
+                // Find the corresponding UMLRelationship object in the model and remove it
+                for (UMLRelationship relationship : classDiagram.getRelationships()) {
+                    if (relationship.getType().equals(selectedRelationship)) {
+                        classDiagram.getRelationships().remove(relationship);
+                        break;
+                    }
+                }
+            }
+        }
+    }*/
+
+    public void deleteSelectedRelationship(Line line) {
+        System.out.println("Attempting to delete line: " + line);
+        uiController.getDrawingPane().getChildren().remove(line); // Remove from UI
+        // Additional cleanup logic for labels or relationships
+    }
+
+    public void deleteSelectedRelationship(Node selectedRelationship) {
+        if (selectedRelationship == null) {
+            return; // No relationship selected
+        }
+
+        // Find and remove the corresponding UMLRelationship
+        UMLRelationship toRemove = null;
+        for (UMLRelationship relationship : classDiagram.getRelationships()) {
+            if (relationship.getType().equals(selectedRelationship)) {
+                toRemove = relationship;
+                break;
+            }
+        }
+
+        if (toRemove != null) {
+            // Remove the visual representation
+            uiController.getDrawingPane().getChildren().remove(selectedRelationship);
+
+            // Remove from the data model
+            classDiagram.getRelationships().remove(toRemove);
+
+            // Optional: Show confirmation
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Relationship deleted successfully.", ButtonType.OK);
+            alert.showAndWait();
+        }
+    }
+
+
 }
 
 
 
 
-/*import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextField;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-public class ClassDiagramManager {
-    private final ArrayList<Node> elements = new ArrayList<>();
-    private VBox firstSelectedElement = null;
-    private VBox secondSelectedElement = null;
-
-    private final List<UMLClassBox> classes = new ArrayList<>();
-    private final List<UMLInterfaceBox> interfaces = new ArrayList<>();
-    private final List<UMLRelationshipBox> relationships = new ArrayList<>();
-
-    private final ClassDiagramSerializer serializer;
-
-    private final ClassDiagramUI uiController;
-    private ClassDiagramRelationsManager relationsManager;
-    private ClassDiagramD classDiagram;
-    private boolean isDragEnabled = false;
-
-    /*public ClassDiagramManager(ClassDiagramUI uiController) {
-        this.uiController = uiController;
-        this.relationsManager = new AssociationManager(this); // Set the correct manager
-        this.relationsManager= new AggregationManager(this);
-
-        this.relationsManager= new CompositionManager(this);
-        this.relationsManager= new InheritanceManager(this);
-
-        this.classDiagram = new ClassDiagramD();
-        this.serializer = new ClassDiagramSerializer();
-    }
-
-    public ClassDiagramManager() {
-        uiController = new ClassDiagramUI();
-        serializer = new ClassDiagramSerializer();
-        classDiagram = new ClassDiagramD();
-    }*/
-
-    /*public ClassDiagramManager(ClassDiagramUI uiController) {
-        this.uiController = uiController;
-        this.relationsManager = null; // Initialize as null; set appropriately during tool selection
-        this.classDiagram = new ClassDiagramD();
-        this.serializer = new ClassDiagramSerializer();
-    }
-
-
-    // Getters for serialization
-
-    public List<UMLClassBox> getClasses() {
-        return classes;
-    }
-
-    public List<UMLInterfaceBox> getInterfaces() {
-        return interfaces;
-    }
-
-    public List<UMLRelationshipBox> getRelationships() {
-        return relationships;
-    }
-
-    /**
-     * Clears all elements from the diagram.
-     */
-    /*public void clearDiagram() {
-        uiController.getDrawingPane().getChildren().clear();
-        classes.clear();
-        interfaces.clear();
-        relationships.clear();
-    }
-
-    /**
-     * Creates a class box at the specified position and adds it to the diagram.
-     *
-     * @param name    The name of the class.
-     * @param layoutX The X position.
-     * @param layoutY The Y position.
-     */
-    /*public void reCreateClassBox(String name, double layoutX, double layoutY) {
-        VBox classBox = new VBox();
-        classBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        classBox.setSpacing(0);
-
-        Label classNameLabel = new Label(name);
-        classNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5;");
-        classNameLabel.setAlignment(Pos.CENTER);
-        classNameLabel.setMaxWidth(Double.MAX_VALUE);
-        classNameLabel.setStyle("-fx-alignment: center; -fx-font-weight: bold; -fx-padding: 5;");
-
-        VBox attributesBox = new VBox();
-        attributesBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-
-        VBox methodsBox = new VBox();
-        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-
-        classBox.getChildren().addAll(classNameLabel, attributesBox, methodsBox);
-        classBox.setLayoutX(layoutX);
-        classBox.setLayoutY(layoutY);
-
-        classBox.setOnMouseClicked(event -> uiController.openClassEditor(classBox));
-        uiController.getDrawingPane().getChildren().add(classBox);
-        elements.add(classBox);
-        setDraggable(classBox, false);
-
-        // Update the ClassDiagram model
-        UMLClassBox umlClassBox = new UMLClassBox(name, layoutX, layoutY, classBox);
-        classes.add(umlClassBox);
-        classDiagram.getClasses().add(umlClassBox);
-    }
-
-    /**
-     * Creates an interface box at the specified position and adds it to the diagram.
-     *
-     * @param name    The name of the interface.
-     * @param layoutX The X position.
-     * @param layoutY The Y position.
-     */
-    /*public void reCreateInterfaceBox(String name, double layoutX, double layoutY) {
-        VBox interfaceBox = new VBox();
-        interfaceBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        interfaceBox.setSpacing(0);
-
-        Label interfaceLabel = new Label("<<Interface>>");
-        interfaceLabel.setStyle("-fx-padding: 1;");
-        interfaceLabel.setAlignment(Pos.CENTER);
-
-        Label interfaceNameLabel = new Label(name);
-        interfaceNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 1;");
-        interfaceNameLabel.setAlignment(Pos.CENTER);
-        interfaceNameLabel.setMaxWidth(Double.MAX_VALUE);
-        interfaceNameLabel.setStyle("-fx-alignment: center; -fx-font-weight: bold; -fx-padding: 1;");
-
-        VBox methodsBox = new VBox();
-        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-
-        interfaceBox.getChildren().addAll(interfaceLabel, interfaceNameLabel, methodsBox);
-        interfaceBox.setLayoutX(layoutX);
-        interfaceBox.setLayoutY(layoutY);
-
-        interfaceBox.setOnMouseClicked(event -> uiController.openInterfaceEditor(interfaceBox));
-        uiController.getDrawingPane().getChildren().add(interfaceBox);
-        elements.add(interfaceBox);
-        setDraggable(interfaceBox, false);
-
-        // Update the ClassDiagram model
-        UMLInterfaceBox umlInterfaceBox = new UMLInterfaceBox(name, layoutX, layoutY, interfaceBox);
-        interfaces.add(umlInterfaceBox);
-        classDiagram.getInterfaces().add(umlInterfaceBox);
-    }
-
-
-    /**
-     * Creates a relationship based on serialized data.
-     *
-     * @param umlRelationship The UMLRelationship data.
-     */
-    /*public void createRelationshipFromSerialization(UMLRelationship umlRelationship) {
-        String type = umlRelationship.getType();
-        String startName = umlRelationship.getStartElementName();
-        String endName = umlRelationship.getEndElementName();
-        String name = umlRelationship.getName();
-        String startMultiplicity = umlRelationship.getStartMultiplicity();
-        String endMultiplicity = umlRelationship.getEndMultiplicity();
-
-        VBox startBox = findClassBoxByName(startName);
-        if (startBox == null) startBox = findInterfaceBoxByName(startName);
-        VBox endBox = findClassBoxByName(endName);
-        if (endBox == null) endBox = findInterfaceBoxByName(endName);
-
-        if (startBox == null || endBox == null) {
-            System.err.println("Could not find elements for relationship: " + name);
-            return;
-        }
-
-        // Depending on the relationship type, use the appropriate manager
-        switch (type.toLowerCase()) {
-            case "association":
-                AssociationManager associationManager = new AssociationManager(this);
-                associationManager.createRelationship(startBox, endBox, uiController.getDrawingPane(), name, startMultiplicity, endMultiplicity);
-                addRelationshipBox(associationManager.getLastRelationshipBox());
-                break;
-            case "aggregation":
-                AggregationManager aggregationManager = new AggregationManager(this);
-                aggregationManager.createRelationship(startBox, endBox, uiController.getDrawingPane(), name, startMultiplicity, endMultiplicity);
-                addRelationshipBox(aggregationManager.getLastRelationshipBox());
-                break;
-            case "composition":
-                CompositionManager compositionManager = new CompositionManager(this);
-                compositionManager.createRelationship(startBox, endBox, uiController.getDrawingPane(), name, startMultiplicity, endMultiplicity);
-                addRelationshipBox(compositionManager.getLastRelationshipBox());
-                break;
-            case "inheritance":
-                InheritanceManager inheritanceManager = new InheritanceManager(this);
-                inheritanceManager.createRelationship(startBox, endBox, uiController.getDrawingPane(), name, startMultiplicity, endMultiplicity);
-                addRelationshipBox(inheritanceManager.getLastRelationshipBox());
-                break;
-            default:
-                System.err.println("Unknown relationship type: " + type);
-        }
-    }
-
-
-    /**
-     * Finds a class box by its name.
-     *
-     * @param name The name of the class.
-     * @return The VBox representing the class, or null if not found.
-     */
-    /*private VBox findClassBoxByName(String name) {
-        for (UMLClassBox classBox : classes) {
-            if (classBox.getName().equals(name)) {
-                return classBox.getVBox();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Finds an interface box by its name.
-     *
-     * @param name The name of the interface.
-     * @return The VBox representing the interface, or null if not found.
-     */
-    /*private VBox findInterfaceBoxByName(String name) {
-        for (UMLInterfaceBox interfaceBox : interfaces) {
-            if (interfaceBox.getName().equals(name)) {
-                return interfaceBox.getVBox();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Adds a relationship to the relationships list.
-     *
-     * @param relationshipBox The UMLRelationshipBox to add.
-     */
-    /*public void addRelationshipBox(UMLRelationshipBox relationshipBox) {
-        if (relationshipBox != null) {
-            relationships.add(relationshipBox);
-        }
-    }
-
-    /**
-     * Saves the current UML diagram to a JSON file.
-     *
-     * @param file The file to save the JSON to.
-     */
-    /*public void saveDiagram(File file) {
-        try {
-            serializer.serialize(classDiagram, file);
-            uiController.showInformationAlert("Diagram saved successfully to " + file.getAbsolutePath());
-            System.out.println("Diagram saved successfully to " + file.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-            uiController.showErrorAlert("Failed to save diagram.");
-        }
-    }
-
-
-    public void handleToolSelection(String tool, Pane drawingPane, VBox editorsPane) {
-        if ("Class".equals(tool)) {
-            disableDrag();
-            createClassBox("Class" + (elements.size() + 1), drawingPane);
-        } else if ("Interface".equals(tool)) {
-            disableDrag();
-            createInterfaceBox("Interface" + (elements.size() + 1), drawingPane);
-        } else if ("Association".equals(tool)) {
-            disableDrag();
-            relationsManager = new AssociationManager();  // Assign AssociationManager
-            enableAssociationMode(drawingPane); // Enable association mode
-        } else if ("Drag".equals(tool)) {
-            enableDragMode();
-        } else if ("Aggregation".equals(tool)) {
-            disableDrag();
-            relationsManager = new AggregationManager();  // Assign AggregationManager
-            enableAggregationMode(drawingPane);
-        } else if ("Composition".equals(tool)) {
-            disableDrag();
-            relationsManager = new CompositionManager();  // Assign CompositionManager
-            enableCompositionMode(drawingPane);
-        } else if ("Inheritance".equals(tool)) {
-            disableDrag();
-            relationsManager = new InheritanceManager();  // Correctly assign InheritanceManager
-            enableInheritanceMode(drawingPane); // Enable inheritance mode
-        }
-
-    }
-
-    private void createClassBox(String name, Pane drawingPane) {
-        VBox classBox = new VBox();
-        classBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        classBox.setSpacing(0);
-
-        Label classNameLabel = new Label(name);
-        classNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5;");
-        classNameLabel.setAlignment(Pos.CENTER);
-
-        // Ensure the label takes the full width of the VBox
-        classNameLabel.setMaxWidth(Double.MAX_VALUE);
-        classNameLabel.setStyle("-fx-alignment: center; -fx-font-weight: bold; -fx-padding: 5;");
-
-        VBox attributesBox = new VBox();
-        attributesBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-
-        VBox methodsBox = new VBox();
-        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-
-        classBox.getChildren().addAll(classNameLabel, attributesBox, methodsBox);
-        classBox.setLayoutX(100 + elements.size() * 50);
-        classBox.setLayoutY(100);
-
-        classBox.setOnMouseClicked(event -> uiController.openClassEditor(classBox));
-        drawingPane.getChildren().add(classBox);
-        elements.add(classBox);
-        setDraggable(classBox, false);
-    }
-
-    // New method for creating Interface Box
-    private void createInterfaceBox(String name, Pane drawingPane) {
-        VBox interfaceBox = new VBox();
-        interfaceBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        interfaceBox.setSpacing(0);
-
-        // Create the "<<Interface>>" label
-        Label interfaceLabel = new Label("<<Interface>>");
-        interfaceLabel.setStyle(" -fx-padding: 1;");
-        interfaceLabel.setAlignment(Pos.CENTER);
-
-        Label interfaceNameLabel = new Label(name);
-        interfaceNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 1;");
-        interfaceNameLabel.setAlignment(Pos.CENTER);
-
-        // Ensure the label takes the full width of the VBox
-        interfaceNameLabel.setMaxWidth(Double.MAX_VALUE);
-        interfaceNameLabel.setStyle("-fx-alignment: center; -fx-font-weight: bold; -fx-padding: 1;");
-
-        VBox methodsBox = new VBox();
-        methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
-
-        interfaceBox.getChildren().addAll(interfaceLabel, interfaceNameLabel, methodsBox);
-        interfaceBox.setLayoutX(100 + elements.size() * 50);
-        interfaceBox.setLayoutY(100);
-
-        interfaceBox.setOnMouseClicked(event -> uiController.openInterfaceEditor(interfaceBox));
-        drawingPane.getChildren().add(interfaceBox);
-        elements.add(interfaceBox);
-        setDraggable(interfaceBox, false);
-    }
-
-    private void enableAssociationMode(Pane drawingPane) {
-        relationsManager.enableAssociationMode(); // Enable association mode
-
-        drawingPane.setOnMouseClicked(event -> {
-            Node target = getParentVBox(event.getPickResult().getIntersectedNode());
-            if (target instanceof VBox && elements.contains(target)) {
-                if (!(relationsManager instanceof AssociationManager)) {
-                    return; // Skip if association mode is not enabled
-                }
-
-
-                if (firstSelectedElement == null) {
-                    firstSelectedElement = (VBox) target;
-                    highlightClass(firstSelectedElement, true);
-                } else if (secondSelectedElement == null && target != firstSelectedElement) {
-                    secondSelectedElement = (VBox) target;
-                    highlightClass(secondSelectedElement, true);
-
-                    // Show dialog for association details
-                    Dialog<List<String>> dialog = new Dialog<>();
-                    dialog.setTitle("Set Association Details");
-                    dialog.setHeaderText("Enter Association Name and Multiplicities");
-
-                    TextField associationNameField = new TextField();
-                    associationNameField.setPromptText("Association Name");
-                    TextField startMultiplicityField = new TextField();
-                    startMultiplicityField.setPromptText("Start Multiplicity");
-                    TextField endMultiplicityField = new TextField();
-                    endMultiplicityField.setPromptText("End Multiplicity");
-
-                    GridPane grid = new GridPane();
-                    grid.setHgap(10);
-                    grid.setVgap(10);
-                    grid.add(new Label("Association Name:"), 0, 0);
-                    grid.add(associationNameField, 1, 0);
-                    grid.add(new Label("Start Multiplicity:"), 0, 1);
-                    grid.add(startMultiplicityField, 1, 1);
-                    grid.add(new Label("End Multiplicity:"), 0, 2);
-                    grid.add(endMultiplicityField, 1, 2);
-
-                    dialog.getDialogPane().setContent(grid);
-                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                    dialog.setResultConverter(dialogButton -> {
-                        if (dialogButton == ButtonType.OK) {
-                            List<String> result = new ArrayList<>();
-                            result.add(associationNameField.getText());
-                            result.add(startMultiplicityField.getText());
-                            result.add(endMultiplicityField.getText());
-                            return result;
-                        }
-                        return null;
-                    });
-
-                    Optional<List<String>> result = dialog.showAndWait();
-                    result.ifPresent(values -> {
-                        String associationName = values.get(0).isEmpty() ? "associationName" : values.get(0);
-                        String startMultiplicity = values.get(1).isEmpty() ? "1" : values.get(1);
-                        String endMultiplicity = values.get(2).isEmpty() ? "1" : values.get(2);
-
-                        // Use AssociationManager to create the relationship
-                        ((AssociationManager) relationsManager).createRelationship(
-                                firstSelectedElement,
-                                secondSelectedElement,
-                                drawingPane,
-                                associationName,
-                                startMultiplicity,
-                                endMultiplicity
-                        );
-                    });
-
-                    // Reset the selected elements
-                    highlightClass(firstSelectedElement, false);
-                    highlightClass(secondSelectedElement, false);
-                    firstSelectedElement = null;
-                    secondSelectedElement = null;
-                }
-            }
-        });
-    }
-
-    private void enableAggregationMode(Pane drawingPane) {
-        relationsManager.enableAggregationMode(); // Enable aggregation mode
-
-        drawingPane.setOnMouseClicked(event -> {
-            Node target = getParentVBox(event.getPickResult().getIntersectedNode());
-            if (target instanceof VBox && elements.contains(target)) {
-                if (!(relationsManager instanceof AggregationManager)) {
-                    return; // Skip if association mode is not enabled
-                }
-
-                if (firstSelectedElement == null) {
-                    firstSelectedElement = (VBox) target;
-                    highlightClass(firstSelectedElement, true);
-                } else if (secondSelectedElement == null && target != firstSelectedElement) {
-                    secondSelectedElement = (VBox) target;
-                    highlightClass(secondSelectedElement, true);
-
-                    // Show dialog for Aggregation details
-                    Dialog<List<String>> dialog = new Dialog<>();
-                    dialog.setTitle("Set Aggregation Details");
-                    dialog.setHeaderText("Enter Aggregation Name and Multiplicities");
-
-                    TextField aggregationNameField = new TextField();
-                    aggregationNameField.setPromptText("Aggregation Name");
-                    TextField startMultiplicityField = new TextField();
-                    startMultiplicityField.setPromptText("Start Multiplicity");
-                    TextField endMultiplicityField = new TextField();
-                    endMultiplicityField.setPromptText("End Multiplicity");
-
-                    GridPane grid = new GridPane();
-                    grid.setHgap(10);
-                    grid.setVgap(10);
-                    grid.add(new Label("Aggregation Name:"), 0, 0);
-                    grid.add(aggregationNameField, 1, 0);
-                    grid.add(new Label("Start Multiplicity:"), 0, 1);
-                    grid.add(startMultiplicityField, 1, 1);
-                    grid.add(new Label("End Multiplicity:"), 0, 2);
-                    grid.add(endMultiplicityField, 1, 2);
-
-                    dialog.getDialogPane().setContent(grid);
-                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                    dialog.setResultConverter(dialogButton -> {
-                        if (dialogButton == ButtonType.OK) {
-                            List<String> result = new ArrayList<>();
-                            result.add(aggregationNameField.getText());
-                            result.add(startMultiplicityField.getText());
-                            result.add(endMultiplicityField.getText());
-                            return result;
-                        }
-                        return null;
-                    });
-
-                    Optional<List<String>> result = dialog.showAndWait();
-                    result.ifPresent(values -> {
-                        String aggregationName = values.get(0).isEmpty() ? "aggregationName" : values.get(0);
-                        String startMultiplicity = values.get(1).isEmpty() ? "1" : values.get(1);
-                        String endMultiplicity = values.get(2).isEmpty() ? "1" : values.get(2);
-
-                        ((AggregationManager) relationsManager).createRelationship(
-                                firstSelectedElement,
-                                secondSelectedElement,
-                                drawingPane,
-                                aggregationName,
-                                startMultiplicity,
-                                endMultiplicity
-                        );
-                    });
-
-                    // Reset the selected elements
-                    highlightClass(firstSelectedElement, false);
-                    highlightClass(secondSelectedElement, false);
-                    firstSelectedElement = null;
-                    secondSelectedElement = null;
-                }
-            }
-        });
-    }
-    private void enableCompositionMode(Pane drawingPane) {
-        relationsManager.enableCompositionMode(); // Enable aggregation mode
-
-        drawingPane.setOnMouseClicked(event -> {
-            Node target = getParentVBox(event.getPickResult().getIntersectedNode());
-            if (target instanceof VBox && elements.contains(target)) {
-                if (!(relationsManager instanceof CompositionManager)) {
-                    return; // Skip if association mode is not enabled
-                }
-
-                if (firstSelectedElement == null) {
-                    firstSelectedElement = (VBox) target;
-                    highlightClass(firstSelectedElement, true);
-                } else if (secondSelectedElement == null && target != firstSelectedElement) {
-                    secondSelectedElement = (VBox) target;
-                    highlightClass(secondSelectedElement, true);
-
-                    // Show dialog for Aggregation details
-                    Dialog<List<String>> dialog = new Dialog<>();
-                    dialog.setTitle("Set Composition Details");
-                    dialog.setHeaderText("Enter Composition Name and Multiplicities");
-
-                    TextField aggregationNameField = new TextField();
-                    aggregationNameField.setPromptText("Composition Name");
-                    TextField startMultiplicityField = new TextField();
-                    startMultiplicityField.setPromptText("Start Multiplicity");
-                    TextField endMultiplicityField = new TextField();
-                    endMultiplicityField.setPromptText("End Multiplicity");
-
-                    GridPane grid = new GridPane();
-                    grid.setHgap(10);
-                    grid.setVgap(10);
-                    grid.add(new Label("Composition Name:"), 0, 0);
-                    grid.add(aggregationNameField, 1, 0);
-                    grid.add(new Label("Start Multiplicity:"), 0, 1);
-                    grid.add(startMultiplicityField, 1, 1);
-                    grid.add(new Label("End Multiplicity:"), 0, 2);
-                    grid.add(endMultiplicityField, 1, 2);
-
-                    dialog.getDialogPane().setContent(grid);
-                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                    dialog.setResultConverter(dialogButton -> {
-                        if (dialogButton == ButtonType.OK) {
-                            List<String> result = new ArrayList<>();
-                            result.add(aggregationNameField.getText());
-                            result.add(startMultiplicityField.getText());
-                            result.add(endMultiplicityField.getText());
-                            return result;
-                        }
-                        return null;
-                    });
-
-                    Optional<List<String>> result = dialog.showAndWait();
-                    result.ifPresent(values -> {
-                        String aggregationName = values.get(0).isEmpty() ? "compositionName" : values.get(0);
-                        String startMultiplicity = values.get(1).isEmpty() ? "1" : values.get(1);
-                        String endMultiplicity = values.get(2).isEmpty() ? "1" : values.get(2);
-
-                        ((CompositionManager) relationsManager).createRelationship(
-                                firstSelectedElement,
-                                secondSelectedElement,
-                                drawingPane,
-                                aggregationName,
-                                startMultiplicity,
-                                endMultiplicity
-                        );
-                    });
-
-                    // Reset the selected elements
-                    highlightClass(firstSelectedElement, false);
-                    highlightClass(secondSelectedElement, false);
-                    firstSelectedElement = null;
-                    secondSelectedElement = null;
-                }
-            }
-        });
-    }
-
-    /*private void enableInheritanceMode(Pane drawingPane) {
-        relationsManager.enableInheritanceMode(); // Enable aggregation mode
-
-        drawingPane.setOnMouseClicked(event -> {
-            Node target = getParentVBox(event.getPickResult().getIntersectedNode());
-            if (target instanceof VBox && elements.contains(target)) {
-                if (!(relationsManager instanceof InheritanceManager)) {
-                    return; // Skip if association mode is not enabled
-                }
-
-                if (firstSelectedElement == null) {
-                    firstSelectedElement = (VBox) target;
-                    highlightClass(firstSelectedElement, true);
-                } else if (secondSelectedElement == null && target != firstSelectedElement) {
-                    secondSelectedElement = (VBox) target;
-                    highlightClass(secondSelectedElement, true);
-
-
-                    ((InheritanceManager) relationsManager).createRelationship(
-                            firstSelectedElement,
-                            secondSelectedElement,
-                            drawingPane, null, null, null
-
-                    );
-                }
-
-                // Reset the selected elements
-                highlightClass(firstSelectedElement, false);
-                highlightClass(secondSelectedElement, false);
-                firstSelectedElement = null;
-                secondSelectedElement = null;
-            }
-        });
-    }*/
-    /*private void enableInheritanceMode(Pane drawingPane) {
-        relationsManager.enableInheritanceMode(); // Enable inheritance mode
-
-        drawingPane.setOnMouseClicked(event -> {
-            Node target = getParentVBox(event.getPickResult().getIntersectedNode());
-
-            if (target == null || !(target instanceof VBox)) {
-                return; // Exit if no VBox was clicked
-            }
-
-            if (elements.contains(target)) {
-                if (!(relationsManager instanceof InheritanceManager)) {
-                    return; // Skip if inheritance mode is not enabled
-                }
-
-                // Handle first selection
-                if (firstSelectedElement == null) {
-                    firstSelectedElement = (VBox) target;
-                    highlightClass(firstSelectedElement, true);  // Highlight the first selected element
-                }
-                // Handle second selection
-                else if (secondSelectedElement == null && target != firstSelectedElement) {
-                    secondSelectedElement = (VBox) target;
-                    highlightClass(secondSelectedElement, true);  // Highlight the second selected element
-
-                    // Create the inheritance relationship
-                    ((InheritanceManager) relationsManager).createRelationship(
-                            firstSelectedElement,
-                            secondSelectedElement,
-                            drawingPane, null, null, null
-                    );
-                }
-
-                // Reset the selected elements after the relationship is created
-                if (firstSelectedElement != null && secondSelectedElement != null) {
-                    highlightClass(firstSelectedElement, false);
-                    highlightClass(secondSelectedElement, false);
-                    firstSelectedElement = null;
-                    secondSelectedElement = null;
-                }
-            }
-        });
-    }
-
-
-
-    /*private Node getParentVBox(Node node) {
-        while (node != null && !(node instanceof VBox)) {
-            node = node.getParent();
-        }
-        return node;
-    }*/
-    /*private VBox getParentVBox(Node node) {
-        while (node != null && !(node instanceof VBox)) {
-            node = node.getParent();
-        }
-        return (VBox) node; // Will return null if no VBox is found
-    }*/
-
-/*    private VBox getParentVBox(Node node) {
-        while (node != null && !(node instanceof VBox)) {
-            node = node.getParent();
-        }
-        return (VBox) node;
-    }
-*/
-/*
-private void enableDragMode() {
-    isDragEnabled = true;
-    for (Node element : elements) {
-        if (element instanceof VBox) {
-            setDraggable((VBox) element, true);
-        }
-    }
-}
-
-private void disableDrag() {
-    isDragEnabled = false;
-    for (Node element : elements) {
-        if (element instanceof VBox) {
-            setDraggable((VBox) element, false);
-        }
-    }
-}
-
-private void setDraggable(VBox pane, boolean enable) {
-    if (enable) {
-        pane.setOnMousePressed(event -> pane.setUserData(new double[]{event.getSceneX(), event.getSceneY(), pane.getLayoutX(), pane.getLayoutY()}));
-        pane.setOnMouseDragged(event -> {
-            double[] data = (double[]) pane.getUserData();
-            double offsetX = event.getSceneX() - data[0];
-            double offsetY = event.getSceneY() - data[1];
-            pane.setLayoutX(data[2] + offsetX);
-            pane.setLayoutY(data[3] + offsetY);
-        });
-    } else {
-        pane.setOnMousePressed(null);
-        pane.setOnMouseDragged(null);
-    }
-}
-
-    private void highlightClass(VBox classBox, boolean highlight) {
-        if (classBox == null) {
-            System.out.println("Attempting to highlight a null classBox!");
-            return;
-        }
-
-        if (highlight) {
-            classBox.setStyle("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-style: solid;");
-        } else {
-            classBox.setStyle("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;");
-        }
-    }
-}*/

@@ -39,6 +39,11 @@ public class ClassEditorUI {
     @FXML
     private Button applyChangesButton;
 
+    @FXML
+    private Button deleteAttributeButton;
+    @FXML
+    private Button deleteMethodButton;
+
     private ClassEditorManager classEditorManager;
     private List<String> currentParameters = new ArrayList<>();
     //private ArrayList<String> currentParameters = new ArrayList<>(); // List to store parameters
@@ -84,6 +89,10 @@ public class ClassEditorUI {
         addMethodButton.setOnAction(event -> addMethod());
         addParameterButton.setOnAction(event -> addParameter());
         applyChangesButton.setOnAction(event -> applyChanges());
+
+        // Set actions for the delete buttons
+        deleteAttributeButton.setOnAction(event -> deleteAttribute());
+        deleteMethodButton.setOnAction(event -> deleteMethod());
     }
 
     /**
@@ -165,6 +174,9 @@ public class ClassEditorUI {
     }
 
 
+
+
+
     /**
      * Sets the class box and populates the editor fields with existing class data.
      *
@@ -189,6 +201,48 @@ public class ClassEditorUI {
         );
     }
 
+
+    private void deleteAttribute() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Delete Attribute");
+        dialog.setHeaderText("Enter the name of the attribute to delete:");
+        dialog.setContentText("Attribute Name:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(attributeName -> {
+            List<String> updatedAttributes = new ArrayList<>();
+            String[] attributes = attributesArea.getText().split("\n");
+
+            for (String attribute : attributes) {
+                if (!attribute.contains(attributeName)) {
+                    updatedAttributes.add(attribute);
+                }
+            }
+
+            attributesArea.setText(String.join("\n", updatedAttributes));
+        });
+    }
+
+    private void deleteMethod() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Delete Method");
+        dialog.setHeaderText("Enter the name of the method to delete:");
+        dialog.setContentText("Method Name:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(methodName -> {
+            List<String> updatedMethods = new ArrayList<>();
+            String[] methods = methodsArea.getText().split("\n");
+
+            for (String method : methods) {
+                if (!method.contains(methodName)) {
+                    updatedMethods.add(method);
+                }
+            }
+
+            methodsArea.setText(String.join("\n", updatedMethods));
+        });
+    }
     /**
      * Provides access to the root node of ClassEditorUI.
      * This method should be implemented to return the root node (e.g., VBox) of the editor.

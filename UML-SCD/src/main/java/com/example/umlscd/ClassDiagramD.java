@@ -2,6 +2,7 @@ package com.example.umlscd;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -39,5 +40,18 @@ public class ClassDiagramD {
 
     public void setRelationships(List<UMLRelationship> relationships) {
         this.relationships = relationships;
+    }
+
+    // Method to remove relationships involving a specific class
+    public void removeRelationshipsByClassName(String className) {
+        Iterator<UMLRelationship> iterator = relationships.iterator();
+
+        while (iterator.hasNext()) {
+            UMLRelationship relationship = iterator.next();
+            // Check if the relationship involves the specified class
+            if (relationship.getStartElementName().equals(className) || relationship.getEndElementName().equals(className)) {
+                iterator.remove();  // Remove the relationship
+            }
+        }
     }
 }

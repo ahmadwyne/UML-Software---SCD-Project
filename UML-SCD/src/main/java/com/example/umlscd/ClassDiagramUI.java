@@ -2,10 +2,12 @@ package com.example.umlscd;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -13,6 +15,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
@@ -41,6 +44,9 @@ public class ClassDiagramUI {
     @FXML
     private Button btnSave, btnLoad; // Added Save and Load buttons
 
+    @FXML private Button btnDelete;
+    private boolean isDeleteModeEnabled = false;
+
     @FXML
     private VBox editorsPane;
 
@@ -61,7 +67,104 @@ public class ClassDiagramUI {
         // Setup Save and Load handlers
         btnSave.setOnAction(e -> handleSave());
         btnLoad.setOnAction(e -> handleLoad());
+        setupDeleteButtonHandler();
+
+
+
     }
+
+    /*// Handle Delete Button Click
+    private void setupDeleteButtonHandler() {
+        btnDelete.setOnAction(e -> {
+            // Toggle delete mode
+            if (isDeleteModeEnabled) {
+                disableDeleteMode();
+            } else {
+                enableDeleteMode();
+            }
+        });
+    }
+
+
+    // Enable delete mode for selecting a class to delete
+    private void enableDeleteMode() {
+        // Enable delete functionality on the drawing pane
+        drawingPane.setOnMouseClicked(event -> {
+            VBox selectedElement = getSelectedElement(event);
+            if (selectedElement != null) {
+                // Call the delete method from ClassDiagramManager
+                classDiagramManager.deleteSelectedElement(selectedElement);
+            }
+        });
+    }
+
+    // Disable delete mode and reset the button
+    private void disableDeleteMode() {
+        isDeleteModeEnabled = false;
+        btnDelete.setText("Delete");
+        drawingPane.setOnMouseClicked(null); // Disable delete mode
+    }
+
+    // Get the selected element from the drawing pane (using mouse click)
+    private VBox getSelectedElement(javafx.scene.input.MouseEvent event) {
+        for (Node node : drawingPane.getChildren()) {
+            if (node instanceof VBox && node.getBoundsInParent().contains(event.getX(), event.getY())) {
+                return (VBox) node; // Return the selected class as VBox
+            }
+        }
+        return null; // No element selected
+    }*/
+
+    // Handle Delete Button Click
+    private void setupDeleteButtonHandler() {
+        btnDelete.setOnAction(e -> {
+            if (isDeleteModeEnabled) {
+                disableDeleteMode();
+            } else {
+                enableDeleteMode();
+            }
+        });
+    }
+
+    // Enable delete mode for selecting a class to delete
+    private void enableDeleteMode() {
+        isDeleteModeEnabled = true;
+        btnDelete.setText("Cancel Delete"); // Update button text to indicate mode
+        btnDelete.setDisable(false);
+
+        // Enable delete functionality on the drawing pane
+        drawingPane.setOnMouseClicked(event -> {
+            VBox selectedElement = getSelectedElement(event);
+            if (selectedElement != null) {
+                // Call the delete method from ClassDiagramManager
+                classDiagramManager.deleteSelectedElement(selectedElement);
+
+                // Disable delete mode after deletion
+                disableDeleteMode();
+            }
+        });
+    }
+
+    // Disable delete mode and reset the button
+    private void disableDeleteMode() {
+        isDeleteModeEnabled = false;
+        btnDelete.setText("Delete");
+        btnDelete.setDisable(false); // Re-enable the delete button
+        drawingPane.setOnMouseClicked(null); // Remove the delete click listener
+    }
+
+    // Get the selected element from the drawing pane (using mouse click)
+    private VBox getSelectedElement(javafx.scene.input.MouseEvent event) {
+        for (Node node : drawingPane.getChildren()) {
+            if (node instanceof VBox && node.getBoundsInParent().contains(event.getX(), event.getY())) {
+                return (VBox) node; // Return the selected class as VBox
+            }
+        }
+        return null; // No element selected
+    }
+
+
+
 
     @FXML
     private void applyHoverEffect(MouseEvent event) {
