@@ -16,7 +16,7 @@ public class UMLInterfaceBox implements UMLElementBoxInterface{
 
     @JsonProperty("y")
     private double y;
-
+    //
     @JsonProperty("methods")
     private List<String> methods = new ArrayList<>(); // Added methods list
 
