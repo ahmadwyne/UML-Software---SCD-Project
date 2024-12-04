@@ -28,6 +28,8 @@ import java.util.Optional;
  */
 public class InterfaceEditorUI {
 
+    @FXML private VBox root; // Root node with fx:id="root"
+
     /**
      * TextField for entering the interface name.
      *
@@ -36,13 +38,8 @@ public class InterfaceEditorUI {
     @FXML
     private TextField interfaceNameField;
 
-    /**
-     * TextFlow for displaying the methods of the interface.
-     *
-     * <p>This TextFlow contains all the methods in the interface, and each method is displayed as a {@code Text} node.</p>
-     */
     @FXML
-    private TextFlow methodsFlow;
+    private TextArea methodsArea;
 
     /**
      * ComboBox for selecting the return type of a method.
@@ -110,6 +107,8 @@ public class InterfaceEditorUI {
      */
     private List<String> currentParameters = new ArrayList<>();
 
+    private ClassDiagramManager classDiagramManager;
+
     /**
      * Default constructor that initializes the {@code InterfaceEditorManager}.
      *
@@ -150,6 +149,20 @@ public class InterfaceEditorUI {
     }
 
     /**
+     * Sets the {@code ClassDiagramManager} reference and updates the {@code InterfaceEditorManager}.
+     *
+     * <p>This method allows the {@code InterfaceEditorUI} to interact with the {@code ClassDiagramManager}
+     * instance, which is responsible for managing the UML diagram. The {@code ClassEditorManager} is
+     * also updated with the reference to allow consistent diagram editing.</p>
+     *
+     * @param manager The {@code ClassDiagramManager} instance to be set.
+     */
+    public void setClassDiagramManager(ClassDiagramManager manager) {
+        this.classDiagramManager = manager;
+        this.interfaceEditorManager.setClassDiagramManager(manager);
+    }
+
+    /**
      * Adds a method to the interface.
      *
      * <p>This method retrieves the method name, visibility, return type, and parameters from the UI fields
@@ -161,25 +174,11 @@ public class InterfaceEditorUI {
         String methodName = methodNameField.getText();
 
         if (!methodName.isEmpty()) {
-            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType;
-            addMethodToUI(methodSignature);  // Add method to TextFlow
+            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType + "\n";
+            methodsArea.appendText(methodSignature);
             methodNameField.clear();
-            currentParameters.clear();  // Clear parameters after adding the method
+            currentParameters.clear();  // Clear parameters after adding method
         }
-    }
-
-    /**
-     * Adds a method signature to the {@code methodsFlow}.
-     *
-     * <p>This method creates a new {@code Text} node containing the method signature and adds it to the {@code methodsFlow}
-     * for display. The method signature is shown in italic style.</p>
-     *
-     * @param methodSignature The method signature to be added.
-     */
-    private void addMethodToUI(String methodSignature) {
-        Text methodText = new Text(methodSignature + "\n");
-        methodText.setStyle("-fx-font-style: italic;"); // Apply italic style
-        methodsFlow.getChildren().add(methodText); // Add to TextFlow
     }
 
     /**
@@ -231,52 +230,34 @@ public class InterfaceEditorUI {
     }
 
     /**
-     * Applies the changes made in the editor to the interface model.
+     * Sets the interfaceBox and populates the editor fields with existing interface data.
      *
-     * <p>This method collects the methods from the {@code methodsFlow}, concatenates their content, and sends the
-     * data to the {@code interfaceEditorManager} to update the interface model with the new methods and name.</p>
+     * <p>This method is called when an existing UML interface is selected. It populates the interface editor with
+     * the current name, and methods of the UML interface.</p>
+     *
+     * @param interfaceBox    The {@code VBox} representing the class in the UI.
+     * @param umlInterfaceBox The {@code UMLInterfaceBox} model object containing interface data.
      */
-    private void applyChanges() {
-        // Collect text content from each Text node in methodsFlow
-        StringBuilder methodsContent = new StringBuilder();
-
-        // Iterate through all Text nodes in the TextFlow and concatenate their content
-        for (var child : methodsFlow.getChildren()) {
-            if (child instanceof Text) {
-                methodsContent.append(((Text) child).getText());
-            }
-        }
-
-        // Apply changes to the interface (e.g., save changes to the model or update UI)
-        interfaceEditorManager.applyChanges(interfaceNameField.getText(), methodsContent.toString());
+    public void setInterfaceBox(VBox interfaceBox, UMLInterfaceBox umlInterfaceBox) {
+        interfaceEditorManager.setInterfaceBox(interfaceBox, umlInterfaceBox);
+        interfaceNameField.setText(umlInterfaceBox.getName());
+        methodsArea.setText(String.join("\n", umlInterfaceBox.getMethods()));
     }
 
     /**
-     * Sets the current interface for editing and initializes the editor with its details.
+     * Applies the changes made in the editor to the interface model.
      *
-     * <p>This method takes the current interface box, retrieves its methods, and displays them in the {@code methodsFlow}.
-     * It also sets the name of the interface in the {@code interfaceNameField}.</p>
-     *
-     * @param interfaceBox The VBox representing the current interface to edit.
+     * <p>This method collects the methods from the {@code methodsArea}, concatenates their content, and sends the
+     * data to the {@code interfaceEditorManager} to update the interface model with the new methods and name.</p>
      */
-    public void setInterface(VBox interfaceBox) {
-        // Set the interface box in the manager
-        interfaceEditorManager.setInterfaceBox(interfaceBox);
-
-        // Initialize the interface name in the editor
-        interfaceNameField.setText(interfaceEditorManager.getInterfaceName());
-
-        // Clear the methods flow before populating
-        methodsFlow.getChildren().clear();
-
-        // Get the methods from the interfaceBox and display them in the methodsFlow (using Labels)
-        String methodsText = interfaceEditorManager.getMethods();
-        for (String method : methodsText.split("\\n")) {
-            Text methodLabel = new Text(method + "\n");
-            methodLabel.setStyle("-fx-font-style: italic;"); // Apply italic style
-            methodsFlow.getChildren().add(methodLabel); // Add to methodsFlow
-        }
+    private void applyChanges() {
+        interfaceEditorManager.applyChanges(
+                interfaceNameField.getText(),
+                methodsArea.getText()
+        );
     }
+
+
 
     /**
      * Applies a hover effect to a button when the mouse is hovered over it.
@@ -312,5 +293,17 @@ public class InterfaceEditorUI {
     public void applyClickEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
+
+    /**
+     * Provides access to the root node of {@code ClassEditorUI}.
+     *
+     * <p>This method returns the root {@code VBox} node, which can be used to integrate the class editor
+     * UI into other parts of the application.</p>
+     *
+     * @return The root {@code VBox} of {@code ClassEditorUI}.
+     */
+    public VBox getEditorNode() {
+        return root;
     }
 }

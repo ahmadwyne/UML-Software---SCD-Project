@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,45 @@ public class InterfaceEditorManager {
     private List<String> parameters = new ArrayList<>();
 
     /**
+     * Reference to the {@code UMLInterfaceBox} model object.
+     *
+     * <p>This object represents the UML Interface in the model and contains data such as the Interface methods
+     * It is updated based on user input from the editor UI.</p>
+     */
+    private UMLInterfaceBox umlInterfaceBox; // Reference to the UMLClassBox
+
+    /**
+     * Reference to the {@code ClassDiagramManager}.
+     *
+     * <p>The {@code ClassDiagramManager} is responsible for managing the overall class diagram,
+     * including adding, updating, and removing classes, interfaces, and relationships. This reference
+     * allows the {@code InterfaceEditorManager} to interact with the class diagram for model updates.</p>
+     */
+    private ClassDiagramManager classDiagramManager; // Reference to the manager
+
+    /**
+     * Default constructor.
+     *
+     * <p>Initializes the {@code InterfaceEditorManager}. No specific initialization is required for this class,
+     * but this constructor ensures proper object creation.</p>
+     */
+    public InterfaceEditorManager() {
+        // Initialization if necessary
+    }
+
+    /**
+     * Sets the reference to the {@code ClassDiagramManager} instance.
+     *
+     * <p>This method allows the {@code InterfaceEditorManager} to interact with the {@code ClassDiagramManager},
+     * enabling updates to the UML model and class diagram.</p>
+     *
+     * @param manager The {@code ClassDiagramManager} instance to be set.
+     */
+    public void setClassDiagramManager(ClassDiagramManager manager) {
+        this.classDiagramManager = manager;
+    }
+
+    /**
      * Sets the VBox representing the interface.
      *
      * <p>This method sets the reference to the VBox that represents the interface. It is used to retrieve the
@@ -50,8 +90,9 @@ public class InterfaceEditorManager {
      *
      * @param interfaceBox The VBox containing the interface's name and methods.
      */
-    public void setInterfaceBox(VBox interfaceBox) {
+    public void setInterfaceBox(VBox interfaceBox, UMLInterfaceBox umlInterfaceBox) {
         this.interfaceBox = interfaceBox;
+        this.umlInterfaceBox = umlInterfaceBox;
     }
 
     /**
@@ -103,19 +144,48 @@ public class InterfaceEditorManager {
      * @param methodsText The new method signatures as a string.
      */
     public void applyChanges(String interfaceName, String methodsText) {
-        if (interfaceBox != null && !interfaceBox.getChildren().isEmpty()) {
-            Label interfaceNameLabel = (Label) interfaceBox.getChildren().get(1);
-            interfaceNameLabel.setText(interfaceName); // Update interface name
+        if (umlInterfaceBox != null) {
+            String oldName = umlInterfaceBox.getName();
+            String newName = interfaceName.trim();
 
-            VBox methodsBox = (VBox) interfaceBox.getChildren().get(2); // Get methods VBox
-            methodsBox.getChildren().clear(); // Clear existing methods
-
-            // Split methodsText into individual method lines and add them to the VBox
-            for (String line : methodsText.split("\\n")) {
-                Label methodLabel = new Label(line);
-                methodLabel.setStyle("-fx-font-style: italic;"); // Set italic style for methods
-                methodsBox.getChildren().add(methodLabel);
+            if (newName.isEmpty()) {
+                // Optionally, enforce non-empty names
+                classDiagramManager.getUiController().showErrorAlert("Class name cannot be empty.");
+                return;
             }
+
+            // Check for unique class name
+            if (!oldName.equals(newName) && classDiagramManager.isClassNameExists(newName)) {
+                // Notify the user about duplicate class names
+                classDiagramManager.getUiController().showErrorAlert("An Interface with this name already exists.");
+                return;
+            }
+
+            // Update the model
+            umlInterfaceBox.setName(newName);
+            classDiagramManager.getClassBoxMap().remove(oldName);
+            classDiagramManager.getClassBoxMap().put(newName, umlInterfaceBox);
+
+            // Update methods
+            List<String> methods = new ArrayList<>();
+            if (!methodsText.isEmpty()) {
+                methods = Arrays.asList(methodsText.split("\\n"));
+            }
+            umlInterfaceBox.setMethods(methods);
+
+            // Update the UI
+            Label interfaceNameLabel = (Label) interfaceBox.getChildren().get(1); // Assuming the first label is the name
+            interfaceNameLabel.setText(newName);
+
+            VBox methodsBox = (VBox) interfaceBox.getChildren().get(2);
+            methodsBox.getChildren().clear();
+            for (String line : methodsText.split("\\n")) {
+                Label method = new Label(line);
+                methodsBox.getChildren().add(method);
+            }
+
+            // Update relationships in the ClassDiagramManager
+            classDiagramManager.updateRelationshipsForRenamedClass(oldName, newName);
         }
     }
 

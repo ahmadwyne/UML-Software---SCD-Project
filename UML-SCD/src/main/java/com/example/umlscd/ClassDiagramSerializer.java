@@ -151,7 +151,7 @@ public class ClassDiagramSerializer {
         List<UMLInterfaceBox> interfaceBoxesCopy = new ArrayList<>(interfaces);
         for (UMLInterfaceBox umlInterface : interfaceBoxesCopy) {
             System.out.println("Restoring interface: " + umlInterface.getName());
-            manager.reCreateInterfaceBox(umlInterface.getName(), umlInterface.getX(), umlInterface.getY());
+            manager.reCreateInterfaceBox(umlInterface.getName(), umlInterface.getX(), umlInterface.getY(), umlInterface.getMethods());
         }
 
         // Debugging: Print the classBoxMap contents

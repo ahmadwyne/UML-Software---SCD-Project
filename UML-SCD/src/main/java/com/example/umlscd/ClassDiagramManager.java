@@ -972,7 +972,7 @@ public class ClassDiagramManager {
      * @param layoutX The X-coordinate position on the drawing pane.
      * @param layoutY The Y-coordinate position on the drawing pane.
      */
-    public void reCreateInterfaceBox(String name, double layoutX, double layoutY) {
+    public void reCreateInterfaceBox(String name, double layoutX, double layoutY, List<String> methods) {
         VBox interfaceBox = new VBox();
         interfaceBox.setStyle("-fx-border-color: black; -fx-background-color: white;");
         interfaceBox.setSpacing(0);
@@ -988,6 +988,9 @@ public class ClassDiagramManager {
 
         VBox methodsBox = new VBox();
         methodsBox.setStyle("-fx-border-color: black; -fx-padding: 5;");
+        for (String method : methods) {
+            methodsBox.getChildren().add(new Label(method));
+        }
 
         interfaceBox.getChildren().addAll(interfaceLabel, interfaceNameLabel, methodsBox);
         interfaceBox.setLayoutX(layoutX);
@@ -1000,6 +1003,7 @@ public class ClassDiagramManager {
 
         // Update the ClassDiagram model
         UMLInterfaceBox umlInterfaceBox = new UMLInterfaceBox(name, layoutX, layoutY, interfaceBox);
+        umlInterfaceBox.setVisualRepresentation(interfaceBox);
         classDiagram.getInterfaces().add(umlInterfaceBox);
 
         // Add to the mapping

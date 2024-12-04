@@ -247,18 +247,29 @@ public class ClassDiagramUI {
      * @param interfaceBox The {@code VBox} representing the interface to be edited.
      */
     public void openInterfaceEditor(VBox interfaceBox) {
+        // Retrieve the corresponding UMLClassBox
+        UMLInterfaceBox umlInterfaceBox = classDiagramManager.getInterfaceByVBox(interfaceBox);
+        if (umlInterfaceBox == null) {
+            showErrorAlert("Failed to find the corresponding UMLInterfaceBox.");
+            return;
+        }
+
+        // Load the InterfaceEditorUI (Assuming you're using FXML)
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/InterfaceEditor.fxml"));
             VBox editor = loader.load();
 
-            InterfaceEditorUI controller = loader.getController();
-            controller.setInterface(interfaceBox);
+            // Get the controller and set the interfaceBox and UMLInterfaceBox
+            InterfaceEditorUI editorUI = loader.getController();
+            editorUI.setInterfaceBox(interfaceBox, umlInterfaceBox);
+            editorUI.setClassDiagramManager(classDiagramManager); // Inject ClassDiagramManager
 
             editorsPane.getChildren().clear();
             editorsPane.getChildren().add(editor);
+
         } catch (IOException e) {
             e.printStackTrace();
-            showErrorAlert("Failed to open Interface Editor.");
+            showErrorAlert("Failed to open Class Editor.");
         }
     }
 

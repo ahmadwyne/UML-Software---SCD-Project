@@ -12,7 +12,7 @@
     <!-- Methods Section with Boundary -->
     <VBox spacing="10" style="-fx-border-color: #AFAFAF; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
         <Label text="Methods" style="-fx-text-fill: white; -fx-font-family: 'Verdana';"/>
-        <TextFlow fx:id="methodsFlow" style="-fx-font-size: 14px;"/>
+        <TextArea fx:id="methodsArea" promptText="All methods " wrapText="true" editable="false"/>
 
         <!-- Method Controls (Return Type, Visibility, and Method Name) -->
         <HBox spacing="5">
