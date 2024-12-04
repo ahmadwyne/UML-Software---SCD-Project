@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UMLInterfaceBox implements UMLElementBoxInterface{
+public class UMLInterfaceBox implements UMLElementBoxInterface {
     @JsonProperty("name")
     private String name;
 
@@ -24,7 +24,8 @@ public class UMLInterfaceBox implements UMLElementBoxInterface{
     private VBox visualRepresentation;
 
     // Default constructor for Jackson
-    public UMLInterfaceBox() {}
+    public UMLInterfaceBox() {
+    }
 
     public UMLInterfaceBox(String name, double x, double y, VBox visualRepresentation) {
         this.name = name;
@@ -82,3 +83,4 @@ public class UMLInterfaceBox implements UMLElementBoxInterface{
         }
     }
 }
+
