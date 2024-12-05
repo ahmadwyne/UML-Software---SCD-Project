@@ -98,7 +98,7 @@ public class UseCaseDiagramObject implements Serializable {
      *
      * <p>This method sets up the {@code nameField} and ensures it is initially hidden.</p>
      */
-    private void initializeTransientFields() {
+    public void initializeTransientFields() {
         this.nameField = new TextField(name);
         this.nameField.setVisible(false);
         this.isNameFieldVisible = false;
@@ -267,4 +267,22 @@ public class UseCaseDiagramObject implements Serializable {
     public String getType() {
         return type;
     }
+
+    public TextField getNameField() {
+        return nameField;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean isNameFieldVisible() {
+        return isNameFieldVisible;
+    }
+
+    public void setNameField(TextField nameField) {
+        this.nameField = nameField;
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.example.umlscd.Models.ClassDiagram;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import java.util.ArrayList;
@@ -72,13 +73,18 @@ public class UMLInterfaceBox implements UMLElementBoxInterface {
         this.visualRepresentation = visualRepresentation;
     }
 
-    public void setMethods(List<String> methods) { // Added setter for methods
+    public void setMethods(List<String> methods) {
         this.methods = methods;
-        if (visualRepresentation != null) {
-            VBox methodsBox = (VBox) visualRepresentation.getChildren().get(2); // Assuming methodsBox is at index 2
-            methodsBox.getChildren().clear();
-            for (String method : methods) {
-                methodsBox.getChildren().add(new Label(method));
+        if (visualRepresentation != null && visualRepresentation.getChildren().size() > 2) {
+            Node node = visualRepresentation.getChildren().get(2);
+            if (node instanceof VBox) {
+                VBox methodsBox = (VBox) node;
+                methodsBox.getChildren().clear();
+                for (String method : methods) {
+                    methodsBox.getChildren().add(new Label(method));
+                }
+            } else {
+                throw new IllegalStateException("Expected a VBox as the third child of visualRepresentation for methods.");
             }
         }
     }

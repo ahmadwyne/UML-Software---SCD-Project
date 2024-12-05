@@ -42,6 +42,4 @@
             onMouseEntered="#onMouseEnterUseCaseDiagram"
             onMouseExited="#onMouseExitUseCaseDiagram" />
     </HBox>
-
-
 </VBox>
