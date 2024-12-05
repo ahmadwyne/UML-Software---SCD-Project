@@ -50,9 +50,12 @@
             <!-- Toolbox Section -->
             <TitledPane text="Toolbox" expanded="true" style="-fx-background-color: #444444; -fx-text-fill: #111111;">
                 <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
-                    <Button text="Save" fx:id="btnSave" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <Button text="Load" fx:id="btnLoad" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <Button text="Export as Image" fx:id="btnExportImage" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+                    <Button text="Save" fx:id="btnSave" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+                    <Button text="Load" fx:id="btnLoad" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+                    <Button text="Export Image" fx:id="btnExportImage" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
                     <Button text="Generate Code" fx:id="btnCode" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
                             onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
 
@@ -70,7 +73,8 @@
                             onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
                     <Button text="Inheritance" fx:id="btnInheritance" style="-fx-font-size: 12px; -fx-font-weight: bold;  -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
                             onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
-                    <Button text="Delete" fx:id="btnDelete" style="-fx-font-size: 14px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color:#AFAFAF;"/>
+                    <Button text="Delete" fx:id="btnDelete" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
                 </VBox>
             </TitledPane>
         </VBox>

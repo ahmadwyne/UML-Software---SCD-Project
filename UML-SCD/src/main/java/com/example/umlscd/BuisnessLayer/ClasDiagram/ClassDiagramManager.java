@@ -451,6 +451,7 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
+                    relationsManager=null;
                 }
             }
         });
@@ -539,6 +540,7 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
+                    relationsManager=null;
                 }
             }
         });
@@ -635,6 +637,7 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
+                    relationsManager=null;
                 }
             }
         });
@@ -687,6 +690,7 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
+                    relationsManager=null;
                 }
             }
         });

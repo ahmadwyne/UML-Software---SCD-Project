@@ -57,7 +57,7 @@ public class ClassDiagramCodeGenerator {
      */
     private String generateClassWithRelationships(UMLClassBox umlClass, List<UMLRelationship> relationships, ClassDiagramD diagram) {
         StringBuilder classCode = new StringBuilder();
-        classCode.append("public class ").append(umlClass.getName());
+        classCode.append("\npublic class ").append(umlClass.getName());
 
         boolean hasInheritance = false;
 
@@ -229,21 +229,64 @@ public class ClassDiagramCodeGenerator {
         // Start the interface definition
         interfaceCode.append("public interface ").append(umlInterface.getName()).append(" {");
 
-        // Add methods
-        for (String method : umlInterface.getMethods()) {
-            // Remove visibility symbols if present
-            String visibility = method.substring(0, 1);  // "+" for public, "-" for private, "#" for protected
 
-            String methodName = method.trim();
-            if (methodName.startsWith("+") || methodName.startsWith("-") || methodName.startsWith("#")) {
-                methodName = methodName.substring(1).trim();
+        // Handle methods
+        for (String method : umlInterface.getMethods()) {
+            // Extract method visibility and signature (e.g., "+ save():void")
+            String visibility = method.substring(0, 1);  // "+" for public, "-" for private, "#" for protected
+            String methodSignature = method.substring(1);  // Remove visibility symbol
+
+            String returnType = ""; // To store return type
+            String methodName = ""; // To store method name
+            String methodParams = ""; // To store method parameters
+
+            // Case 1: Method with parameters
+            if (methodSignature.contains("(")) {
+                // Split before the parentheses to get the method name
+                methodName = methodSignature.substring(0, methodSignature.indexOf("(")).trim();
+                // Extract parameters
+                methodParams = methodSignature.substring(methodSignature.indexOf("(") + 1, methodSignature.indexOf(")")).trim();
+                // Extract return type (after the closing parenthesis)
+                returnType = methodSignature.substring(methodSignature.indexOf(")") + 2).trim();
+            } else {
+                // Case 2: Method without parameters (like + save():void)
+                String[] methodParts = methodSignature.split(":");
+                returnType = methodParts[2].trim(); // Extract return type
+                methodName = methodParts[0].trim(); // Extract method name
             }
 
-            // Add the method to the interface code
-            interfaceCode.append(getVisibility(visibility)).append("\n    void ").append(methodName).append("();");
-        }
+            // Format parameters correctly if there are any
+            StringBuilder formattedParams = new StringBuilder();
+            if (!methodParams.isEmpty()) {
+                String[] params = methodParams.split(",");  // Split parameters by commas
+                for (String param : params) {
+                    String[] paramParts = param.trim().split(":");  // Split parameter into type and name
 
-        interfaceCode.append("\n}");
+                    if (paramParts.length == 2) {
+                        formattedParams.append(paramParts[1].trim()).append(" ").append(paramParts[0].trim()).append(", ");
+                    }
+                }
+                // Remove trailing comma and space if present
+                if (formattedParams.length() > 0) {
+                    formattedParams.setLength(formattedParams.length() - 2);
+                }
+            }
+
+            // Handle methods with empty parentheses (no parameters)
+            if (methodParams.isEmpty()) {
+                interfaceCode.append("\n\n    ").append(getVisibility(visibility))
+                        .append(" ").append(returnType).append(" ").append(methodName).append("() {")
+                        .append("\n        // TODO: Implement method")
+                        .append("\n    }");
+            } else {
+                // Handle methods with parameters (correctly format the parameters)
+                interfaceCode.append("\n\n    ").append(getVisibility(visibility))
+                        .append(" ").append(returnType).append(" ").append(methodName).append("(")
+                        .append(formattedParams).append(") {")
+                        .append("\n        // TODO: Implement method")
+                        .append("\n    }");
+            }
+        }
 
         return interfaceCode.toString();
     }
