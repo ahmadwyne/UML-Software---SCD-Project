@@ -10,7 +10,6 @@ module com.example.umlscd {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
-    requires org.junit.jupiter.api;
     requires com.fasterxml.jackson.databind;
     requires com.google.gson;
     requires javafx.swing;

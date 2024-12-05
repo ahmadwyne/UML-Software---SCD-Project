@@ -2,6 +2,7 @@ package com.example.umlscd.Models.ClassDiagram;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import java.util.ArrayList;
@@ -178,12 +179,25 @@ public class UMLClassBox implements UMLElementBoxInterface {
      *
      * @param name A {@code String} containing the new name for the class.
      */
-    @Override
+    /*@Override
     public void setName(String name) {
         this.name = name;
         if (visualRepresentation != null) {
             Label classNameLabel = (Label) visualRepresentation.getChildren().get(0);
             classNameLabel.setText(name);
+        }
+    }*/
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+        if (visualRepresentation != null && !visualRepresentation.getChildren().isEmpty()) {
+            Node node = visualRepresentation.getChildren().get(0);
+            if (node instanceof Label) {
+                ((Label) node).setText(name);
+            } else {
+                throw new IllegalStateException("Expected a Label as the first child of VBox for name.");
+            }
         }
     }
 
@@ -224,7 +238,7 @@ public class UMLClassBox implements UMLElementBoxInterface {
      *
      * @param attributes A {@code List} of {@code String} representing the new attributes.
      */
-    public void setAttributes(List<String> attributes) {
+    /*public void setAttributes(List<String> attributes) {
         this.attributes = attributes;
         if (visualRepresentation != null) {
             VBox attributesBox = (VBox) visualRepresentation.getChildren().get(1);
@@ -233,7 +247,24 @@ public class UMLClassBox implements UMLElementBoxInterface {
                 attributesBox.getChildren().add(new Label(attribute));
             }
         }
+    }*/
+
+    public void setAttributes(List<String> attributes) {
+        this.attributes = attributes;
+        if (visualRepresentation != null && visualRepresentation.getChildren().size() > 1) {
+            Node node = visualRepresentation.getChildren().get(1);
+            if (node instanceof VBox) {
+                VBox attributesBox = (VBox) node;
+                attributesBox.getChildren().clear();
+                for (String attribute : attributes) {
+                    attributesBox.getChildren().add(new Label(attribute));
+                }
+            } else {
+                throw new IllegalStateException("Expected a VBox as the second child of visualRepresentation for attributes.");
+            }
+        }
     }
+
 
     /**
      * Sets the list of methods for the UML class.
@@ -242,7 +273,7 @@ public class UMLClassBox implements UMLElementBoxInterface {
      *
      * @param methods A {@code List} of {@code String} representing the new methods.
      */
-    public void setMethods(List<String> methods) {
+    /*public void setMethods(List<String> methods) {
         this.methods = methods;
         if (visualRepresentation != null) {
             VBox methodsBox = (VBox) visualRepresentation.getChildren().get(2);
@@ -251,7 +282,24 @@ public class UMLClassBox implements UMLElementBoxInterface {
                 methodsBox.getChildren().add(new Label(method));
             }
         }
+    }*/
+
+    public void setMethods(List<String> methods) {
+        this.methods = methods;
+        if (visualRepresentation != null && visualRepresentation.getChildren().size() > 2) {
+            Node node = visualRepresentation.getChildren().get(2);
+            if (node instanceof VBox) {
+                VBox methodsBox = (VBox) node;
+                methodsBox.getChildren().clear();
+                for (String method : methods) {
+                    methodsBox.getChildren().add(new Label(method));
+                }
+            } else {
+                throw new IllegalStateException("Expected a VBox as the third child of visualRepresentation for methods.");
+            }
+        }
     }
+
 
     /**
      * Sets the visual representation of the UML class.
