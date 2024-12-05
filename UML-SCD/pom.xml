@@ -131,7 +131,7 @@
           <execution>
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.example.umlscd/com.example.umlscd.Main</mainClass>
+              <mainClass>com.example.umlscd/com.example.umlscd.EntryPoint.Main</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>

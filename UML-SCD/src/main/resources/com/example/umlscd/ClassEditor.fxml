@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassEditorUI" spacing="10" style="-fx-padding: 10; -fx-font-family: 'Verdana';">
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.PresentationLayer.ClassDiagram.ClassEditorUI" spacing="10" style="-fx-padding: 10; -fx-font-family: 'Verdana';">
 
     <!-- Centered Class Name Section -->
     <TextField fx:id="classNameField" promptText="Class Name" style="-fx-alignment: center;"/>

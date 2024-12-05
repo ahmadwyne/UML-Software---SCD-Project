@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.canvas.Canvas?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.ClassDiagramUI" style="-fx-background-color: #242424;">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI" style="-fx-background-color: #242424;">
     <!-- Top Menu -->
     <top>
         <HBox spacing="10" style="-fx-padding: 10; -fx-border-color: #F5F5F5; -fx-border-width: 2; -fx-border-radius: 5;">

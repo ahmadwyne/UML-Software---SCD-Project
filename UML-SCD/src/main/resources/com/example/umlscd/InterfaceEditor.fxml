@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.TextFlow?>
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.InterfaceEditorUI" spacing="10" style="-fx-padding: 10; -fx-font-family: 'Verdana';">
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.umlscd.PresentationLayer.ClassDiagram.InterfaceEditorUI" spacing="10" style="-fx-padding: 10; -fx-font-family: 'Verdana';">
 
     <!-- Centered Interface Name Section -->
     <TextField fx:id="interfaceNameField" promptText="Interface Name" style="-fx-alignment: center;"/>
