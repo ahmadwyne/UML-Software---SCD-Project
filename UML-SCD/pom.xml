@@ -160,13 +160,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M9</version>
+        <version>3.1.2</version>
         <configuration>
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
             <include>**/*TestCase.java</include>
           </includes>
+          <argLine>
+            --add-modules javafx.controls,javafx.graphics
+            --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+          </argLine>
           <useModulePath>false</useModulePath> <!-- Optional: Helps with module issues -->
         </configuration>
       </plugin>
