@@ -25,6 +25,8 @@
         <!-- Add Attribute Button -->
         <Button text="Add Attribute" fx:id="addAttributeButton" style="-fx-background-color: #AFAFAF; -fx-font-weight: bold"
                 onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+        <Button text="Delete Attribute" fx:id="deleteAttributeButton" style="-fx-background-color: #AFAFAF; -fx-font-weight: bold"
+                onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
     </VBox>
 
     <!-- Methods Section with Boundary -->
@@ -50,6 +52,8 @@
 
         <!-- Add Method Button -->
         <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+                onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+        <Button text="Delete Method" fx:id="deleteMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-weight: bold"
                 onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
     </VBox>
 
