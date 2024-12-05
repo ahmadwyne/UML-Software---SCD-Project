@@ -5,12 +5,16 @@ import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationshipBox;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.scene.shape.Line;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Manages the creation and rendering of Composition relationships.
@@ -118,6 +122,21 @@ public class CompositionManager extends ClassDiagramRelationsManager {
                 endMultiplicityText
         );
 
+
+        addEditDialogOnClick(compositionLabel, "Edit Composition Name", newName -> {
+            compositionLabel.setText(newName);
+            relationshipBox.setAssociationName(newName); // Update the relationship box
+        });
+
+        addEditDialogOnClick(startMultiplicityText, "Edit Start Multiplicity", newValue -> {
+            startMultiplicityText.setText(newValue);
+            relationshipBox.setStartMultiplicity(newValue); // Update the relationship box
+        });
+
+        addEditDialogOnClick(endMultiplicityText, "Edit End Multiplicity", newValue -> {
+            endMultiplicityText.setText(newValue);
+            relationshipBox.setEndMultiplicity(newValue); // Update the relationship box
+        });
         // **Correction:** Use addRelationshipBox instead of createRelationshipFromSerialization
         classDiagramManager.addRelationshipBox(relationshipBox);
 
@@ -128,6 +147,21 @@ public class CompositionManager extends ClassDiagramRelationsManager {
         System.out.println("Created composition: " + compositionName + " between " + getElementName(start) + " and " + getElementName(end));
     }
 
+private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
+    textElement.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2) { // Double-click to edit
+            TextInputDialog dialog = new TextInputDialog(textElement.getText());
+            dialog.setTitle(dialogTitle);
+            dialog.setHeaderText(null);
+            dialog.setContentText("Enter new value:");
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(newValue -> {
+                onSave.accept(newValue);
+            });
+        }
+    });
+}
     /**
      * Creates a composition relationship from a UMLRelationship model object during deserialization.
      *

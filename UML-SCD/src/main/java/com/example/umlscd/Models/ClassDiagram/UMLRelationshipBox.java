@@ -367,4 +367,8 @@ public class UMLRelationshipBox {
                 this.endMultiplicity
         );
     }
+
+    public void setAssociationName(String newName) {
+        this.name=newName;
+    }
 }

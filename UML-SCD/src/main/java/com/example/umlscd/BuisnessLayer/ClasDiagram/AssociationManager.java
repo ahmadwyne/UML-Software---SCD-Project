@@ -5,11 +5,15 @@ import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationshipBox;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.shape.Line;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * <h1>Association Manager</h1>
@@ -102,10 +106,38 @@ public class AssociationManager extends ClassDiagramRelationsManager {
                 endMultiplicityText
         );
 
+        addEditDialogOnClick(associationLabel, "Edit Association Name", newName -> {
+            associationLabel.setText(newName);
+            relationshipBox.setAssociationName(newName); // Update the relationship box
+        });
+
+        addEditDialogOnClick(startMultiplicityText, "Edit Start Multiplicity", newValue -> {
+            startMultiplicityText.setText(newValue);
+            relationshipBox.setStartMultiplicity(newValue); // Update the relationship box
+        });
+
+        addEditDialogOnClick(endMultiplicityText, "Edit End Multiplicity", newValue -> {
+            endMultiplicityText.setText(newValue);
+            relationshipBox.setEndMultiplicity(newValue); // Update the relationship box
+        });
         classDiagramManager.addRelationshipBox(relationshipBox);
         lastRelationshipBox = relationshipBox;
     }
+    private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
+        textElement.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Double-click to edit
+                TextInputDialog dialog = new TextInputDialog(textElement.getText());
+                dialog.setTitle(dialogTitle);
+                dialog.setHeaderText(null);
+                dialog.setContentText("Enter new value:");
 
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(newValue -> {
+                    onSave.accept(newValue);
+                });
+            }
+        });
+    }
     /**
      * Creates an association relationship from a UMLRelationship model object during deserialization.
      * <p>This method recreates an association relationship using data from a {@link UMLRelationship} object and

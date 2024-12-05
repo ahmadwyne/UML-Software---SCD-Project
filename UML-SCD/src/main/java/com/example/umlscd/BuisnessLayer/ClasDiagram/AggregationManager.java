@@ -5,12 +5,16 @@ import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationshipBox;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.scene.shape.Line;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Manages the creation and rendering of Aggregation relationships.
@@ -103,18 +107,42 @@ public class AggregationManager extends ClassDiagramRelationsManager {
                 startMultiplicityText,
                 endMultiplicityText
         );
+        addEditDialogOnClick(aggregationLabel, "Edit Aggregation Name", newName -> {
+            aggregationLabel.setText(newName);
+            relationshipBox.setAssociationName(newName); // Update the relationship box
+        });
 
-        // **Correction:** Use addRelationshipBox instead of createRelationshipFromSerialization
+        addEditDialogOnClick(startMultiplicityText, "Edit Start Multiplicity", newValue -> {
+            startMultiplicityText.setText(newValue);
+            relationshipBox.setStartMultiplicity(newValue); // Update the relationship box
+        });
+
+        addEditDialogOnClick(endMultiplicityText, "Edit End Multiplicity", newValue -> {
+            endMultiplicityText.setText(newValue);
+            relationshipBox.setEndMultiplicity(newValue); // Update the relationship box
+        });
         classDiagramManager.addRelationshipBox(relationshipBox);
-
-        // Store the last created relationship
         lastRelationshipBox = relationshipBox;
-
-        // **Debug Logging**
-        System.out.println("Created aggregation: " + aggregationName + " between " + getElementName(start) + " and " + getElementName(end));
     }
 
-    /**
+
+    private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
+    textElement.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2) { // Double-click to edit
+            TextInputDialog dialog = new TextInputDialog(textElement.getText());
+            dialog.setTitle(dialogTitle);
+            dialog.setHeaderText(null);
+            dialog.setContentText("Enter new value:");
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(newValue -> {
+                onSave.accept(newValue);
+            });
+        }
+    });
+}
+
+/**
      * Creates an aggregation relationship from a UMLRelationship model object during deserialization.
      *
      * @param umlRelationship The UMLRelationship data.
