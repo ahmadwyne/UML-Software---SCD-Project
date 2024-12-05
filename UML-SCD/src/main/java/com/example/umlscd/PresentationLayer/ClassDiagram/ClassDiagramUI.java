@@ -6,6 +6,7 @@ import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -75,6 +76,10 @@ public class ClassDiagramUI {
     @FXML
     private Button btnSave, btnLoad, btnExportImage,btnCode; // Added Save and Load buttons
 
+    @FXML private Button btnDelete;
+    private boolean isDeleteModeEnabled = false;
+
+
     /**
      * The pane containing editors for classes and interfaces.
      */
@@ -117,6 +122,8 @@ public class ClassDiagramUI {
         // Setup Export as Image Handler
         btnExportImage.setOnAction(e -> handleExportAsImage());
         btnCode.setOnAction(e -> handleGenerateCode());
+        setupDeleteButtonHandler();
+
     }
 
     /**
@@ -157,6 +164,56 @@ public class ClassDiagramUI {
         Button button = (Button) event.getSource();
         button.setStyle("-fx-background-color: #8C8C8C; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
+
+
+    // Handle Delete Button Click
+    private void setupDeleteButtonHandler() {
+        btnDelete.setOnAction(e -> {
+            if (isDeleteModeEnabled) {
+                disableDeleteMode();
+            } else {
+                enableDeleteMode();
+            }
+        });
+    }
+
+    // Enable delete mode for selecting a class to delete
+    private void enableDeleteMode() {
+        isDeleteModeEnabled = true;
+        btnDelete.setText("Cancel Delete"); // Update button text to indicate mode
+        btnDelete.setDisable(false);
+
+        // Enable delete functionality on the drawing pane
+        drawingPane.setOnMouseClicked(event -> {
+            VBox selectedElement = getSelectedElement(event);
+            if (selectedElement != null) {
+                // Call the delete method from ClassDiagramManager
+                classDiagramManager.deleteSelectedElement(selectedElement);
+
+                // Disable delete mode after deletion
+                disableDeleteMode();
+            }
+        });
+    }
+
+    // Disable delete mode and reset the button
+    private void disableDeleteMode() {
+        isDeleteModeEnabled = false;
+        btnDelete.setText("Delete");
+        btnDelete.setDisable(false); // Re-enable the delete button
+        drawingPane.setOnMouseClicked(null); // Remove the delete click listener
+    }
+
+    // Get the selected element from the drawing pane (using mouse click)
+    private VBox getSelectedElement(javafx.scene.input.MouseEvent event) {
+        for (Node node : drawingPane.getChildren()) {
+            if (node instanceof VBox && node.getBoundsInParent().contains(event.getX(), event.getY())) {
+                return (VBox) node; // Return the selected class as VBox
+            }
+        }
+        return null; // No element selected
+    }
+
 
     /**
      * Loads predefined diagrams into the diagram list view.
