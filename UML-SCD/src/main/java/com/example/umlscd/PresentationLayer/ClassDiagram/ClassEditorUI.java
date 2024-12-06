@@ -48,6 +48,9 @@ public class ClassEditorUI {
     @FXML private Button applyChangesButton;
     @FXML private Button deleteAttributeButton;
     @FXML private Button deleteMethodButton;
+    @FXML private Button editAttributeButton;
+    @FXML private Button editMethodButton;
+
 
 
     // Internal state for managing class attributes, methods, and parameters
@@ -109,6 +112,10 @@ public class ClassEditorUI {
         // Set actions for the delete buttons
         deleteAttributeButton.setOnAction(event -> deleteAttribute());
         deleteMethodButton.setOnAction(event -> deleteMethod());
+
+        editAttributeButton.setOnAction(event -> editAttribute());
+        editMethodButton.setOnAction(event -> editMethod());
+
 
     }
 
@@ -336,4 +343,80 @@ public class ClassEditorUI {
             methodsArea.setText(String.join("\n", updatedMethods));
          });
     }
+
+
+    private void editAttribute() {
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Edit Attribute");
+        dialog.setHeaderText("Enter the attribute to edit and the updated attribute.");
+
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        TextField oldAttributeField = new TextField();
+        oldAttributeField.setPromptText("Existing Attribute");
+        TextField newAttributeField = new TextField();
+        newAttributeField.setPromptText("Updated Attribute");
+
+        VBox dialogContent = new VBox(10);
+        dialogContent.getChildren().addAll(new Label("Existing Attribute:"), oldAttributeField, new Label("Updated Attribute:"), newAttributeField);
+        dialog.getDialogPane().setContent(dialogContent);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+                return new Pair<>(oldAttributeField.getText(), newAttributeField.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+        result.ifPresent(attributePair -> {
+            String oldAttribute = attributePair.getKey();
+            String newAttribute = attributePair.getValue();
+
+            if (!oldAttribute.isEmpty() && !newAttribute.isEmpty()) {
+                String currentText = attributesArea.getText();
+                String updatedText = currentText.replace(oldAttribute, newAttribute);
+                attributesArea.setText(updatedText);
+            }
+        });
+    }
+
+    private void editMethod() {
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Edit Method");
+        dialog.setHeaderText("Enter the method to edit and the updated method.");
+
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        TextField oldMethodField = new TextField();
+        oldMethodField.setPromptText("Existing Method");
+        TextField newMethodField = new TextField();
+        newMethodField.setPromptText("Updated Method");
+
+        VBox dialogContent = new VBox(10);
+        dialogContent.getChildren().addAll(new Label("Existing Method:"), oldMethodField, new Label("Updated Method:"), newMethodField);
+        dialog.getDialogPane().setContent(dialogContent);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+                return new Pair<>(oldMethodField.getText(), newMethodField.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+        result.ifPresent(methodPair -> {
+            String oldMethod = methodPair.getKey();
+            String newMethod = methodPair.getValue();
+
+            if (!oldMethod.isEmpty() && !newMethod.isEmpty()) {
+                String currentText = methodsArea.getText();
+                String updatedText = currentText.replace(oldMethod, newMethod);
+                methodsArea.setText(updatedText);
+            }
+        });
+    }
+
 }
