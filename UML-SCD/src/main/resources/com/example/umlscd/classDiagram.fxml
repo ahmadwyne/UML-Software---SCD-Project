@@ -11,29 +11,15 @@
             <Button text="Home" fx:id="homeButton"
                     style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF; -fx-font-weight: bold; -fx-cursor: hand;"
                     onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
-            <MenuBar style = "-fx-background-color: #AFAFAF; -fx-border-radius: 5;">
-                <Menu text="File" style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
-                    <MenuItem text="New"
-                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF; "/>
-                    <MenuItem text="Open"
-                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <MenuItem text="Save"
-                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <MenuItem text="Exit"
-                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
+            <Button text="Save JSON File" fx:id="btnSave" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                    onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+            <Button text="Load JSON File" fx:id="btnLoad" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                    onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+            <Button text="Generate Code" fx:id="btnCode" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                    onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+            <Button text="Export Image" fx:id="btnExportImage" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
+                    onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
 
-                </Menu>
-                <Menu text="Edit" style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
-                    <MenuItem text="Undo"
-                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                    <MenuItem text="Redo"
-                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                </Menu>
-                <Menu text="Help" style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;">
-                    <MenuItem text="About"
-                              style="-fx-font-size: 12px; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"/>
-                </Menu>
-            </MenuBar>
         </HBox>
     </top>
 
@@ -50,14 +36,6 @@
             <!-- Toolbox Section -->
             <TitledPane text="Toolbox" expanded="true" style="-fx-background-color: #444444; -fx-text-fill: #111111;">
                 <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
-                    <Button text="Save" fx:id="btnSave" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
-                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
-                    <Button text="Load" fx:id="btnLoad" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
-                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
-                    <Button text="Export Image" fx:id="btnExportImage" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
-                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
-                    <Button text="Generate Code" fx:id="btnCode" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
-                            onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
 
                     <Button text="Drag" fx:id="btnDrag" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-background-color: #AFAFAF;"
                             onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
