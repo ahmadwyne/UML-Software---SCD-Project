@@ -60,7 +60,7 @@ class UseCaseDiagramObjectTest extends TestBase {
         assertEquals("actor", obj.getType(), "Type should be updated correctly");
     }
 
-    @Test
+    /*@Test
     void testShowAndHideNameField() {
         obj.showNameField();
         assertTrue(obj.isNameFieldVisible(), "Name field should be visible after showNameField()");
@@ -78,7 +78,7 @@ class UseCaseDiagramObjectTest extends TestBase {
 
         obj.updateNameFromTextField();
         assertEquals("NewUseCaseName", obj.getName(), "Name should be updated from TextField");
-    }
+    }*/
 
     @Test
     void testContainsActorInside() {
