@@ -218,13 +218,11 @@ public class ClassDiagramUI {
     private VBox getSelectedElement(javafx.scene.input.MouseEvent event) {
         for (Node node : drawingPane.getChildren()) {
             if (node instanceof VBox && node.getBoundsInParent().contains(event.getX(), event.getY())) {
-                return (VBox) node; // Return the selected class as VBox
+                return (VBox) node;// Return the selected class as VBox
             }
         }
         return null; // No element selected
     }
-
-
     /**
      * Loads predefined diagrams into the diagram list view.
      *

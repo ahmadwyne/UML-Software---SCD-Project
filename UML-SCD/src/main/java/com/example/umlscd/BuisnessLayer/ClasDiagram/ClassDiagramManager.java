@@ -832,14 +832,27 @@ public class ClassDiagramManager {
      * @return The corresponding {@code UMLClassBox}, or {@code null} if not found.
      */
     public UMLClassBox getClassByVBox(VBox classBox) {
+        if (classBox == null) {
+            return null;
+        }
+
         for (UMLClassBox umlClass : classDiagram.getClasses()) {
             if (umlClass.getVisualRepresentation() == classBox) {
+                // Highlight the selected class
+                if (currentHighlightedBox != null && currentHighlightedBox != classBox) {
+                    highlightClass(currentHighlightedBox, false); // Unhighlight previously selected
+                }
+                highlightClass(classBox, true); // Highlight current selection
+                currentHighlightedBox = classBox;
+
                 return umlClass;
             }
         }
         return null;
     }
 
+    // Track the currently highlighted box
+    private VBox currentHighlightedBox = null;
     /**
      * Retrieves a UML interface box by its associated {@code VBox}.
      *
