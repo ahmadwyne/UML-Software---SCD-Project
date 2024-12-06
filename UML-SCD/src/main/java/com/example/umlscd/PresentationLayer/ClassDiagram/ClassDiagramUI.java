@@ -559,6 +559,7 @@ public class ClassDiagramUI {
             Scene scene = new Scene(root, 1366, 768);
             stage.setScene(scene);
             stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
