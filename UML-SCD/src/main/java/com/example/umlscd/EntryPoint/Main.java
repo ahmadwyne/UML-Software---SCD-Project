@@ -55,6 +55,7 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml"));
             Parent root = loader.load();
 
+
             // Set title and icon
             Stage window = primaryStage;
             window.setTitle("Welcome to UML Editor");
