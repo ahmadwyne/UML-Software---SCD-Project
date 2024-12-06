@@ -1168,6 +1168,7 @@ public class ClassDiagramManager {
 
             // Remove the class from the classBoxMap
             classBoxMap.remove(className);
+            elements.remove(selectedElement);
 
             // Remove the class from the model (classDiagram) if it's part of the model
             classDiagram.removeRelationshipsByClassName(className);
