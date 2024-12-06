@@ -551,6 +551,7 @@ public class ClassEditorUI {
         alert.showAndWait();
     }
 
+    // Edit method logic
     private void editMethod() {
         Dialog<MethodsDetails> dialog = new Dialog<>();
         dialog.setTitle("Edit Method");
@@ -564,6 +565,10 @@ public class ClassEditorUI {
         oldMethodField.setPromptText("Existing Method Name");
         TextField newMethodField = new TextField();
         newMethodField.setPromptText("Updated Method Name");
+
+        // Text field for parameters
+        TextField parametersField = new TextField();
+        parametersField.setPromptText("Method Parameters");
 
         // Dropdowns for visibility and return type
         ComboBox<String> visibilityDropdown = new ComboBox<>();
@@ -581,8 +586,9 @@ public class ClassEditorUI {
 
             // Set the dropdowns to the current values if method exists
             String visibility = parseVisibility(currentMethod); // Parse visibility
-            String returnType = parseDataType(currentMethod); // Parse return type
-            String methodName = parseAttributeName(currentMethod); // Parse method name
+            String returnType = parseReturnType(currentMethod); // Parse return type
+            String methodName = parseMethodName(currentMethod); // Parse method name
+            String parameters = parseParameters(currentMethod); // Parse method parameters
 
             // Set the visibility and return type to current values if available
             if (visibility != null && !visibility.isEmpty() && !visibility.equals("Visibility")) {
@@ -596,6 +602,9 @@ public class ClassEditorUI {
             if (methodName != null && !methodName.isEmpty()) {
                 oldMethodField.setText(methodName);
             }
+
+            // Pre-fill the parameters field
+            parametersField.setText(parameters);
         }
 
         // Handle Custom return type selection
@@ -610,6 +619,7 @@ public class ClassEditorUI {
         dialogContent.getChildren().addAll(
                 new Label("Existing Method Name:"), oldMethodField,
                 new Label("Updated Method Name:"), newMethodField,
+                new Label("Parameters (Each Parameter should be written comma separated and like id:int"), parametersField,
                 new Label("Visibility:"), visibilityDropdown,
                 new Label("Return Type:"), returnTypeDropdown
         );
@@ -623,7 +633,8 @@ public class ClassEditorUI {
                         oldMethodField.getText(),
                         newMethodField.getText(),
                         visibilityDropdown.getValue(),
-                        returnTypeDropdown.getValue()
+                        returnTypeDropdown.getValue(),
+                        parametersField.getText() // Include the parameters
                 );
             }
             return null;
@@ -636,6 +647,7 @@ public class ClassEditorUI {
             String newMethod = methodsDetails.newName.trim();
             String visibility = methodsDetails.visibility;
             String returnType = methodsDetails.returnType;
+            String parameters = methodsDetails.parameters.trim();
 
             if (!oldMethod.isEmpty()) {
                 String currentText = methodsArea.getText();
@@ -648,19 +660,20 @@ public class ClassEditorUI {
                         String currentVisibility = parseVisibility(lines[i]);
                         String currentReturnType = parseReturnType(lines[i]);
                         String currentName = parseMethodName(lines[i]);
+                        String currentParameters = parseParameters(lines[i]);
 
                         // Replace only updated components
                         String updatedVisibility = visibility != null && !visibility.equals("Visibility") ? parseVisibilitySymbol(visibility) : parseVisibilitySymbol(currentVisibility);
                         String updatedReturnType = (returnType != null && !returnType.equals("ReturnType") && !returnType.equals("Custom")) ? returnType : currentReturnType;
-                        // Ensure name is updated or remains unchanged
+                        String updatedParameters = !parameters.isEmpty() ? parameters : currentParameters;
                         String updatedName = !newMethod.trim().isEmpty() ? newMethod : currentName;
 
                         // If Custom Data Type was used, set the custom data type
-                            if (returnType.equals("Custom") && !updatedReturnType.equals("ReturnType")) {
-                                updatedReturnType = returnType; // Use the custom data type entered by user
+                        if (returnType.equals("Custom") && !updatedReturnType.equals("ReturnType")) {
+                            updatedReturnType = returnType; // Use the custom data type entered by user
                         }
 
-                        String updatedAttribute = updatedVisibility + updatedName + "(): " + updatedReturnType;
+                        String updatedAttribute = updatedVisibility + updatedName + "(" + updatedParameters + "): " + updatedReturnType;
                         lines[i] = updatedAttribute;
                         found = true;
                         break;
@@ -680,19 +693,42 @@ public class ClassEditorUI {
             }
         }
     }
+
+    // MethodsDetails class now includes parameters as well
     private static class MethodsDetails {
         String oldName;
         String newName;
         String visibility;
         String returnType;
+        String parameters; // Store the parameters
 
-        MethodsDetails(String oldName, String newName, String visibility, String returnType) {
+        MethodsDetails(String oldName, String newName, String visibility, String returnType, String parameters) {
             this.oldName = oldName;
             this.newName = newName;
             this.visibility = visibility;
             this.returnType = returnType;
+            this.parameters = parameters;
         }
     }
+    // Parse method parameters from the method signature string
+    private String parseParameters(String method) {
+        // Remove any leading/trailing whitespace
+        method = method.trim();
+
+        // Find the opening and closing parentheses
+        int startIndex = method.indexOf('(');
+        int endIndex = method.indexOf(')');
+
+        // If both parentheses are found, extract the part between them
+        if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
+            return method.substring(startIndex + 1, endIndex).trim();
+        }
+
+        // Return empty string if no parameters are found
+        return "";
+    }
+
+
     // Parse return type from the method signature string
     private String parseReturnType(String method) {
         // Ensure the method is not empty and has valid format

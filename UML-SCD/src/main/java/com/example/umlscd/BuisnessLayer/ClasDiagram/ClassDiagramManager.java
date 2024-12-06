@@ -865,6 +865,13 @@ public class ClassDiagramManager {
     public UMLInterfaceBox getInterfaceByVBox(VBox interfaceBox) {
         for (UMLInterfaceBox umlInterface : classDiagram.getInterfaces()) {
             if (umlInterface.getVisualRepresentation() == interfaceBox) {
+                // Highlight the selected class
+                if (currentHighlightedBox != null && currentHighlightedBox != interfaceBox) {
+                    highlightClass(currentHighlightedBox, false); // Unhighlight previously selected
+                }
+                highlightClass(interfaceBox, true); // Highlight current selection
+                currentHighlightedBox = interfaceBox;
+
                 return umlInterface;
             }
         }
