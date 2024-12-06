@@ -2,7 +2,7 @@ package com.example.umlscd.BuisnessLayer.ClasDiagram;
 
 import com.example.umlscd.Models.ClassDiagram.*;
 import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
-import com.example.umlscd.ServiceLayer.Serializers.ClassDiagram.ClassDiagramSerializer;
+import com.example.umlscd.DataAccessLayer.Serializers.ClassDiagram.ClassDiagramSerializer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
