@@ -242,6 +242,8 @@ public class UseCaseDiagram {
         rootItem.getChildren().add(actorItem);
 
         redrawCanvas();
+        // Clear the actor name text field
+        txtActorName.clear();
     }
 
     /**
@@ -263,6 +265,8 @@ public class UseCaseDiagram {
         rootItem.getChildren().add(useCaseItem);
 
         redrawCanvas();
+        // Clear the use case name text field
+        txtUseCaseName.clear();
     }
 
     /**
@@ -318,6 +322,9 @@ public class UseCaseDiagram {
             System.out.println("System boundary name cannot be empty.");
         }
         redrawCanvas();
+
+        // Clear the system boundary text field
+        txtSystemBoundaryName.clear();
     }
 
     /**
