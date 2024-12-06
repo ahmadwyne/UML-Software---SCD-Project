@@ -5,6 +5,7 @@ import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassEditorManager;
 import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -354,78 +355,195 @@ public class ClassEditorUI {
     }
 
 
-    private void editAttribute() {
+   /* private void editAttribute() {
+        String currentAttributes = attributesArea.getText();
+        if (currentAttributes.isEmpty()) {
+            showAlert("No attributes to edit", "Please add an attribute first.");
+            return;
+        }
+
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Edit Attribute");
-        dialog.setHeaderText("Enter the attribute to edit and the updated attribute.");
+        dialog.setHeaderText("Select and edit attribute details");
 
-        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+        // Split attributes into a list
+        String[] attributeList = currentAttributes.split("\n");
+        ChoiceBox<String> attributeChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(attributeList));
+        attributeChoiceBox.setValue(attributeList[0]); // Select the first attribute by default
 
-        TextField oldAttributeField = new TextField();
-        oldAttributeField.setPromptText("Existing Attribute");
-        TextField newAttributeField = new TextField();
-        newAttributeField.setPromptText("Updated Attribute");
+        TextField newNameField = new TextField();
+        newNameField.setPromptText("New Attribute Name");
 
-        VBox dialogContent = new VBox(10);
-        dialogContent.getChildren().addAll(new Label("Existing Attribute:"), oldAttributeField, new Label("Updated Attribute:"), newAttributeField);
+        ComboBox<String> newTypeDropdown = new ComboBox<>(FXCollections.observableArrayList("int", "String", "double", "float", "boolean", "Custom..."));
+        newTypeDropdown.setValue("int");
+
+        VBox dialogContent = new VBox(10, new Label("Select Attribute:"), attributeChoiceBox, new Label("New Name:"), newNameField, new Label("New Type:"), newTypeDropdown);
         dialog.getDialogPane().setContent(dialogContent);
 
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == updateButtonType) {
-                return new Pair<>(oldAttributeField.getText(), newAttributeField.getText());
+            if (dialogButton == saveButtonType) {
+                return new Pair<>(newNameField.getText(), newTypeDropdown.getValue());
             }
             return null;
         });
 
         Optional<Pair<String, String>> result = dialog.showAndWait();
-        result.ifPresent(attributePair -> {
-            String oldAttribute = attributePair.getKey();
-            String newAttribute = attributePair.getValue();
+        result.ifPresent(pair -> {
+            String newName = pair.getKey();
+            String newType = pair.getValue();
 
-            if (!oldAttribute.isEmpty() && !newAttribute.isEmpty()) {
-                String currentText = attributesArea.getText();
-                String updatedText = currentText.replace(oldAttribute, newAttribute);
-                attributesArea.setText(updatedText);
+            if (!newName.isEmpty()) {
+                String selectedAttribute = attributeChoiceBox.getValue();
+                String updatedAttribute = selectedAttribute.split(":")[0] + ": " + newType;
+
+                String updatedAttributes = currentAttributes.replace(selectedAttribute, updatedAttribute);
+                attributesArea.setText(updatedAttributes);
+            }
+        });
+    }*/
+
+    private void editAttribute() {
+        String currentAttributes = attributesArea.getText();
+        if (currentAttributes.isEmpty()) {
+            showAlert("No attributes to edit", "Please add an attribute first.");
+            return;
+        }
+
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Edit Attribute");
+        dialog.setHeaderText("Select and edit attribute details");
+
+        // Split attributes into a list
+        String[] attributeList = currentAttributes.split("\n");
+        ChoiceBox<String> attributeChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(attributeList));
+        attributeChoiceBox.setValue(attributeList[0]); // Select the first attribute by default
+
+        TextField newNameField = new TextField();
+        newNameField.setPromptText("New Attribute Name");
+
+        ComboBox<String> newTypeDropdown = new ComboBox<>(FXCollections.observableArrayList("int", "String", "double", "float", "boolean", "Custom..."));
+        newTypeDropdown.setValue("int");
+
+        // Custom data type text field (initially hidden)
+        TextField customTypeField = new TextField();
+        customTypeField.setPromptText("Enter custom data type");
+        customTypeField.setVisible(false);
+
+        // Show/hide the custom type field based on the dropdown selection
+        newTypeDropdown.setOnAction(event -> {
+            if (newTypeDropdown.getValue().equals("Custom...")) {
+                customTypeField.setVisible(true);
+            } else {
+                customTypeField.setVisible(false);
+            }
+        });
+
+        VBox dialogContent = new VBox(10,
+                new Label("Select Attribute:"), attributeChoiceBox,
+                new Label("New Name:"), newNameField,
+                new Label("New Type:"), newTypeDropdown,
+                customTypeField);
+        dialogContent.setPadding(new Insets(10));
+        dialog.getDialogPane().setContent(dialogContent);
+
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                String selectedType = newTypeDropdown.getValue();
+                if (selectedType.equals("Custom...")) {
+                    selectedType = customTypeField.getText().trim();
+                }
+                return new Pair<>(newNameField.getText(), selectedType);
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+        result.ifPresent(pair -> {
+            String newName = pair.getKey();
+            String newType = pair.getValue();
+
+            if (!newName.isEmpty() && !newType.isEmpty()) {
+                // Get the selected attribute's old name and type
+                String selectedAttribute = attributeChoiceBox.getValue();
+                String oldName = selectedAttribute.split(":")[0].trim();
+                String oldType = selectedAttribute.split(":")[1].trim();
+
+                // Update the attribute with the new name and type
+                String updatedAttribute = newName + ": " + newType;
+
+                // Replace the old attribute in the attributes list with the updated one
+                String updatedAttributes = currentAttributes.replace(oldName + ": " + oldType, updatedAttribute);
+                attributesArea.setText(updatedAttributes);
+            } else if (newType.isEmpty()) {
+                showAlert("Invalid Input", "Custom data type cannot be empty.");
             }
         });
     }
 
+
+
     private void editMethod() {
+        String currentMethods = methodsArea.getText();
+        if (currentMethods.isEmpty()) {
+            showAlert("No methods to edit", "Please add a method first.");
+            return;
+        }
+
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Edit Method");
-        dialog.setHeaderText("Enter the method to edit and the updated method.");
+        dialog.setHeaderText("Select and edit method details");
 
-        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+        // Split methods into a list
+        String[] methodList = currentMethods.split("\n");
+        ChoiceBox<String> methodChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(methodList));
+        methodChoiceBox.setValue(methodList[0]); // Select the first method by default
 
-        TextField oldMethodField = new TextField();
-        oldMethodField.setPromptText("Existing Method");
-        TextField newMethodField = new TextField();
-        newMethodField.setPromptText("Updated Method");
+        TextField newMethodNameField = new TextField();
+        newMethodNameField.setPromptText("New Method Name");
 
-        VBox dialogContent = new VBox(10);
-        dialogContent.getChildren().addAll(new Label("Existing Method:"), oldMethodField, new Label("Updated Method:"), newMethodField);
+        ComboBox<String> newReturnTypeDropdown = new ComboBox<>(FXCollections.observableArrayList("void", "int", "String", "double", "float", "Custom..."));
+        newReturnTypeDropdown.setValue("void");
+
+        VBox dialogContent = new VBox(10, new Label("Select Method:"), methodChoiceBox, new Label("New Name:"), newMethodNameField, new Label("New Return Type:"), newReturnTypeDropdown);
         dialog.getDialogPane().setContent(dialogContent);
 
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == updateButtonType) {
-                return new Pair<>(oldMethodField.getText(), newMethodField.getText());
+            if (dialogButton == saveButtonType) {
+                return new Pair<>(newMethodNameField.getText(), newReturnTypeDropdown.getValue());
             }
             return null;
         });
 
         Optional<Pair<String, String>> result = dialog.showAndWait();
-        result.ifPresent(methodPair -> {
-            String oldMethod = methodPair.getKey();
-            String newMethod = methodPair.getValue();
+        result.ifPresent(pair -> {
+            String newMethodName = pair.getKey();
+            String newReturnType = pair.getValue();
 
-            if (!oldMethod.isEmpty() && !newMethod.isEmpty()) {
-                String currentText = methodsArea.getText();
-                String updatedText = currentText.replace(oldMethod, newMethod);
-                methodsArea.setText(updatedText);
+            if (!newMethodName.isEmpty()) {
+                String selectedMethod = methodChoiceBox.getValue();
+                String updatedMethod = selectedMethod.split("\\(")[0] + "(" + selectedMethod.split("\\(")[1].split("\\):")[0] + "): " + newReturnType;
+
+                String updatedMethods = currentMethods.replace(selectedMethod, updatedMethod);
+                methodsArea.setText(updatedMethods);
             }
         });
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
 }
