@@ -1,4 +1,4 @@
-package com.example.umlscd.ServiceLayer.Serializers.UseCaseDiagram;
+package com.example.umlscd.DataAccessLayer.Serializers.UseCaseDiagram;
 
 import com.example.umlscd.BuisnessLayer.UseCaseDiagram.UseCaseDiagramManager;
 

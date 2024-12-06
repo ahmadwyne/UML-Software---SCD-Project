@@ -30,14 +30,14 @@ module com.example.umlscd {
     opens com.example.umlscd.PresentationLayer.ClassDiagram to com.fasterxml.jackson.databind, javafx.fxml;
     exports com.example.umlscd.PresentationLayer.UseCaseDiagram;
     opens com.example.umlscd.PresentationLayer.UseCaseDiagram to com.fasterxml.jackson.databind, javafx.fxml;
-    exports com.example.umlscd.ServiceLayer.Codegeneration;
-    opens com.example.umlscd.ServiceLayer.Codegeneration to com.fasterxml.jackson.databind, javafx.fxml;
-    exports com.example.umlscd.ServiceLayer.ImageProcessing;
-    opens com.example.umlscd.ServiceLayer.ImageProcessing to com.fasterxml.jackson.databind, javafx.fxml;
+    exports com.example.umlscd.DataAccessLayer.Codegeneration;
+    opens com.example.umlscd.DataAccessLayer.Codegeneration to com.fasterxml.jackson.databind, javafx.fxml;
+    exports com.example.umlscd.DataAccessLayer.ImageProcessing;
+    opens com.example.umlscd.DataAccessLayer.ImageProcessing to com.fasterxml.jackson.databind, javafx.fxml;
     exports com.example.umlscd.EntryPoint;
     opens com.example.umlscd.EntryPoint to com.fasterxml.jackson.databind, javafx.fxml;
-    exports com.example.umlscd.ServiceLayer.Serializers.ClassDiagram;
-    opens com.example.umlscd.ServiceLayer.Serializers.ClassDiagram to com.fasterxml.jackson.databind, javafx.fxml;
-    exports com.example.umlscd.ServiceLayer.Serializers.UseCaseDiagram;
-    opens com.example.umlscd.ServiceLayer.Serializers.UseCaseDiagram to com.fasterxml.jackson.databind, javafx.fxml;
+    exports com.example.umlscd.DataAccessLayer.Serializers.ClassDiagram;
+    opens com.example.umlscd.DataAccessLayer.Serializers.ClassDiagram to com.fasterxml.jackson.databind, javafx.fxml;
+    exports com.example.umlscd.DataAccessLayer.Serializers.UseCaseDiagram;
+    opens com.example.umlscd.DataAccessLayer.Serializers.UseCaseDiagram to com.fasterxml.jackson.databind, javafx.fxml;
 }
