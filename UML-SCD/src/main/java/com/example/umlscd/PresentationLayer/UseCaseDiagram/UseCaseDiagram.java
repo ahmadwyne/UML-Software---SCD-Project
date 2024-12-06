@@ -644,7 +644,7 @@ public class UseCaseDiagram {
      */
     private void goToHomePage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml")); // Update with your FXML file path
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml")); // Update with your FXML file path
             System.out.println("Loaded welcomepage");
             Parent root = loader.load();
             Stage stage = (Stage) btnHome.getScene().getWindow();
