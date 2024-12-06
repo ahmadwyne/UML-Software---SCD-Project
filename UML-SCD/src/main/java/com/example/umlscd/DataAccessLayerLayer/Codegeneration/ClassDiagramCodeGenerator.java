@@ -1,4 +1,4 @@
-package com.example.umlscd.ServiceLayer.Codegeneration;
+package com.example.umlscd.DataAccessLayerLayer.Codegeneration;
 
 import com.example.umlscd.Models.ClassDiagram.ClassDiagramD;
 import com.example.umlscd.Models.ClassDiagram.UMLClassBox;

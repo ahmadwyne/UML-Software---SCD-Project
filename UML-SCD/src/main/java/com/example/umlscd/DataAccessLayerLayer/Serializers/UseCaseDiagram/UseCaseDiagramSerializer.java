@@ -1,4 +1,4 @@
-package com.example.umlscd.ServiceLayer.Serializers.UseCaseDiagram;
+package com.example.umlscd.DataAccessLayerLayer.Serializers.UseCaseDiagram;
 
 import com.example.umlscd.BuisnessLayer.UseCaseDiagram.UseCaseDiagramManager;
 import com.fasterxml.jackson.databind.ObjectMapper;

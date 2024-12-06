@@ -1,4 +1,4 @@
-package com.example.umlscd.ServiceLayer.Serializers.ClassDiagram;
+package com.example.umlscd.DataAccessLayerLayer.Serializers.ClassDiagram;
 
 import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
 import com.example.umlscd.Models.ClassDiagram.ClassDiagramD;

@@ -1,10 +1,10 @@
 package com.example.umlscd.PresentationLayer.UseCaseDiagram;
 
 import com.example.umlscd.Models.UseCaseDiagram.Association;
-import com.example.umlscd.ServiceLayer.Serializers.UseCaseDiagram.UseCaseDiagramDAO;
+import com.example.umlscd.DataAccessLayerLayer.Serializers.UseCaseDiagram.UseCaseDiagramDAO;
 import com.example.umlscd.BuisnessLayer.UseCaseDiagram.UseCaseDiagramManager;
 import com.example.umlscd.Models.UseCaseDiagram.UseCaseDiagramObject;
-import com.example.umlscd.ServiceLayer.Serializers.UseCaseDiagram.UseCaseDiagramSerializer;
+import com.example.umlscd.DataAccessLayerLayer.Serializers.UseCaseDiagram.UseCaseDiagramSerializer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;

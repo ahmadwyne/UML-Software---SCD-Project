@@ -1,11 +1,9 @@
-package com.example.umlscd.ServiceLayer.ImageProcessing;
+package com.example.umlscd.DataAccessLayerLayer.ImageProcessing;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
