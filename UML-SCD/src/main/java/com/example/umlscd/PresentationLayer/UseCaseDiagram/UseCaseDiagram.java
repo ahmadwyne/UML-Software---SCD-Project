@@ -18,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -644,8 +645,15 @@ public class UseCaseDiagram {
      */
     private void goToHomePage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml")); // Update with your FXML file path
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml")); // Update with your FXML file path
             System.out.println("Loaded welcomepage");
+            // Get the FXML file location
+            URL fxmlLocation = getClass().getResource("/com/example/umlscd/welcome.fxml");
+            // Debugging: check if the file is found
+            if (fxmlLocation == null) {
+                System.err.println("FXML file 'welcome.fxml' not found!");
+                return;
+            }
             Parent root = loader.load();
             Stage stage = (Stage) btnHome.getScene().getWindow();
             System.out.println("Loaded welcomepage");

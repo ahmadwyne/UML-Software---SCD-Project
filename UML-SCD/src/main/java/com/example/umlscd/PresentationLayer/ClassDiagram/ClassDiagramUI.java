@@ -7,6 +7,8 @@ import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -19,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * <h1>Class Diagram User Interface Controller</h1>
@@ -46,6 +49,8 @@ import java.io.IOException;
  */
 public class ClassDiagramUI {
 
+
+    public Button homeButton;
     /**
      * The pane where the class diagram is drawn.
      */
@@ -123,6 +128,11 @@ public class ClassDiagramUI {
         btnExportImage.setOnAction(e -> handleExportAsImage());
         btnCode.setOnAction(e -> handleGenerateCode());
         setupDeleteButtonHandler();
+
+        // Home button
+        homeButton.setOnAction(event -> goToHomePage());
+
+
 
     }
 
@@ -526,5 +536,31 @@ public class ClassDiagramUI {
     public void applyClickEffect(javafx.scene.input.MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
+
+
+    private void goToHomePage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml")); // Update with your FXML file path
+            System.out.println("Loaded welcomepage");
+            // Get the FXML file location
+            URL fxmlLocation = getClass().getResource("/com/example/umlscd/welcome.fxml");
+            // Debugging: check if the file is found
+            if (fxmlLocation == null) {
+                System.err.println("FXML file 'welcome.fxml' not found!");
+                return;
+            }
+            Parent root = loader.load();
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            System.out.println("Loaded welcomepage");
+
+
+            // Create a scene with specific size
+            Scene scene = new Scene(root, 1366, 768);
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
