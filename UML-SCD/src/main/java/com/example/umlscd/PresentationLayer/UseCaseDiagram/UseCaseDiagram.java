@@ -160,7 +160,7 @@ public class UseCaseDiagram {
         canvas.setOnMouseReleased(this::onMouseReleased);
 
         // Home button
-        btnHome.setOnAction(event -> navigateToHome());
+        btnHome.setOnAction(event -> goToHomePage());
 
         btnSaveDiagram.setOnAction(event -> saveDiagram());
         btnLoadDiagram.setOnAction(event -> loadDiagram());
@@ -609,7 +609,7 @@ public class UseCaseDiagram {
      * or cancels the navigation.</p>
      */
     private void navigateToHome() {
-        // Create a confirmation dialog
+        /*// Create a confirmation dialog
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Save Diagram");
         alert.setHeaderText("Do you want to save the diagram before exiting?");
@@ -632,7 +632,8 @@ public class UseCaseDiagram {
                 goToHomePage(); // Navigate to the homepage without saving
             }
             // If "Cancel" is clicked, do nothing and stay on the page
-        });
+        });*/
+        goToHomePage();
     }
 
     /**
@@ -644,8 +645,11 @@ public class UseCaseDiagram {
     private void goToHomePage() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml")); // Update with your FXML file path
+            System.out.println("Loaded welcomepage");
             Parent root = loader.load();
             Stage stage = (Stage) btnHome.getScene().getWindow();
+            System.out.println("Loaded welcomepage");
+
 
             // Create a scene with specific size
             Scene scene = new Scene(root, 1366, 768);

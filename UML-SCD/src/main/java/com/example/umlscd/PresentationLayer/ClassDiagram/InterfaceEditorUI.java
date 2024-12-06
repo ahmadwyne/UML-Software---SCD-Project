@@ -92,6 +92,8 @@ public class InterfaceEditorUI {
      */
     @FXML
     private Button applyChangesButton;
+    @FXML private Button deleteMethodButton;
+    @FXML private Button editMethodButton;
 
     /**
      * The manager responsible for handling the logic of the interface editor.
@@ -147,6 +149,8 @@ public class InterfaceEditorUI {
         addMethodButton.setOnAction(event -> addMethod());
         addParameterButton.setOnAction(event -> addParameter());
         applyChangesButton.setOnAction(event -> applyChanges());
+        deleteMethodButton.setOnAction(event -> deleteMethod());
+        editMethodButton.setOnAction(event -> editMethod());
     }
 
     /**
@@ -243,6 +247,66 @@ public class InterfaceEditorUI {
         interfaceEditorManager.setInterfaceBox(interfaceBox, umlInterfaceBox);
         interfaceNameField.setText(umlInterfaceBox.getName());
         methodsArea.setText(String.join("\n", umlInterfaceBox.getMethods()));
+    }
+
+
+    private void deleteMethod() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Delete Method");
+        dialog.setHeaderText("Enter the name of the method to delete:");
+        dialog.setContentText("Method Name:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(methodName -> {
+            List<String> updatedMethods = new ArrayList<>();
+            String[] methods = methodsArea.getText().split("\n");
+
+            for (String method : methods) {
+                if (!method.contains(methodName)) {
+                    updatedMethods.add(method);
+                }
+            }
+
+            methodsArea.setText(String.join("\n", updatedMethods));
+        });
+    }
+
+
+    private void editMethod() {
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Edit Method");
+        dialog.setHeaderText("Enter the method to edit and the updated method.");
+
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        TextField oldMethodField = new TextField();
+        oldMethodField.setPromptText("Existing Method");
+        TextField newMethodField = new TextField();
+        newMethodField.setPromptText("Updated Method");
+
+        VBox dialogContent = new VBox(10);
+        dialogContent.getChildren().addAll(new Label("Existing Method:"), oldMethodField, new Label("Updated Method:"), newMethodField);
+        dialog.getDialogPane().setContent(dialogContent);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+                return new Pair<>(oldMethodField.getText(), newMethodField.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+        result.ifPresent(methodPair -> {
+            String oldMethod = methodPair.getKey();
+            String newMethod = methodPair.getValue();
+
+            if (!oldMethod.isEmpty() && !newMethod.isEmpty()) {
+                String currentText = methodsArea.getText();
+                String updatedText = currentText.replace(oldMethod, newMethod);
+                methodsArea.setText(updatedText);
+            }
+        });
     }
 
     /**

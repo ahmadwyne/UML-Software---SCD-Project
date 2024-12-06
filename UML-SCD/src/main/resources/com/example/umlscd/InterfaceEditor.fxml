@@ -33,6 +33,10 @@
         <!-- Add Method Button -->
         <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
                 onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+        <Button text="Delete Method" fx:id="deleteMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-weight: bold"
+                onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
+        <Button text="Edit Method" fx:id="editMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-weight: bold"
+                onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
     </VBox>
 
     <!-- Apply Changes Button -->
