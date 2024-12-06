@@ -146,8 +146,9 @@ public class ClassEditorUI {
         String attributeName = attributeNameField.getText();
 
         if (!attributeName.isEmpty()) {
-            String attribute = visibility.charAt(0) + attributeName + " : " + dataType + "\n";
+            String attribute = visibility.charAt(0) + attributeName + " : " + dataType ;
             attributesArea.appendText(attribute);
+            attributesArea.appendText("\n");
             attributeNameField.clear();
         }
     }
@@ -165,7 +166,8 @@ public class ClassEditorUI {
         String methodName = methodNameField.getText();
 
         if (!methodName.isEmpty()) {
-            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType + "\n";
+            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType ;
+            methodsArea.appendText("\n");
             methodsArea.appendText(methodSignature);
             methodNameField.clear();
             currentParameters.clear();  // Clear parameters after adding method
@@ -352,80 +354,345 @@ public class ClassEditorUI {
             methodsArea.setText(String.join("\n", updatedMethods));
          });
     }
-
-
     private void editAttribute() {
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<AttributeDetails> dialog = new Dialog<>();
         dialog.setTitle("Edit Attribute");
-        dialog.setHeaderText("Enter the attribute to edit and the updated attribute.");
+        dialog.setHeaderText("Edit the attribute details (you can leave fields unchanged).");
 
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
+        // Text fields for old and new attribute names
         TextField oldAttributeField = new TextField();
-        oldAttributeField.setPromptText("Existing Attribute");
+        oldAttributeField.setPromptText("Existing Attribute Name");
         TextField newAttributeField = new TextField();
-        newAttributeField.setPromptText("Updated Attribute");
+        newAttributeField.setPromptText("Updated Attribute Name");
 
+        // Dropdowns for visibility and data type with initial placeholder values
+        ComboBox<String> visibilityDropdown = new ComboBox<>();
+        visibilityDropdown.getItems().addAll("+ public", "- private", "# protected");
+        visibilityDropdown.setValue("Visibility");  // Default placeholder value for visibility
+
+        ComboBox<String> dataTypeDropdown = new ComboBox<>();
+        dataTypeDropdown.getItems().addAll("int", "String", "double", "boolean", "char", "float", "Custom");
+        dataTypeDropdown.setValue("DataType");  // Default placeholder value for data type
+
+        // Pre-fill with current attribute values (if any)
+        String currentAttribute = attributesArea.getSelectedText(); // Get the selected attribute text
+        if (currentAttribute != null && !currentAttribute.isEmpty()) {
+            oldAttributeField.setText(currentAttribute);
+
+            // Set the dropdowns to the current values if attribute exists
+            String visibility = parseVisibility(currentAttribute); // Parse visibility
+            String dataType = parseDataType(currentAttribute); // Parse data type
+
+            // Set the visibility and data type to current values if available
+            if (visibility != null && !visibility.isEmpty() && !visibility.equals("Visibility")) {
+                visibilityDropdown.setValue(visibility);
+            }
+
+            if (dataType != null && !dataType.isEmpty() && !dataType.equals("DataType")) {
+                dataTypeDropdown.setValue(dataType);
+            }
+        }
+        dataTypeDropdown.setOnAction(event -> {
+            if ("Custom".equals(dataTypeDropdown.getValue())) {
+                classEditorManager.handleCustomDataType(dataTypeDropdown); // Call custom data type handler
+            }
+        });
+
+        // Layout for the dialog content
         VBox dialogContent = new VBox(10);
-        dialogContent.getChildren().addAll(new Label("Existing Attribute:"), oldAttributeField, new Label("Updated Attribute:"), newAttributeField);
+        dialogContent.getChildren().addAll(
+                new Label("Existing Attribute Name:"), oldAttributeField,
+                new Label("Updated Attribute Name:"), newAttributeField,
+                new Label("Visibility:"), visibilityDropdown,
+                new Label("Data Type:"), dataTypeDropdown
+        );
         dialog.getDialogPane().setContent(dialogContent);
 
+        // Result converter to handle dialog inputs
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
-                return new Pair<>(oldAttributeField.getText(), newAttributeField.getText());
+                // Return the updated details, including custom data type if selected
+                return new AttributeDetails(
+                        oldAttributeField.getText(),
+                        newAttributeField.getText(),
+                        visibilityDropdown.getValue(),
+                        dataTypeDropdown.getValue()
+                );
             }
             return null;
         });
 
-        Optional<Pair<String, String>> result = dialog.showAndWait();
-        result.ifPresent(attributePair -> {
-            String oldAttribute = attributePair.getKey();
-            String newAttribute = attributePair.getValue();
+        Optional<AttributeDetails> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            AttributeDetails attributeDetails = result.get();
+            String oldAttribute = attributeDetails.oldName.trim();
+            String newAttribute = attributeDetails.newName.trim();
+            String visibility = attributeDetails.visibility;
+            String dataType = attributeDetails.dataType;
 
-            if (!oldAttribute.isEmpty() && !newAttribute.isEmpty()) {
+            if (!oldAttribute.isEmpty()) {
                 String currentText = attributesArea.getText();
-                String updatedText = currentText.replace(oldAttribute, newAttribute);
-                attributesArea.setText(updatedText);
+                String[] lines = currentText.split("\n");
+                boolean found = false;
+
+                for (int i = 0; i < lines.length; i++) {
+                    if (lines[i].contains(oldAttribute)) {
+                        // Parse the current attribute to keep unchanged values
+                        String currentVisibility = parseVisibility(lines[i]);
+                        String currentDataType = parseDataType(lines[i]);
+                        String currentName = parseAttributeName(lines[i]);
+
+                        // Replace only updated components
+                        String updatedVisibility = visibility != null && !visibility.equals("Visibility") ? parseVisibilitySymbol(visibility) : parseVisibilitySymbol(currentVisibility);
+                        String updatedDataType = (dataType != null && !dataType.equals("DataType") && !dataType.equals("Custom")) ? dataType : currentDataType;
+                        // Ensure name is updated or remains unchanged
+                        String updatedName = !newAttribute.trim().isEmpty() ? newAttribute : currentName;
+
+                        // If Custom Data Type was used, set the custom data type
+                        if (dataType.equals("Custom") && !updatedDataType.equals("DataType")) {
+                            updatedDataType = dataType; // Use the custom data type entered by user
+                        }
+
+                        String updatedAttribute = updatedVisibility + updatedName + " : " + updatedDataType;
+                        lines[i] = updatedAttribute;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    // Join the lines back and set the updated text
+                    attributesArea.setText(String.join("\n", lines));
+
+                    // Show success dialog
+                    showSuccessDialog("Attribute Updated", "The attribute has been updated successfully.");
+                } else {
+                    // Show error message if the attribute is not found
+                    showErrorDialog("Attribute Not Found", "The provided existing attribute name does not match any existing attributes.");
+                }
             }
-        });
+        }
+    }
+
+
+    // Helper class to encapsulate attribute details
+    private static class AttributeDetails {
+        String oldName;
+        String newName;
+        String visibility;
+        String dataType;
+
+        AttributeDetails(String oldName, String newName, String visibility, String dataType) {
+            this.oldName = oldName;
+            this.newName = newName;
+            this.visibility = visibility;
+            this.dataType = dataType;
+        }
+    }
+
+    // Parse visibility from the attribute string
+    private String parseVisibility(String attribute) {
+        if (attribute.startsWith("+")) return "+ public";
+        if (attribute.startsWith("-")) return "- private";
+        if (attribute.startsWith("#")) return "# protected";
+        return "+ public"; // Default to public
+    }
+
+    // Parse visibility symbol for saving the updated attribute
+    private String parseVisibilitySymbol(String visibility) {
+        return switch (visibility) {
+            case "+ public" -> "+";
+            case "- private" -> "-";
+            case "# protected" -> "#";
+            default -> "+";
+        };
+    }
+
+    // Parse data type from the attribute string
+    private String parseDataType(String attribute) {
+        String[] parts = attribute.split(" : ");
+        return parts.length > 1 ? parts[1].trim() : "String"; // Default to String
+    }
+
+    // Parse attribute name from the attribute string
+    private String parseAttributeName(String attribute) {
+        // Split the attribute by the space character
+        String[] parts = attribute.split(" ");
+
+        // Ensure there are at least 2 parts (name and type)
+        if (parts.length >= 2) {
+            // The first part will be the visibility modifier, so remove it
+            String nameWithVisibility = parts[0].trim();
+
+            // Remove the first character (visibility modifier) and return the attribute name
+            return !nameWithVisibility.isEmpty() ? nameWithVisibility.substring(1).trim() : "attribute";
+        }
+
+        // Default case if the format is not as expected
+        return "attribute"; // Default to "attribute"
+    }
+    // Show error dialog
+    private void showErrorDialog(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);  // No header for the error dialog
+        alert.setContentText(content);  // Content of the error message
+        alert.showAndWait();  // Show the alert and wait for user to close it
+    }
+
+    // Show success dialog
+    private void showSuccessDialog(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     private void editMethod() {
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<MethodsDetails> dialog = new Dialog<>();
         dialog.setTitle("Edit Method");
-        dialog.setHeaderText("Enter the method to edit and the updated method.");
+        dialog.setHeaderText("Enter the method to edit and the updated method details.");
 
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
+        // Text fields for old and new method name
         TextField oldMethodField = new TextField();
-        oldMethodField.setPromptText("Existing Method");
+        oldMethodField.setPromptText("Existing Method Name");
         TextField newMethodField = new TextField();
-        newMethodField.setPromptText("Updated Method");
+        newMethodField.setPromptText("Updated Method Name");
 
+        // Dropdowns for visibility and return type
+        ComboBox<String> visibilityDropdown = new ComboBox<>();
+        visibilityDropdown.getItems().addAll("+ public", "- private", "# protected");
+        visibilityDropdown.setValue("Visibility");  // Default placeholder value for visibility
+
+        ComboBox<String> returnTypeDropdown = new ComboBox<>();
+        returnTypeDropdown.getItems().addAll("int", "String", "double", "boolean", "char", "float", "Custom");
+        returnTypeDropdown.setValue("ReturnType");  // Default placeholder value for return type
+
+        // Pre-fill with current method values (if any)
+        String currentMethod = methodsArea.getSelectedText(); // Get the selected method text
+        if (currentMethod != null && !currentMethod.isEmpty()) {
+            oldMethodField.setText(currentMethod);
+
+            // Set the dropdowns to the current values if method exists
+            String visibility = parseVisibility(currentMethod); // Parse visibility
+            String returnType = parseDataType(currentMethod); // Parse return type
+            String methodName = parseAttributeName(currentMethod); // Parse method name
+
+            // Set the visibility and return type to current values if available
+            if (visibility != null && !visibility.isEmpty() && !visibility.equals("Visibility")) {
+                visibilityDropdown.setValue(visibility);
+            }
+
+            if (returnType != null && !returnType.isEmpty() && !returnType.equals("Return Type")) {
+                returnTypeDropdown.setValue(returnType);
+            }
+
+            if (methodName != null && !methodName.isEmpty()) {
+                oldMethodField.setText(methodName);
+            }
+        }
+
+        // Handle Custom return type selection
+        returnTypeDropdown.setOnAction(event -> {
+            if ("Custom".equals(returnTypeDropdown.getValue())) {
+                classEditorManager.handleCustomDataType(returnTypeDropdown); // Call custom data type handler
+            }
+        });
+
+        // Layout for the dialog content
         VBox dialogContent = new VBox(10);
-        dialogContent.getChildren().addAll(new Label("Existing Method:"), oldMethodField, new Label("Updated Method:"), newMethodField);
+        dialogContent.getChildren().addAll(
+                new Label("Existing Method Name:"), oldMethodField,
+                new Label("Updated Method Name:"), newMethodField,
+                new Label("Visibility:"), visibilityDropdown,
+                new Label("Return Type:"), returnTypeDropdown
+        );
         dialog.getDialogPane().setContent(dialogContent);
 
+        // Result converter to handle dialog inputs
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
-                return new Pair<>(oldMethodField.getText(), newMethodField.getText());
+                // Return the updated details, including custom data type if selected
+                return new MethodsDetails(
+                        oldMethodField.getText(),
+                        newMethodField.getText(),
+                        visibilityDropdown.getValue(),
+                        returnTypeDropdown.getValue()
+                );
             }
             return null;
         });
 
-        Optional<Pair<String, String>> result = dialog.showAndWait();
-        result.ifPresent(methodPair -> {
-            String oldMethod = methodPair.getKey();
-            String newMethod = methodPair.getValue();
+        Optional<MethodsDetails> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            MethodsDetails methodsDetails = result.get();
+            String oldMethod = methodsDetails.oldName.trim();
+            String newMethod = methodsDetails.newName.trim();
+            String visibility = methodsDetails.visibility;
+            String returnType = methodsDetails.returnType;
 
-            if (!oldMethod.isEmpty() && !newMethod.isEmpty()) {
+            if (!oldMethod.isEmpty()) {
                 String currentText = methodsArea.getText();
-                String updatedText = currentText.replace(oldMethod, newMethod);
-                methodsArea.setText(updatedText);
+                String[] lines = currentText.split("\n");
+                boolean found = false;
+
+                for (int i = 0; i < lines.length; i++) {
+                    if (lines[i].contains(oldMethod)) {
+                        // Parse the current method to keep unchanged values
+                        String currentVisibility = parseVisibility(lines[i]);
+                        String currentReturnType = parseDataType(lines[i]);
+                        String currentName = parseAttributeName(lines[i]);
+
+                        // Replace only updated components
+                        String updatedVisibility = visibility != null && !visibility.equals("Visibility") ? parseVisibilitySymbol(visibility) : parseVisibilitySymbol(currentVisibility);
+                        String updatedReturnType = (returnType != null && !returnType.equals("ReturnType") && !returnType.equals("Custom")) ? returnType : currentReturnType;
+                        // Ensure name is updated or remains unchanged
+                        String updatedName = !newMethod.trim().isEmpty() ? newMethod : currentName;
+
+                        // If Custom Data Type was used, set the custom data type
+                            if (returnType.equals("Custom") && !updatedReturnType.equals("ReturnType")) {
+                                updatedReturnType = returnType; // Use the custom data type entered by user
+                        }
+
+                        String updatedAttribute = updatedVisibility + updatedName + "(): " + updatedReturnType;
+                        lines[i] = updatedAttribute;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    // Join the lines back and set the updated text
+                    methodsArea.setText(String.join("\n", lines));
+
+                    // Show success dialog
+                    showSuccessDialog("Method Updated", "The method has been updated successfully.");
+                } else {
+                    // Show error message if the method is not found
+                    showErrorDialog("Method Not Found", "The provided existing method name does not match any existing methods.");
+                }
             }
-        });
+        }
+    }
+    private static class MethodsDetails {
+        String oldName;
+        String newName;
+        String visibility;
+        String returnType;
+
+        MethodsDetails(String oldName, String newName, String visibility, String returnType) {
+            this.oldName = oldName;
+            this.newName = newName;
+            this.visibility = visibility;
+            this.returnType = returnType;
+        }
     }
 
 }
