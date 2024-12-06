@@ -1,7 +1,7 @@
 package com.example.umlscd.PresentationLayer.ClassDiagram;
 
 import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.DataAccessLayerLayer.Codegeneration.ClassDiagramCodeGenerator;
+import com.example.umlscd.DataAccessLayer.Codegeneration.ClassDiagramCodeGenerator;
 import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import javafx.fxml.FXML;

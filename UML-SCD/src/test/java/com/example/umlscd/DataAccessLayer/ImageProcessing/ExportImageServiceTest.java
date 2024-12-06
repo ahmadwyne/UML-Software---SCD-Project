@@ -1,4 +1,4 @@
-package com.example.umlscd.DataAccessLayerLayer.ImageProcessing;
+package com.example.umlscd.DataAccessLayer.ImageProcessing;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;

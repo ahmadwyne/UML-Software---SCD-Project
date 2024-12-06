@@ -1,4 +1,4 @@
-package com.example.umlscd.DataAccessLayerLayer.ImageProcessing;
+package com.example.umlscd.DataAccessLayer.ImageProcessing;
 
 import javafx.stage.FileChooser;
 import javafx.scene.canvas.Canvas;

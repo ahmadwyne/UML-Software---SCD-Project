@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import com.example.umlscd.Models.UseCaseDiagram.Association;
 import com.example.umlscd.Models.UseCaseDiagram.UseCaseDiagramObject;
-import com.example.umlscd.DataAccessLayerLayer.ImageProcessing.ExportImageService;
+import com.example.umlscd.DataAccessLayer.ImageProcessing.ExportImageService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
