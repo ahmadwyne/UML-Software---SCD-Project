@@ -1,5 +1,7 @@
 package com.example.umlscd.Models.UseCaseDiagram;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * <p><b>Version:</b> 1.0</p>
  * <p><b>Since:</b> 2024-12-03</p>
  */
+@JsonIgnoreProperties(ignoreUnknown = true) // This will ignore unrecognized fields during deserialization
 public class UseCaseDiagramObject implements Serializable {
     /**
      * Serial version UID for serialization compatibility.
@@ -61,6 +64,7 @@ public class UseCaseDiagramObject implements Serializable {
      * This field is marked as transient to exclude it from serialization,
      * as UI components should not be serialized.
      */
+    @JsonIgnore
     private transient TextField nameField; // Mark as transient
 
     /**
@@ -69,7 +73,8 @@ public class UseCaseDiagramObject implements Serializable {
      * This field is marked as transient to exclude it from serialization,
      * as UI state should not be serialized.
      */
-    private transient boolean isNameFieldVisible; // Transient field for visibility state
+    @JsonIgnore
+    private transient boolean nameFieldVisible; // Transient field for visibility state
 
     /**
      * Constructs a {@code UseCaseDiagramObject} with the specified type, position, and name.
@@ -101,7 +106,7 @@ public class UseCaseDiagramObject implements Serializable {
     public void initializeTransientFields() {
         this.nameField = new TextField(name);
         this.nameField.setVisible(false);
-        this.isNameFieldVisible = false;
+        this.nameFieldVisible = false;
     }
 
     /**
@@ -163,7 +168,7 @@ public class UseCaseDiagramObject implements Serializable {
         }
 
         // Draw name text field (only if visible)
-        if (isNameFieldVisible && nameField != null) {
+        if (nameFieldVisible && nameField != null) {
             nameField.setLayoutX(x - nameField.getWidth() / 2);
             nameField.setLayoutY(y - 35);
         }
@@ -195,7 +200,7 @@ public class UseCaseDiagramObject implements Serializable {
      */
     public void showNameField() {
         if (nameField == null) initializeTransientFields(); // Ensure field is initialized
-        this.isNameFieldVisible = true;
+        this.nameFieldVisible = true;
         nameField.setVisible(true);
     }
 
@@ -206,7 +211,7 @@ public class UseCaseDiagramObject implements Serializable {
      */
     public void hideNameField() {
         if (nameField != null) {
-            this.isNameFieldVisible = false;
+            this.nameFieldVisible = false;
             nameField.setVisible(false);
         }
     }
@@ -268,21 +273,11 @@ public class UseCaseDiagramObject implements Serializable {
         return type;
     }
 
-    public TextField getNameField() {
-        return nameField;
-    }
-
     public void setType(String type) {
         this.type = type;
     }
 
     public boolean isNameFieldVisible() {
-        return isNameFieldVisible;
+        return nameFieldVisible;
     }
-
-    public void setNameField(TextField nameField) {
-        this.nameField = nameField;
-    }
-
-
 }

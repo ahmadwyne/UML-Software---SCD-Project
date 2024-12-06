@@ -91,7 +91,8 @@ public class UseCaseDiagram {
 
     private UseCaseDiagramObject selectedObject1;
     private UseCaseDiagramObject selectedObject2;
-    private String associationType = "association";
+    private UseCaseDiagramObject selectedObjectExplorer;
+    private String associationType;
     private boolean isInDragMode = false;
     private UseCaseDiagramObject objectBeingDragged = null;
     private boolean isInEditMode = false; // To track if the user is in edit mode
@@ -145,8 +146,8 @@ public class UseCaseDiagram {
             isInEditMode = btnEdit.isSelected();
             if (!isInEditMode) {
                 // Hide the text field when exiting edit mode
-                if (selectedObject1 != null) {
-                    selectedObject1.hideNameField();
+                if (selectedObjectExplorer != null) {
+                    selectedObjectExplorer.hideNameField();
                 }
                 redrawCanvas();
             }
@@ -200,8 +201,8 @@ public class UseCaseDiagram {
         });
         btnEdit.setOnAction(event -> {
             isInEditMode = btnEdit.isSelected();
-            if (!isInEditMode && selectedObject1 != null) {
-                selectedObject1.hideNameField();
+            if (!isInEditMode && selectedObjectExplorer != null) {
+                selectedObjectExplorer.hideNameField();
                 redrawCanvas();
             }
             toggleButtonColor(btnEdit);
@@ -280,7 +281,7 @@ public class UseCaseDiagram {
     private void selectObjectFromExplorer(String objectName) {
         for (UseCaseDiagramObject object : objects) {
             if (object.getName().equals(objectName)) {
-                selectedObject1 = object;
+                selectedObjectExplorer = object;
                 redrawCanvas(); // Highlight the selected object
                 break;
             }
@@ -337,11 +338,28 @@ public class UseCaseDiagram {
         boolean isInDeleteMode = btnDelete.isSelected();
         boolean isInEditMode = btnEdit.isSelected();
 
+        UseCaseDiagramObject clickedObjectO = getObjectAt(event.getX(), event.getY());
+        if (clickedObjectO == null) {
+            selectedObject1 = null;
+            selectedObject2 = null;
+            selectedObjectExplorer = null;
+            redrawCanvas();
+        }
+
         if (isInDeleteMode) {
             UseCaseDiagramObject clickedObject = getObjectAt(event.getX(), event.getY());
             if (clickedObject != null) {
                 objects.remove(clickedObject);
                 associations.removeIf(assoc -> assoc.getObj1() == clickedObject || assoc.getObj2() == clickedObject);
+
+                // Update the explorer by removing the corresponding TreeItem
+                for (TreeItem<String> child : rootItem.getChildren()) {
+                    if (child.getValue().equals(clickedObject.getName())) {
+                        rootItem.getChildren().remove(child);
+                        break; // Exit after removing the item
+                    }
+                }
+
                 redrawCanvas();
                 return;
             }
@@ -356,34 +374,107 @@ public class UseCaseDiagram {
         } else if (isInEditMode) {
             UseCaseDiagramObject clickedObject = getObjectAt(event.getX(), event.getY());
             if (clickedObject != null) {
-                selectedObject1 = clickedObject;
+                selectedObjectExplorer = clickedObject;
                 clickedObject.showNameField();
                 // Set the text fields with current names
                 if ("actor".equals(clickedObject.getType())) {
                     txtActorName.setText(clickedObject.getName());
+                    redrawCanvas();
                 } else {
                     txtUseCaseName.setText(clickedObject.getName());
+                    redrawCanvas();
                 }
             }
         }
 
         if (isInDragMode) {
             objectBeingDragged = getObjectAt(event.getX(), event.getY());
-        } else {
+        } else if (btnAssociation.isSelected()){
             UseCaseDiagramObject clickedObject = getObjectAt(event.getX(), event.getY());
             if (clickedObject != null) {
                 if (selectedObject1 == null) {
                     selectedObject1 = clickedObject;
                     clickedObject.showNameField();
+
+                    gc.setStroke(Color.RED);
+                        gc.setLineWidth(2);
+                        if ("actor".equals(selectedObject1.getType())) {
+                            gc.strokeOval(selectedObject1.getX() - 20, selectedObject1.getY() - 20, 40, 40);
+                        } else if ("usecase".equals(selectedObject1.getType())) {
+                            gc.strokeRect(selectedObject1.getX() - 55, selectedObject1.getY() - 30, 110, 60);
+                        }
+
                 } else if (selectedObject2 == null && clickedObject != selectedObject1) {
                     selectedObject2 = clickedObject;
                     drawAssociation(selectedObject1, selectedObject2, associationType);
                     associations.add(new Association(selectedObject1, selectedObject2, associationType));
                     selectedObject1 = null;
                     selectedObject2 = null;
+                    redrawCanvas();
                 }
+            } else {
+                selectedObject1 = null;
+                selectedObject2 = null;
+                redrawCanvas();
+            }
+        } else if (btnInclude.isSelected()){
+            UseCaseDiagramObject clickedObject = getObjectAt(event.getX(), event.getY());
+            if (clickedObject != null) {
+                if (selectedObject1 == null) {
+                    selectedObject1 = clickedObject;
+                    clickedObject.showNameField();
+
+                    gc.setStroke(Color.RED);
+                    gc.setLineWidth(2);
+                    if ("actor".equals(selectedObject1.getType())) {
+                        gc.strokeOval(selectedObject1.getX() - 20, selectedObject1.getY() - 20, 40, 40);
+                    } else if ("usecase".equals(selectedObject1.getType())) {
+                        gc.strokeRect(selectedObject1.getX() - 55, selectedObject1.getY() - 30, 110, 60);
+                    }
+
+                } else if (selectedObject2 == null && clickedObject != selectedObject1) {
+                    selectedObject2 = clickedObject;
+                    drawAssociation(selectedObject1, selectedObject2, associationType);
+                    associations.add(new Association(selectedObject1, selectedObject2, associationType));
+                    selectedObject1 = null;
+                    selectedObject2 = null;
+                    redrawCanvas();
+                }
+            } else {
+                selectedObject1 = null;
+                selectedObject2 = null;
+                redrawCanvas();
+            }
+        } else if (btnExtend.isSelected()){
+            UseCaseDiagramObject clickedObject = getObjectAt(event.getX(), event.getY());
+            if (clickedObject != null) {
+                if (selectedObject1 == null) {
+                    selectedObject1 = clickedObject;
+                    clickedObject.showNameField();
+
+                    gc.setStroke(Color.RED);
+                    gc.setLineWidth(2);
+                    if ("actor".equals(selectedObject1.getType())) {
+                        gc.strokeOval(selectedObject1.getX() - 20, selectedObject1.getY() - 20, 40, 40);
+                    } else if ("usecase".equals(selectedObject1.getType())) {
+                        gc.strokeRect(selectedObject1.getX() - 55, selectedObject1.getY() - 30, 110, 60);
+                    }
+
+                } else if (selectedObject2 == null && clickedObject != selectedObject1) {
+                    selectedObject2 = clickedObject;
+                    drawAssociation(selectedObject1, selectedObject2, associationType);
+                    associations.add(new Association(selectedObject1, selectedObject2, associationType));
+                    selectedObject1 = null;
+                    selectedObject2 = null;
+                    redrawCanvas();
+                }
+            } else {
+                selectedObject1 = null;
+                selectedObject2 = null;
+                redrawCanvas();
             }
         }
+
     }
 
     /**
@@ -394,9 +485,9 @@ public class UseCaseDiagram {
      */
     @FXML
     private void onNameChange() {
-        if (selectedObject1 != null) {
+        if (selectedObjectExplorer != null) {
             String newName;
-            if ("actor".equals(selectedObject1.getType())) {
+            if ("actor".equals(selectedObjectExplorer.getType())) {
                 newName = txtActorName.getText().trim();
             } else {
                 newName = txtUseCaseName.getText().trim();
@@ -404,12 +495,25 @@ public class UseCaseDiagram {
 
             // If the name is empty, revert to default
             if (newName.isEmpty()) {
-                newName = selectedObject1.getType().equals("actor") ? "Actor" : "Use Case";
+                newName = selectedObjectExplorer.getType().equals("actor") ? "Actor" : "Use Case";
+            }
+
+            // Update the TreeView
+            boolean updated = false;  // Flag to check if the update was successful
+
+            for (TreeItem<String> child : rootItem.getChildren()) {
+                System.out.println("I am updated");
+                if (child.getValue().equals(selectedObjectExplorer.getName())) {
+                    // Update the name in the TreeView
+                    child.setValue(newName);
+                    updated = true;  // Indicate the update was successful
+                    break;
+                }
             }
 
             // Update the object name
-            selectedObject1.setName(newName);
-            selectedObject1.hideNameField();  // Hide the name field after updating
+            selectedObjectExplorer.setName(newName);
+            selectedObjectExplorer.hideNameField();  // Hide the name field after updating
             redrawCanvas();  // Redraw the canvas to reflect changes
         }
     }
@@ -609,13 +713,13 @@ public class UseCaseDiagram {
         }
 
         // Highlight the selected object
-        if (selectedObject1 != null) {
+        if (selectedObjectExplorer != null) {
             gc.setStroke(Color.RED);
             gc.setLineWidth(2);
-            if ("actor".equals(selectedObject1.getType())) {
-                gc.strokeOval(selectedObject1.getX() - 20, selectedObject1.getY() - 20, 40, 40);
-            } else if ("usecase".equals(selectedObject1.getType())) {
-                gc.strokeRect(selectedObject1.getX() - 55, selectedObject1.getY() - 30, 110, 60);
+            if ("actor".equals(selectedObjectExplorer.getType())) {
+                gc.strokeOval(selectedObjectExplorer.getX() - 20, selectedObjectExplorer.getY() - 20, 40, 40);
+            } else if ("usecase".equals(selectedObjectExplorer.getType())) {
+                gc.strokeRect(selectedObjectExplorer.getX() - 55, selectedObjectExplorer.getY() - 30, 110, 60);
             }
         }
     }
