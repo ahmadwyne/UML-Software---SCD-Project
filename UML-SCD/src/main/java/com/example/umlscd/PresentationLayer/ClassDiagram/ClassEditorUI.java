@@ -166,8 +166,7 @@ public class ClassEditorUI {
         String methodName = methodNameField.getText();
 
         if (!methodName.isEmpty()) {
-            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType ;
-            methodsArea.appendText("\n");
+            String methodSignature = visibility.charAt(0) + methodName + "(" + String.join(", ", currentParameters) + "): " + returnType+"\n" ;
             methodsArea.appendText(methodSignature);
             methodNameField.clear();
             currentParameters.clear();  // Clear parameters after adding method
@@ -647,8 +646,8 @@ public class ClassEditorUI {
                     if (lines[i].contains(oldMethod)) {
                         // Parse the current method to keep unchanged values
                         String currentVisibility = parseVisibility(lines[i]);
-                        String currentReturnType = parseDataType(lines[i]);
-                        String currentName = parseAttributeName(lines[i]);
+                        String currentReturnType = parseReturnType(lines[i]);
+                        String currentName = parseMethodName(lines[i]);
 
                         // Replace only updated components
                         String updatedVisibility = visibility != null && !visibility.equals("Visibility") ? parseVisibilitySymbol(visibility) : parseVisibilitySymbol(currentVisibility);
@@ -694,5 +693,43 @@ public class ClassEditorUI {
             this.returnType = returnType;
         }
     }
+    // Parse return type from the method signature string
+    private String parseReturnType(String method) {
+        // Ensure the method is not empty and has valid format
+        if (method == null || method.isEmpty()) {
+            return "void";  // Return default value for empty input
+        }
+
+        int startIndex = method.indexOf('(');
+        int endIndex = method.indexOf(')');
+        if (startIndex != -1 && endIndex != -1 && endIndex < method.length() - 1) {
+            try {
+                String returnType = method.substring(endIndex + 1).trim(); // Extract return type after parentheses
+                return returnType.isEmpty() ? "void" : returnType;  // Fallback to "void" if empty
+            } catch (StringIndexOutOfBoundsException e) {
+                // Log or handle the error gracefully
+                System.err.println("Error parsing return type: " + method);
+                return "void";  // Fallback to "void"
+            }
+        }
+        return "void";  // Return default value if the method signature is not in expected format
+    }
+    // Parse method name from the method signature string
+    private String parseMethodName(String method) {
+        // Trim leading/trailing whitespaces
+        method = method.trim();
+
+        // Find the position of the opening parenthesis '(' to locate the end of the method name
+        int startIndex = method.indexOf('(');
+
+        // If '(' is found, the method name is everything before it
+        if (startIndex != -1) {
+            return method.substring(1, startIndex).trim();
+        }
+
+        // If '(' is not found, return the method string as is (could be an invalid format or no parameters)
+        return method;
+    }
+
 
 }
