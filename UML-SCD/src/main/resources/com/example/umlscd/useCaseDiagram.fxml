@@ -37,6 +37,8 @@
                 <Button fx:id="btnAddUseCase" text="Add Use Case" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF;  -fx-pref-width: 120px; "
                         onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
                 <TextField fx:id="txtSystemBoundaryName" promptText="Enter System Boundary Name" style="-fx-font-size: 12px; -fx-font-family: 'Verdana';" />
+                <Button fx:id="btnEnterSystemBoundary" text="Enter" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-background-color: #AFAFAF;  -fx-pref-width: 120px; "
+                        onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
             </VBox>
 
             <VBox spacing="10" style="-fx-padding: 20px; -fx-background-color: #656565; -fx-border-color: #F1F1F1; -fx-border-width: 1;">

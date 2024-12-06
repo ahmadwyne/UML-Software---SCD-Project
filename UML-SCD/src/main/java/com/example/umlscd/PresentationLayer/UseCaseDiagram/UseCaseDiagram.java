@@ -74,6 +74,8 @@ public class UseCaseDiagram {
 
     @FXML
     private TextField txtSystemBoundaryName;  // New TextField for the system boundary name
+    @FXML
+    private Button btnEnterSystemBoundary;
 
     @FXML
     private TreeView<String> objectExplorer; // TreeView for the object explorer
@@ -153,7 +155,7 @@ public class UseCaseDiagram {
         // Add listeners to text fields to handle name changes
         txtActorName.setOnAction(event -> onNameChange());
         txtUseCaseName.setOnAction(event -> onNameChange());
-        txtSystemBoundaryName.setOnAction(event -> onSystemBoundaryNameChange());  // Listener for system boundary name
+        btnEnterSystemBoundary.setOnAction(event -> onSystemBoundaryNameChange());  // Listener for system boundary name
 
         // Canvas interactions
         canvas.setOnMousePressed(this::onMousePressed);
@@ -305,8 +307,17 @@ public class UseCaseDiagram {
      * <p>This method updates the {@code systemBoundaryName} variable and redraws the canvas to reflect the new name.</p>
      */
     private void onSystemBoundaryNameChange() {
-        systemBoundaryName = txtSystemBoundaryName.getText().trim();
-        redrawCanvas();  // Redraw the canvas to reflect the updated name
+        //systemBoundaryName = txtSystemBoundaryName.getText().trim();
+        //redrawCanvas();  // Redraw the canvas to reflect the updated name
+        String newName = txtSystemBoundaryName.getText().trim();
+        if (!newName.isEmpty()) {
+            systemBoundaryName = newName;
+            drawSystemBoundary(); // Redraw the boundary with the new name
+            System.out.println("System boundary name updated to: " + systemBoundaryName);
+        } else {
+            System.out.println("System boundary name cannot be empty.");
+        }
+        redrawCanvas();
     }
 
     /**

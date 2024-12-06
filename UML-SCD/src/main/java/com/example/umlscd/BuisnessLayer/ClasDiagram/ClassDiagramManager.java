@@ -1163,7 +1163,7 @@ public class ClassDiagramManager {
             deleteRelatedRelationships(className);
 
             // You can add a confirmation or alert that the class has been deleted
-            showDeletionConfirmation(className);
+            //showDeletionConfirmation(className);
         }
 
     }
