@@ -11,6 +11,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -151,6 +152,7 @@ public class InterfaceEditorUI {
         applyChangesButton.setOnAction(event -> applyChanges());
         deleteMethodButton.setOnAction(event -> deleteMethod());
         editMethodButton.setOnAction(event -> editMethod());
+
     }
 
     /**
@@ -272,42 +274,262 @@ public class InterfaceEditorUI {
     }
 
 
+    // Edit method logic
     private void editMethod() {
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<InterfaceEditorUI.MethodsDetails> dialog = new Dialog<>();
         dialog.setTitle("Edit Method");
-        dialog.setHeaderText("Enter the method to edit and the updated method.");
+        dialog.setHeaderText("Enter the method to edit and the updated method details.");
 
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
+        // Text fields for old and new method name
         TextField oldMethodField = new TextField();
-        oldMethodField.setPromptText("Existing Method");
+        oldMethodField.setPromptText("Existing Method Name");
         TextField newMethodField = new TextField();
-        newMethodField.setPromptText("Updated Method");
+        newMethodField.setPromptText("Updated Method Name");
 
+        // Text field for parameters
+        TextField parametersField = new TextField();
+        parametersField.setPromptText("Method Parameters");
+
+        // Dropdowns for visibility and return type
+        ComboBox<String> visibilityDropdown = new ComboBox<>();
+        visibilityDropdown.getItems().addAll("+ public", "- private", "# protected");
+        visibilityDropdown.setValue("Visibility");  // Default placeholder value for visibility
+
+        ComboBox<String> returnTypeDropdown = new ComboBox<>();
+        returnTypeDropdown.getItems().addAll("int", "String", "double", "boolean", "char", "float", "Custom");
+        returnTypeDropdown.setValue("ReturnType");  // Default placeholder value for return type
+
+        // Pre-fill with current method values (if any)
+        String currentMethod = methodsArea.getSelectedText(); // Get the selected method text
+        if (currentMethod != null && !currentMethod.isEmpty()) {
+            oldMethodField.setText(currentMethod);
+
+            // Set the dropdowns to the current values if method exists
+            String visibility = parseVisibility(currentMethod); // Parse visibility
+            String returnType = parseReturnType(currentMethod); // Parse return type
+            String methodName = parseMethodName(currentMethod); // Parse method name
+            String parameters = parseParameters(currentMethod); // Parse method parameters
+
+            // Set the visibility and return type to current values if available
+            if (visibility != null && !visibility.isEmpty() && !visibility.equals("Visibility")) {
+                visibilityDropdown.setValue(visibility);
+            }
+
+            if (returnType != null && !returnType.isEmpty() && !returnType.equals("Return Type")) {
+                returnTypeDropdown.setValue(returnType);
+            }
+
+            if (methodName != null && !methodName.isEmpty()) {
+                oldMethodField.setText(methodName);
+            }
+
+            // Pre-fill the parameters field
+            parametersField.setText(parameters);
+        }
+
+        // Handle Custom return type selection
+        returnTypeDropdown.setOnAction(event -> {
+            if ("Custom".equals(returnTypeDropdown.getValue())) {
+                InterfaceEditorManager.handleCustomDataType(returnTypeDropdown); // Call custom data type handler
+            }
+        });
+
+        // Layout for the dialog content
         VBox dialogContent = new VBox(10);
-        dialogContent.getChildren().addAll(new Label("Existing Method:"), oldMethodField, new Label("Updated Method:"), newMethodField);
+        dialogContent.getChildren().addAll(
+                new Label("Existing Method Name:"), oldMethodField,
+                new Label("Updated Method Name:"), newMethodField,
+                new Label("Parameters (Each Parameter should be written comma separated and like id:int"), parametersField,
+                new Label("Visibility:"), visibilityDropdown,
+                new Label("Return Type:"), returnTypeDropdown
+        );
         dialog.getDialogPane().setContent(dialogContent);
 
+        // Result converter to handle dialog inputs
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
-                return new Pair<>(oldMethodField.getText(), newMethodField.getText());
+                // Return the updated details, including custom data type if selected
+                return new MethodsDetails(
+                        oldMethodField.getText(),
+                        newMethodField.getText(),
+                        visibilityDropdown.getValue(),
+                        returnTypeDropdown.getValue(),
+                        parametersField.getText() // Include the parameters
+                );
             }
             return null;
         });
 
-        Optional<Pair<String, String>> result = dialog.showAndWait();
-        result.ifPresent(methodPair -> {
-            String oldMethod = methodPair.getKey();
-            String newMethod = methodPair.getValue();
+        Optional<InterfaceEditorUI.MethodsDetails> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            InterfaceEditorUI.MethodsDetails methodsDetails = result.get();
+            String oldMethod = methodsDetails.oldName.trim();
+            String newMethod = methodsDetails.newName.trim();
+            String visibility = methodsDetails.visibility;
+            String returnType = methodsDetails.returnType;
+            String parameters = methodsDetails.parameters.trim();
 
-            if (!oldMethod.isEmpty() && !newMethod.isEmpty()) {
+            if (!oldMethod.isEmpty()) {
                 String currentText = methodsArea.getText();
-                String updatedText = currentText.replace(oldMethod, newMethod);
-                methodsArea.setText(updatedText);
+                String[] lines = currentText.split("\n");
+                boolean found = false;
+                for (int i = 0; i < lines.length; i++) {
+                    if (lines[i].contains(oldMethod)) {
+                        // Parse the current method to keep unchanged values
+                        String currentVisibility = parseVisibility(lines[i]);
+                        String currentReturnType = parseReturnType(lines[i]);
+                        String currentName = parseMethodName(lines[i]);
+                        String currentParameters = parseParameters(lines[i]);
+
+                        // Replace only updated components
+                        String updatedVisibility = visibility != null && !visibility.equals("Visibility") ? parseVisibilitySymbol(visibility) : parseVisibilitySymbol(currentVisibility);
+                        String updatedReturnType = (returnType != null && !returnType.equals("ReturnType") && !returnType.equals("Custom")) ? returnType : currentReturnType;
+                        String updatedParameters = !parameters.isEmpty() ? parameters : currentParameters;
+                        String updatedName = !newMethod.trim().isEmpty() ? newMethod : currentName;
+
+                        // If Custom Data Type was used, set the custom data type
+                        if (returnType.equals("Custom") && !updatedReturnType.equals("ReturnType")) {
+                            updatedReturnType = returnType; // Use the custom data type entered by user
+                        }
+
+                        String updatedAttribute = updatedVisibility + updatedName + "(" + updatedParameters + "): " + updatedReturnType;
+                        lines[i] = updatedAttribute;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    // Join the lines back and set the updated text
+                    methodsArea.setText(String.join("\n", lines));
+
+                    // Show success dialog
+                    showSuccessDialog("Method Updated", "The method has been updated successfully.");
+                } else {
+                    // Show error message if the method is not found
+                    showErrorDialog("Method Not Found", "The provided existing method name does not match any existing methods.");
+                }
             }
-        });
+        }
     }
+
+    // MethodsDetails class now includes parameters as well
+    public static class MethodsDetails {
+        String oldName;
+        String newName;
+        String visibility;
+        String returnType;
+        String parameters; // Store the parameters
+
+        MethodsDetails(String oldName, String newName, String visibility, String returnType, String parameters) {
+            this.oldName = oldName;
+            this.newName = newName;
+            this.visibility = visibility;
+            this.returnType = returnType;
+            this.parameters = parameters;
+        }
+    }
+    // Parse visibility from the attribute string
+    private String parseVisibility(String attribute) {
+        if (attribute.startsWith("+")) return "+ public";
+        if (attribute.startsWith("-")) return "- private";
+        if (attribute.startsWith("#")) return "# protected";
+        return "+ public"; // Default to public
+    }
+
+    // Parse visibility symbol for saving the updated attribute
+    private String parseVisibilitySymbol(String visibility) {
+        return switch (visibility) {
+            case "+ public" -> "+";
+            case "- private" -> "-";
+            case "# protected" -> "#";
+            default -> "+";
+        };
+    }
+    // Show error dialog
+    private void showErrorDialog(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);  // No header for the error dialog
+        alert.setContentText(content);  // Content of the error message
+        alert.showAndWait();  // Show the alert and wait for user to close it
+    }
+
+    // Show success dialog
+    private void showSuccessDialog(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    // Parse method parameters from the method signature string
+    private String parseParameters(String method) {
+        // Remove any leading/trailing whitespace
+        method = method.trim();
+
+        // Find the opening and closing parentheses
+        int startIndex = method.indexOf('(');
+        int endIndex = method.indexOf(')');
+
+        // If both parentheses are found, extract the part between them
+        if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
+            return method.substring(startIndex + 1, endIndex).trim();
+        }
+
+        // Return empty string if no parameters are found
+        return "";
+    }
+
+
+    // Parse return type from the method signature string
+    private String parseReturnType(String method) {
+        // Ensure the method is not empty and has valid format
+        if (method == null || method.isEmpty()) {
+            return "void";  // Return default value for empty input
+        }
+
+        int startIndex = method.indexOf('(');
+        int endIndex = method.indexOf(')');
+        if (startIndex != -1 && endIndex != -1 && endIndex < method.length() - 1) {
+            try {
+                String returnType = method.substring(endIndex + 1).trim(); // Extract return type after parentheses
+                // If there is a colon, remove it
+                if (returnType.startsWith(":")) {
+                    returnType = returnType.substring(1).trim(); // Remove the colon and trim spaces
+                }
+                return returnType.isEmpty() ? "void" : returnType;
+                // Fallback to "void" if empty
+            } catch (StringIndexOutOfBoundsException e) {
+                // Log or handle the error gracefully
+                System.err.println("Error parsing return type: " + method);
+                return "void";  // Fallback to "void"
+            }
+
+        }
+        return "void";  // Return default value if the method signature is not in expected format
+    }
+    // Parse method name from the method signature string
+    private String parseMethodName(String method) {
+        // Trim leading/trailing whitespaces
+        method = method.trim();
+
+        // Find the position of the opening parenthesis '(' to locate the end of the method name
+        int startIndex = method.indexOf('(');
+
+        // If '(' is found, the method name is everything before it
+        if (startIndex != -1) {
+            return method.substring(1, startIndex).trim();
+        }
+
+        // If '(' is not found, return the method string as is (could be an invalid format or no parameters)
+        return method;
+    }
+
 
     /**
      * Applies the changes made in the editor to the interface model.

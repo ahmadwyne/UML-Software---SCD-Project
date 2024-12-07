@@ -197,7 +197,7 @@ public class InterfaceEditorManager {
      *
      * @param dropdown The ComboBox to which the custom data type should be added.
      */
-    public void handleCustomDataType(ComboBox<String> dropdown) {
+    public static void handleCustomDataType(ComboBox<String> dropdown) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Custom Data Type");
         dialog.setHeaderText("Enter Custom Data Type:");
