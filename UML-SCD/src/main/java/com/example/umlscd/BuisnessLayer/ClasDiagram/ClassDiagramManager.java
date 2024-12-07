@@ -155,7 +155,7 @@ public class ClassDiagramManager {
     }*/
     public void clearDiagram() {
         uiController.getDrawingPane().getChildren().clear();
-        //elements.clear();
+        elements.clear();
         //classDiagram.getClasses().clear();
         //classDiagram.getInterfaces().clear();
         //classDiagram.getRelationships().clear();
@@ -1337,6 +1337,8 @@ public class ClassDiagramManager {
         if (selectedElement == null) {
             return; // No element selected
         }
+        System.out.println(selectedElement);
+
 
         // Identify the element type and name
         String elementName;
@@ -1364,11 +1366,15 @@ public class ClassDiagramManager {
         // Remove the element from the UI
         uiController.getDrawingPane().getChildren().remove(selectedElement);
         elements.remove(selectedElement);
+        System.out.println(selectedElement);
 
         // Remove the class or interface from the data structure
         if (isClass) {
+            //classBoxMap.remove(elementName);
             classDiagram.getClasses().removeIf(c -> c.getName().equals(elementName));
         } else if (isInterface) {
+            //classBoxMap.remove(elementName);
+
             classDiagram.getInterfaces().removeIf(i -> i.getName().equals(elementName));
         }
 
@@ -1464,13 +1470,18 @@ public class ClassDiagramManager {
             // Re-create elements from the model (only the remaining classes and interfaces)
             for (UMLClassBox umlClass : classDiagram.getClasses()) {
                 createClassBox(umlClass.getName(), umlClass.getX(), umlClass.getY());
+                System.out.println(umlClass.getName());
             }
+
+
 
             for (UMLInterfaceBox umlInterface : classDiagram.getInterfaces()) {
                 createInterfaceBox(umlInterface.getName(), umlInterface.getX(), umlInterface.getY());
+                System.out.println(umlInterface.getName());
             }
 
             for (UMLRelationship relationship : classDiagram.getRelationships()) {
+                System.out.println(relationship.getName());
                 if (relationship.getType().toLowerCase().equals("association")) {
                     AssociationManager associationManager = new AssociationManager(this);
                     associationManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());

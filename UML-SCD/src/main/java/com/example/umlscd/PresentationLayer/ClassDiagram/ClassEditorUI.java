@@ -51,6 +51,12 @@ public class ClassEditorUI {
     @FXML private Button editAttributeButton;
     @FXML private Button editMethodButton;
 
+    private Runnable objectExplorerUpdateCallback;
+
+    public void setObjectExplorerUpdateCallback(Runnable callback) {
+        this.objectExplorerUpdateCallback = callback;
+    }
+
 
 
     // Internal state for managing class attributes, methods, and parameters
@@ -251,7 +257,11 @@ public class ClassEditorUI {
                 attributesArea.getText(),
                 methodsArea.getText()
         );
+
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
+
 
     /**
      * Applies a hover effect to a button when the mouse enters.
