@@ -1158,7 +1158,7 @@ public class ClassDiagramManager {
     }
 
 
-    // Method to delete the selected element (class) and any related relationships
+    /*// Method to delete the selected element (class) and any related relationships
     public void deleteSelectedElement(VBox selectedElement) {
         if (selectedElement != null) {
             String className = selectedElement.getId();  // Assuming each VBox has a unique ID (class name)
@@ -1239,5 +1239,75 @@ public class ClassDiagramManager {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Relationship deleted successfully.", ButtonType.OK);
             alert.showAndWait();
         }
+    }*/
+
+    public void deleteSelectedElement(VBox selectedElement) {
+        if (selectedElement == null) {
+            return; // No element selected
+        }
+
+        // Identify the element type and name
+        String elementName;
+        boolean isClass = false;
+        boolean isInterface = false;
+
+        if (selectedElement.getChildren().get(0) instanceof Label) {
+            Label nameLabel = (Label) selectedElement.getChildren().get(0);
+            elementName = nameLabel.getText();
+
+            if (elementName.contains("<<Interface>>")) {
+                isInterface = true;
+            } else {
+                isClass = true;
+            }
+        } else {
+            elementName = null;
+        }
+
+        if (elementName == null) {
+            return; // Unable to determine element type or name
+        }
+
+        // Remove the element from the UI
+        uiController.getDrawingPane().getChildren().remove(selectedElement);
+        elements.remove(selectedElement);
+
+        if (isClass) {
+            // Remove the class from the data structure
+            classDiagram.getClasses().removeIf(c -> c.getName().equals(elementName));
+        } else if (isInterface) {
+            // Remove the interface from the data structure
+            classDiagram.getInterfaces().removeIf(i -> i.getName().equals(elementName));
+        }
+
+        // Remove related relationships
+        deleteRelatedRelationships(elementName);
+
+        // Optionally, show confirmation
+        showDeletionConfirmation(elementName);
     }
+
+    private void deleteRelatedRelationships(String elementName) {
+        // Collect relationships to remove
+        List<UMLRelationship> relationshipsToRemove = classDiagram.getRelationships().stream()
+                .filter(rel -> rel.getStartElementName().equals(elementName) || rel.getEndElementName().equals(elementName))
+                .collect(Collectors.toList());
+
+        // Remove relationships from UI and data model
+        for (UMLRelationship relationship : relationshipsToRemove) {
+            String relationshipVisual = relationship.getType(); // Assuming `getType()` provides the visual representation
+            if (relationshipVisual != null) {
+                uiController.getDrawingPane().getChildren().remove(relationshipVisual);
+            }
+        }
+
+        classDiagram.getRelationships().removeAll(relationshipsToRemove);
+    }
+
+    private void showDeletionConfirmation(String elementName) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                "Element '" + elementName + "' and its related relationships have been deleted.", ButtonType.OK);
+        alert.showAndWait();
+    }
+
 }
