@@ -7,13 +7,11 @@ import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 import java.util.*;
 
