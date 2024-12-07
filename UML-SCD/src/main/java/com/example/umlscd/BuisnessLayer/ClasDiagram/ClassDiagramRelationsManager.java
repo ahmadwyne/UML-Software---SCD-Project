@@ -139,7 +139,7 @@ public abstract class ClassDiagramRelationsManager {
      * @param endClass The ending class (VBox).
      * @return The closest boundary point from the start class.
      */
-    protected Point getClosestBoundaryPoint(VBox startClass, VBox endClass) {
+    public Point getClosestBoundaryPoint(VBox startClass, VBox endClass) {
         Point closestPoint = null;
         double minDistance = Double.MAX_VALUE;
 
@@ -169,7 +169,7 @@ public abstract class ClassDiagramRelationsManager {
      * @param classBox The class (VBox) for which boundary points are needed.
      * @return An array of {@code Point} objects representing the boundary points.
      */
-    protected Point[] getBoundaryPoints(VBox classBox) {
+    public Point[] getBoundaryPoints(VBox classBox) {
         double x = classBox.getLayoutX();
         double y = classBox.getLayoutY();
         double width = classBox.getWidth();
@@ -193,7 +193,7 @@ public abstract class ClassDiagramRelationsManager {
      * @param p2 The second point.
      * @return The Euclidean distance between the two points.
      */
-    protected double calculateDistance(Point p1, Point p2) {
+    public double calculateDistance(Point p1, Point p2) {
         return Math.sqrt(Math.pow(p1.getX() - p2.getX(), 2) + Math.pow(p1.getY() - p2.getY(), 2));
     }
 
@@ -205,7 +205,7 @@ public abstract class ClassDiagramRelationsManager {
      * @param label The label to bind.
      * @param line The relationship line to bind the label to.
      */
-    protected void bindAssociationLabelToLine(Text label, Line line) {
+    public void bindAssociationLabelToLine(Text label, Line line) {
         label.xProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
         label.yProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2).subtract(10)); // Slightly above the line
     }
@@ -219,7 +219,7 @@ public abstract class ClassDiagramRelationsManager {
      * @param line The relationship line to bind the label to.
      * @param isStart True if the label is for the start of the relationship, false for the end.
      */
-    protected void bindMultiplicityLabelToLine(Text label, Line line, boolean isStart) {
+    public void bindMultiplicityLabelToLine(Text label, Line line, boolean isStart) {
         if (isStart) {
             label.xProperty().bind(line.startXProperty().subtract(-15));
             label.yProperty().bind(line.startYProperty().subtract(5));
