@@ -97,6 +97,7 @@ public class ClassDiagramManager {
      * A mapping from element names to their corresponding UML element boxes (classes or interfaces).
      */
     private Map<String, UMLElementBoxInterface> classBoxMap = new HashMap<>();
+
     public ClassDiagramD getClassDiagram() {
         return classDiagram;
     }
@@ -145,12 +146,27 @@ public class ClassDiagramManager {
      *
      * <p>This method removes all visual elements from the drawing pane and clears the underlying model.</p>
      */
-    public void clearDiagram() {
+    /*public void clearDiagram() {
         uiController.getDrawingPane().getChildren().clear();
         classDiagram.getClasses().clear();
         classDiagram.getInterfaces().clear();
         classDiagram.getRelationships().clear();
         elements.clear();
+    }*/
+    public void clearDiagram() {
+        uiController.getDrawingPane().getChildren().clear();
+        //elements.clear();
+        //classDiagram.getClasses().clear();
+        //classDiagram.getInterfaces().clear();
+        //classDiagram.getRelationships().clear();
+
+        // Reset any manager related variables (if applicable)
+        relationsManager = null;
+        firstSelectedElement = null;
+        secondSelectedElement = null;
+
+        // Trigger Object Explorer update
+        // if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     /**
@@ -256,7 +272,7 @@ public class ClassDiagramManager {
         for (UMLClassBox classBox : classDiagram.getClasses()) {
             if (classBox.getName().equals(name)) {
                 System.out.println("Class names:" + classBox.getName());
-                if(classBox.getVisualRepresentation() == null)
+                if (classBox.getVisualRepresentation() == null)
                     System.out.println("No visual representation is available.");
                 return classBox.getVisualRepresentation();
             }
@@ -277,7 +293,7 @@ public class ClassDiagramManager {
         for (UMLInterfaceBox interfaceBox : classDiagram.getInterfaces()) {
             if (interfaceBox.getName().equals(name)) {
                 System.out.println("Interface names:" + interfaceBox.getName());
-                if(interfaceBox.getVisualRepresentation() == null)
+                if (interfaceBox.getVisualRepresentation() == null)
                     System.out.println("No visual representation is available.");
                 return interfaceBox.getVisualRepresentation();
             }
@@ -465,7 +481,7 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
-                    relationsManager=null;
+                    relationsManager = null;
                 }
             }
         });
@@ -556,7 +572,7 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
-                    relationsManager=null;
+                    relationsManager = null;
                 }
             }
         });
@@ -655,7 +671,7 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
-                    relationsManager=null;
+                    relationsManager = null;
                 }
             }
         });
@@ -710,7 +726,7 @@ public class ClassDiagramManager {
                     highlightClass(secondSelectedElement, false);
                     firstSelectedElement = null;
                     secondSelectedElement = null;
-                    relationsManager=null;
+                    relationsManager = null;
                 }
             }
         });
@@ -826,7 +842,7 @@ public class ClassDiagramManager {
      * <p>This method changes the visual styling of the specified {@code VBox} to indicate whether it is highlighted.
      * Highlighting is typically used during user interactions such as selecting elements for creating relationships.</p>
      *
-     * @param classBox The {@code VBox} representing the class or interface to highlight.
+     * @param classBox  The {@code VBox} representing the class or interface to highlight.
      * @param highlight {@code true} to apply highlighting; {@code false} to remove it.
      */
     private void highlightClass(VBox classBox, boolean highlight) {
@@ -875,6 +891,7 @@ public class ClassDiagramManager {
 
     // Track the currently highlighted box
     private VBox currentHighlightedBox = null;
+
     /**
      * Retrieves a UML interface box by its associated {@code VBox}.
      *
@@ -1263,7 +1280,7 @@ public class ClassDiagramManager {
         }
     }*/
 
-    public void deleteSelectedElement(VBox selectedElement) {
+    /*public void deleteSelectedElement(VBox selectedElement) {
         if (selectedElement == null) {
             return; // No element selected
         }
@@ -1305,31 +1322,95 @@ public class ClassDiagramManager {
         // Remove related relationships
         deleteRelatedRelationships(elementName);
 
+
+
+        // Optionally, show confirmation
+        showDeletionConfirmation(elementName);
+
+
+
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
+    }*/
+
+    public void deleteSelectedElement(VBox selectedElement) {
+        if (selectedElement == null) {
+            return; // No element selected
+        }
+
+        // Identify the element type and name
+        String elementName;
+        boolean isClass = false;
+        boolean isInterface = false;
+
+        // Get the class name from the first label child (assuming structure is consistent)
+        if (selectedElement.getChildren().get(0) instanceof Label) {
+            Label nameLabel = (Label) selectedElement.getChildren().get(0);
+            elementName = nameLabel.getText();
+
+            if (elementName.contains("<<Interface>>")) {
+                isInterface = true;
+            } else {
+                isClass = true;
+            }
+        } else {
+            elementName = null;
+        }
+
+        if (elementName == null) {
+            return; // Unable to determine element type or name
+        }
+
+        // Remove the element from the UI
+        uiController.getDrawingPane().getChildren().remove(selectedElement);
+        elements.remove(selectedElement);
+
+        // Remove the class or interface from the data structure
+        if (isClass) {
+            classDiagram.getClasses().removeIf(c -> c.getName().equals(elementName));
+        } else if (isInterface) {
+            classDiagram.getInterfaces().removeIf(i -> i.getName().equals(elementName));
+        }
+
+        // Remove related relationships
+        deleteRelatedRelationships(elementName);
+
         // Optionally, show confirmation
         showDeletionConfirmation(elementName);
 
         // Trigger Object Explorer update
-        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
+        if (objectExplorerUpdateCallback != null) {
+            objectExplorerUpdateCallback.run();
+        }
     }
 
+
     private void deleteRelatedRelationships(String elementName) {
-        // Collect relationships to remove
+        // Collect relationships that are linked to the element being deleted
         List<UMLRelationship> relationshipsToRemove = classDiagram.getRelationships().stream()
                 .filter(rel -> rel.getStartElementName().equals(elementName) || rel.getEndElementName().equals(elementName))
                 .collect(Collectors.toList());
 
-        // Remove relationships from UI and data model
+        // Remove relationships from the UI
         for (UMLRelationship relationship : relationshipsToRemove) {
-            String relationshipVisual = relationship.getType(); // Assuming `getType()` provides the visual representation
+            // Assuming getType() returns the visual representation (Line/Node)
+            String relationshipVisual = relationship.getType();
             if (relationshipVisual != null) {
                 uiController.getDrawingPane().getChildren().remove(relationshipVisual);
             }
         }
 
+        // Remove relationships from the data model
         classDiagram.getRelationships().removeAll(relationshipsToRemove);
+
         // Trigger Object Explorer update
-        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
+        if (objectExplorerUpdateCallback != null) {
+            objectExplorerUpdateCallback.run();
+        }
+
+        redrawPane();
     }
+
 
     private void showDeletionConfirmation(String elementName) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
@@ -1337,4 +1418,73 @@ public class ClassDiagramManager {
         alert.showAndWait();
     }
 
-}
+
+    /*public void redrawPane() {
+        // Clear existing elements
+        clearDiagram();
+
+        // Re-create elements from the model
+        for (UMLClassBox umlClass : classDiagram.getClasses()) {
+            createClassBox(umlClass.getName(), umlClass.getX(), umlClass.getY());
+        }
+
+        for (UMLInterfaceBox umlInterface : classDiagram.getInterfaces()) {
+            createInterfaceBox(umlInterface.getName(), umlInterface.getX(), umlInterface.getY());
+        }
+
+        // Recreate relationships (consider using a loop and specific manager methods)
+        // Example for association relationships:
+        for (UMLRelationship relationship : classDiagram.getRelationships()) {
+            if (relationship.getType().toLowerCase().equals("association")) {
+                AssociationManager associationManager = new AssociationManager(this);
+                associationManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());
+            }
+            else if (relationship.getType().toLowerCase().equals("aggregation")) {
+                AggregationManager aggregationManager = new AggregationManager(this);
+                aggregationManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());
+            }
+            else if (relationship.getType().toLowerCase().equals("composition")) {
+                CompositionManager compositionManager = new CompositionManager(this);
+                compositionManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());
+            }
+            else if (relationship.getType().toLowerCase().equals("inheritance")) {
+                InheritanceManager inheritanceManager = new InheritanceManager(this);
+                inheritanceManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());
+            }
+        }
+
+        // Update Object Explorer (if applicable)
+        //if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
+    }*/
+
+        public void redrawPane () {
+            // Clear existing elements
+            clearDiagram();
+
+            // Re-create elements from the model (only the remaining classes and interfaces)
+            for (UMLClassBox umlClass : classDiagram.getClasses()) {
+                createClassBox(umlClass.getName(), umlClass.getX(), umlClass.getY());
+            }
+
+            for (UMLInterfaceBox umlInterface : classDiagram.getInterfaces()) {
+                createInterfaceBox(umlInterface.getName(), umlInterface.getX(), umlInterface.getY());
+            }
+
+            for (UMLRelationship relationship : classDiagram.getRelationships()) {
+                if (relationship.getType().toLowerCase().equals("association")) {
+                    AssociationManager associationManager = new AssociationManager(this);
+                    associationManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());
+                } else if (relationship.getType().toLowerCase().equals("aggregation")) {
+                    AggregationManager aggregationManager = new AggregationManager(this);
+                    aggregationManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());
+                } else if (relationship.getType().toLowerCase().equals("composition")) {
+                    CompositionManager compositionManager = new CompositionManager(this);
+                    compositionManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());
+                } else if (relationship.getType().toLowerCase().equals("inheritance")) {
+                    InheritanceManager inheritanceManager = new InheritanceManager(this);
+                    inheritanceManager.createRelationshipFromModel(relationship, uiController.getDrawingPane());
+                }
+            }
+        }
+
+    }

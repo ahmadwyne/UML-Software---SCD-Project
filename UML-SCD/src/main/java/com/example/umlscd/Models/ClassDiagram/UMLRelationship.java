@@ -1,6 +1,7 @@
 package com.example.umlscd.Models.ClassDiagram;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javafx.scene.Node;
 
 /**
  * <h1>UML Relationship</h1>
@@ -246,4 +247,7 @@ public class UMLRelationship {
                 ", endMultiplicity='" + endMultiplicity + '\'' +
                 '}';
     }
+
+
+
 }
