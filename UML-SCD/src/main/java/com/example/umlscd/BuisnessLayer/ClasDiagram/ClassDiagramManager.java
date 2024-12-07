@@ -85,6 +85,14 @@ public class ClassDiagramManager {
      */
     private boolean isDragEnabled = false;
 
+
+    private Runnable objectExplorerUpdateCallback;
+
+    public void setObjectExplorerUpdateCallback(Runnable callback) {
+        this.objectExplorerUpdateCallback = callback;
+    }
+
+
     /**
      * A mapping from element names to their corresponding UML element boxes (classes or interfaces).
      */
@@ -184,6 +192,9 @@ public class ClassDiagramManager {
         // Update the ClassDiagram model
         UMLClassBox umlClassBox = new UMLClassBox(name, layoutX, layoutY, classBox);
         classDiagram.getClasses().add(umlClassBox);
+
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     /**
@@ -227,6 +238,9 @@ public class ClassDiagramManager {
         // Update the ClassDiagram model
         UMLInterfaceBox umlInterfaceBox = new UMLInterfaceBox(name, layoutX, layoutY, interfaceBox);
         classDiagram.getInterfaces().add(umlInterfaceBox);
+
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     /**
@@ -455,6 +469,8 @@ public class ClassDiagramManager {
                 }
             }
         });
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     /**
@@ -544,6 +560,8 @@ public class ClassDiagramManager {
                 }
             }
         });
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     /**
@@ -641,6 +659,8 @@ public class ClassDiagramManager {
                 }
             }
         });
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     /**
@@ -694,6 +714,8 @@ public class ClassDiagramManager {
                 }
             }
         });
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     /**
@@ -1285,6 +1307,9 @@ public class ClassDiagramManager {
 
         // Optionally, show confirmation
         showDeletionConfirmation(elementName);
+
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     private void deleteRelatedRelationships(String elementName) {
@@ -1302,6 +1327,8 @@ public class ClassDiagramManager {
         }
 
         classDiagram.getRelationships().removeAll(relationshipsToRemove);
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     private void showDeletionConfirmation(String elementName) {

@@ -120,6 +120,10 @@ public class ClassDiagramUI {
         setupToolboxHandlers();
         loadWorkingDiagrams();
 
+        // Update Object Explorer whenever diagrams are modified
+        updateObjectExplorer();
+        classDiagramManager.setObjectExplorerUpdateCallback(this::updateObjectExplorer);
+
         // Setup Save and Load handlers
         btnSave.setOnAction(e -> handleSave());
         btnLoad.setOnAction(e -> handleLoad());
@@ -134,6 +138,16 @@ public class ClassDiagramUI {
 
 
 
+    }
+
+
+    // Method to update the Object Explorer
+    public void updateObjectExplorer() {
+        objectExplorer.getItems().clear();
+        classDiagramManager.getClasses().forEach(cls -> objectExplorer.getItems().add("Class: " + cls.getName()));
+        classDiagramManager.getInterfaces().forEach(intf -> objectExplorer.getItems().add("Interface: " + intf.getName()));
+        classDiagramManager.getRelationships().forEach(rel ->
+                objectExplorer.getItems().add("Relationship: " + rel.getName() + " (" + rel.getType() + ")"));
     }
 
     /**
