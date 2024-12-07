@@ -244,7 +244,7 @@ public class UseCaseDiagram {
 
         redrawCanvas();
         // Clear the actor name text field
-        txtActorName.clear();
+        //txtActorName.clear();
     }
 
     /**
@@ -267,7 +267,7 @@ public class UseCaseDiagram {
 
         redrawCanvas();
         // Clear the use case name text field
-        txtUseCaseName.clear();
+        //txtUseCaseName.clear();
     }
 
     /**
@@ -325,7 +325,7 @@ public class UseCaseDiagram {
         redrawCanvas();
 
         // Clear the system boundary text field
-        txtSystemBoundaryName.clear();
+       // txtSystemBoundaryName.clear();
     }
 
     /**
