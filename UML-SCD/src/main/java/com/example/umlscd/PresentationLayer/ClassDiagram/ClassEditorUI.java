@@ -741,6 +741,9 @@ public class ClassEditorUI {
         if (startIndex != -1 && endIndex != -1 && endIndex < method.length() - 1) {
             try {
                 String returnType = method.substring(endIndex + 1).trim(); // Extract return type after parentheses
+                if (returnType.startsWith(":")) {
+                    returnType = returnType.substring(1).trim(); // Remove the colon and trim spaces
+                }
                 return returnType.isEmpty() ? "void" : returnType;  // Fallback to "void" if empty
             } catch (StringIndexOutOfBoundsException e) {
                 // Log or handle the error gracefully

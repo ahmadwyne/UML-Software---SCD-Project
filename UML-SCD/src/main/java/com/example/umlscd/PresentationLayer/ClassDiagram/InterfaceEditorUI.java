@@ -273,6 +273,7 @@ public class InterfaceEditorUI {
         });
     }
 
+
     // Edit method logic
     private void editMethod() {
         Dialog<InterfaceEditorUI.MethodsDetails> dialog = new Dialog<>();
@@ -349,9 +350,9 @@ public class InterfaceEditorUI {
 
         // Result converter to handle dialog inputs
         dialog.setResultConverter(dialogButton -> {
-            if (Objects.equals(dialogButton, editMethodButton)) {
+            if (dialogButton == updateButtonType) {
                 // Return the updated details, including custom data type if selected
-                return new InterfaceEditorUI.MethodsDetails(
+                return new MethodsDetails(
                         oldMethodField.getText(),
                         newMethodField.getText(),
                         visibilityDropdown.getValue(),
@@ -375,7 +376,6 @@ public class InterfaceEditorUI {
                 String currentText = methodsArea.getText();
                 String[] lines = currentText.split("\n");
                 boolean found = false;
-
                 for (int i = 0; i < lines.length; i++) {
                     if (lines[i].contains(oldMethod)) {
                         // Parse the current method to keep unchanged values
@@ -498,12 +498,18 @@ public class InterfaceEditorUI {
         if (startIndex != -1 && endIndex != -1 && endIndex < method.length() - 1) {
             try {
                 String returnType = method.substring(endIndex + 1).trim(); // Extract return type after parentheses
-                return returnType.isEmpty() ? "void" : returnType;  // Fallback to "void" if empty
+                // If there is a colon, remove it
+                if (returnType.startsWith(":")) {
+                    returnType = returnType.substring(1).trim(); // Remove the colon and trim spaces
+                }
+                return returnType.isEmpty() ? "void" : returnType;
+                // Fallback to "void" if empty
             } catch (StringIndexOutOfBoundsException e) {
                 // Log or handle the error gracefully
                 System.err.println("Error parsing return type: " + method);
                 return "void";  // Fallback to "void"
             }
+
         }
         return "void";  // Return default value if the method signature is not in expected format
     }
