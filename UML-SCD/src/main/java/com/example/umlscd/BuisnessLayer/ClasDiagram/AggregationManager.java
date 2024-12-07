@@ -126,7 +126,7 @@ public class AggregationManager extends ClassDiagramRelationsManager {
     }
 
 
-    private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
+    public void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
     textElement.setOnMouseClicked(event -> {
         if (event.getClickCount() == 2) { // Double-click to edit
             TextInputDialog dialog = new TextInputDialog(textElement.getText());
@@ -257,7 +257,7 @@ public class AggregationManager extends ClassDiagramRelationsManager {
      * @param box The VBox representing the UML element.
      * @return The name of the element.
      */
-    private String getElementName(VBox box) {
+    public String getElementName(VBox box) {
         if (box.getChildren().isEmpty()) return "Unknown";
 
         // Check if the first child is a label with the stereotype
