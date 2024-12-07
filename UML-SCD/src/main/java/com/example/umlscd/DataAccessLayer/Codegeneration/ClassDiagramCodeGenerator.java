@@ -290,22 +290,4 @@ public class ClassDiagramCodeGenerator {
 
         return interfaceCode.toString();
     }
-
-    /*private String generateInterfaceCode(UMLInterfaceBox umlInterface) {
-        StringBuilder interfaceCode = new StringBuilder();
-
-        // Start the interface definition
-        interfaceCode.append("public interface ").append(umlInterface.getName()).append(" {");
-        // Add methods
-        for (String method : umlInterface.getMethods()) {
-            interfaceCode.append("\n    public void ").append(method).append("();");
-        }
-
-        interfaceCode.append("\n}");
-
-        return interfaceCode.toString();
-    }*/
-
-
-
 }

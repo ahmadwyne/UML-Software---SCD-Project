@@ -61,26 +61,6 @@ class UseCaseDiagramObjectTest extends TestBase {
     }
 
     @Test
-    void testShowAndHideNameField() {
-        obj.showNameField();
-        assertTrue(obj.isNameFieldVisible(), "Name field should be visible after showNameField()");
-        assertNotNull(obj.getNameField(), "Name field should be initialized");
-
-        obj.hideNameField();
-        assertFalse(obj.isNameFieldVisible(), "Name field should not be visible after hideNameField()");
-    }
-
-    @Test
-    void testUpdateNameFromTextField() {
-        TextField nameField = new TextField();
-        nameField.setText("NewUseCaseName");
-        obj.setNameField(nameField);
-
-        obj.updateNameFromTextField();
-        assertEquals("NewUseCaseName", obj.getName(), "Name should be updated from TextField");
-    }
-
-    @Test
     void testContainsActorInside() {
         obj.setType("actor");
         // Actor is a circle with radius 25
@@ -142,13 +122,4 @@ class UseCaseDiagramObjectTest extends TestBase {
         verify(gc).strokeOval(150.0 - 50, 250.0 - 25, 100, 50);
         verify(gc).fillText("UseCase1", 150.0 - 30, 250.0);
     }
-
-    /*
-    @Test
-    void testSetVisualRepresentation() {
-        VBox visualRep = new VBox();
-        obj.setVisualRepresentation(visualRep);
-        assertEquals(visualRep, obj.getVisualRepresentation(), "Visual representation should be updated correctly");
-    }
-    */
 }

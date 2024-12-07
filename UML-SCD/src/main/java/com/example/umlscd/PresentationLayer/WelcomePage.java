@@ -24,13 +24,13 @@ import javafx.scene.Parent;
 public class WelcomePage {
 
     @FXML
-    private Button btnClassDiagram;
+    public Button btnClassDiagram;
 
     @FXML
-    private Button btnUseCaseDiagram;
+    public Button btnUseCaseDiagram;
 
     @FXML
-    private ImageView logoImageView;
+    public ImageView logoImageView;
 
     /**
      * Initializes the welcome page by setting up the logo image, adding hover effects to buttons,

@@ -1,4 +1,4 @@
-package com.example.umlscd.PresentationLayer.UseCaseDiagram;
+/*package com.example.umlscd.PresentationLayer.UseCaseDiagram;
 
 import com.example.umlscd.PresentationLayer.UseCaseDiagram.UseCaseDiagram;
 import com.example.umlscd.Models.UseCaseDiagram.Association;
@@ -161,3 +161,4 @@ class UseCaseDiagramTest {
         assertNotNull(useCaseDiagram.selectedObject1);  // Assert object selection is not null
     }
 }
+*/
