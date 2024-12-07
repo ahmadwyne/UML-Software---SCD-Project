@@ -48,7 +48,7 @@ public class ClassDiagramManager {
     /**
      * A list of all drawable elements (e.g., classes, interfaces) present in the diagram.
      */
-    private final ArrayList<Node> elements = new ArrayList<>();
+    public final ArrayList<Node> elements = new ArrayList<>();
 
     /**
      * The first selected element during relationship creation.
@@ -63,7 +63,7 @@ public class ClassDiagramManager {
     /**
      * Serializer for handling JSON serialization and deserialization of the class diagram.
      */
-    private final ClassDiagramSerializer serializer;
+    private ClassDiagramSerializer serializer;
 
     /**
      * Reference to the UI controller associated with this manager.
@@ -73,12 +73,12 @@ public class ClassDiagramManager {
     /**
      * Manager for handling relationships within the class diagram.
      */
-    private ClassDiagramRelationsManager relationsManager;
+    public ClassDiagramRelationsManager relationsManager;
 
     /**
      * The underlying model representing the class diagram, including classes, interfaces, and relationships.
      */
-    private ClassDiagramD classDiagram;
+    public ClassDiagramD classDiagram;
 
     /**
      * Flag indicating whether drag functionality is enabled for moving diagram elements.
@@ -390,7 +390,7 @@ public class ClassDiagramManager {
      *
      * @param drawingPane The {@code Pane} where elements are drawn.
      */
-    private void enableAssociationMode(Pane drawingPane) {
+    public void enableAssociationMode(Pane drawingPane) {
         relationsManager.enableAssociationMode();
 
         drawingPane.setOnMouseClicked(event -> {
@@ -482,7 +482,7 @@ public class ClassDiagramManager {
      *
      * @param drawingPane The {@code Pane} where elements are drawn.
      */
-    private void enableAggregationMode(Pane drawingPane) {
+    public void enableAggregationMode(Pane drawingPane) {
         relationsManager.enableAggregationMode();
 
         drawingPane.setOnMouseClicked(event -> {
@@ -573,7 +573,7 @@ public class ClassDiagramManager {
      *
      * @param drawingPane The {@code Pane} where elements are drawn.
      */
-    private void enableCompositionMode(Pane drawingPane) {
+    public void enableCompositionMode(Pane drawingPane) {
         relationsManager.enableCompositionMode();
 
         drawingPane.setOnMouseClicked(event -> {
@@ -672,7 +672,7 @@ public class ClassDiagramManager {
      *
      * @param drawingPane The {@code Pane} where elements are drawn.
      */
-    private void enableInheritanceMode(Pane drawingPane) {
+    public void enableInheritanceMode(Pane drawingPane) {
         relationsManager.enableInheritanceMode();
 
         drawingPane.setOnMouseClicked(event -> {
@@ -740,7 +740,7 @@ public class ClassDiagramManager {
      * <p>This method sets the {@code isDragEnabled} flag to {@code true} and makes all {@code VBox} elements
      * draggable by attaching mouse event handlers.</p>
      */
-    private void enableDragMode() {
+    public void enableDragMode() {
         isDragEnabled = true;
         for (Node element : elements) {
             if (element instanceof VBox) {
