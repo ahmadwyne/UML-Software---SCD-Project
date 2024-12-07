@@ -27,9 +27,9 @@
     <left>
         <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #2B2B2B; -fx-border-color: #F5F5F5; -fx-border-width: 2; -fx-border-radius: 5;" prefWidth="220" maxWidth="220">
             <!-- Working Diagrams Section -->
-            <TitledPane text="Working Diagrams" expanded="true" style="-fx-background-color: #444444; -fx-text-fill: #111111;">
+            <TitledPane text="Object Explorer" expanded="true" style="-fx-background-color: #444444; -fx-text-fill: #111111;">
                 <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #4B4B4B;">
-                    <ListView fx:id="diagramListView"/>
+                    <ListView fx:id="objectExplorer"/>
                 </VBox>
             </TitledPane>
 

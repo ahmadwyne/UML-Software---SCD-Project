@@ -61,7 +61,7 @@ public class ClassDiagramUI {
      * The list view displaying available diagrams.
      */
     @FXML
-    private ListView<String> diagramListView, modelExplorerListView;
+    private ListView<String> objectExplorer, modelExplorerListView;
 
     /**
      * Buttons for selecting various tools in the toolbox.
@@ -229,7 +229,7 @@ public class ClassDiagramUI {
      * <p>This method populates the {@code diagramListView} with a set of predefined diagram names for demonstration purposes.</p>
      */
     private void loadWorkingDiagrams() {
-        diagramListView.getItems().addAll("Main Model", "ClassDiagram1", "UseCaseDiagram1");
+        objectExplorer.getItems().addAll("Main Model", "ClassDiagram1", "UseCaseDiagram1");
     }
 
     /**
