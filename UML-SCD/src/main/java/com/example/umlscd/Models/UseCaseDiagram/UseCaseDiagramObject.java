@@ -273,6 +273,7 @@ public class UseCaseDiagramObject implements Serializable {
         return type;
     }
 
+
     public void setType(String type) {
         this.type = type;
     }
