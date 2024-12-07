@@ -40,7 +40,7 @@ public class ClassEditorManager {
      *
      * <p>This list holds parameters being added to a method before the method is finalized and added to the UML model.</p>
      */
-    private List<String> parameters = new ArrayList<>();
+    public List<String> parameters = new ArrayList<>();
 
     /**
      * Reference to the {@code UMLClassBox} model object.
@@ -57,7 +57,7 @@ public class ClassEditorManager {
      * including adding, updating, and removing classes, interfaces, and relationships. This reference
      * allows the {@code ClassEditorManager} to interact with the class diagram for model updates.</p>
      */
-    private ClassDiagramManager classDiagramManager; // Reference to the manager
+    public ClassDiagramManager classDiagramManager; // Reference to the manager
 
     /**
      * Default constructor.

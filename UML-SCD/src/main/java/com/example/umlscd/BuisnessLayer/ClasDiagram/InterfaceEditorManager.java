@@ -41,7 +41,7 @@ public class InterfaceEditorManager {
      * <p>This list temporarily stores the parameters for the method as the user adds them. After the method is finalized,
      * the list is cleared.</p>
      */
-    private List<String> parameters = new ArrayList<>();
+    public List<String> parameters = new ArrayList<>();
 
     /**
      * Reference to the {@code UMLInterfaceBox} model object.
