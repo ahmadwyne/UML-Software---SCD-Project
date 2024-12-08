@@ -1313,7 +1313,7 @@ public class ClassDiagramManager {
         deleteRelatedRelationships(elementName);
 
         // Optionally, show confirmation
-        showDeletionConfirmation(elementName);
+        //showDeletionConfirmation(elementName);
 
         // Trigger Object Explorer update
         if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
@@ -1338,10 +1338,10 @@ public class ClassDiagramManager {
         if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
-    private void showDeletionConfirmation(String elementName) {
+    /*private void showDeletionConfirmation(String elementName) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
                 "Element '" + elementName + "' and its related relationships have been deleted.", ButtonType.OK);
         alert.showAndWait();
-    }
+    }*/
 
 }
