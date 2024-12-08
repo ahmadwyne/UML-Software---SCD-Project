@@ -37,10 +37,10 @@ import java.util.ArrayList;
 public class UseCaseDiagram {
 
     @FXML
-    private Button btnHome;
+    Button btnHome;
 
     @FXML
-    private Button btnAddActor;
+    Button btnAddActor;
 
     @FXML
     private Button btnAddUseCase;
@@ -64,39 +64,39 @@ public class UseCaseDiagram {
     private ToggleButton btnEdit;
 
     @FXML
-    private Canvas canvas;
+    Canvas canvas;
 
     @FXML
-    private TextField txtActorName;
+    TextField txtActorName;
 
     @FXML
-    private TextField txtUseCaseName;
+    TextField txtUseCaseName;
 
     @FXML
-    private TextField txtSystemBoundaryName;  // New TextField for the system boundary name
+    TextField txtSystemBoundaryName;  // New TextField for the system boundary name
     @FXML
     private Button btnEnterSystemBoundary;
 
     @FXML
-    private TreeView<String> objectExplorer; // TreeView for the object explorer
+    TreeView<String> objectExplorer; // TreeView for the object explorer
 
-    private TreeItem<String> rootItem; // Root item for the explorer
+    TreeItem<String> rootItem; // Root item for the explorer
 
     @FXML
     private Button btnSaveDiagram, btnLoadDiagram, btnSaveJson, btnLoadJson, btnExportImage;
 
-    private ArrayList<UseCaseDiagramObject> objects;
-    private ArrayList<Association> associations;
-    private GraphicsContext gc;
+    ArrayList<UseCaseDiagramObject> objects;
+    ArrayList<Association> associations;
+    GraphicsContext gc;
 
     private UseCaseDiagramObject selectedObject1;
     private UseCaseDiagramObject selectedObject2;
-    private UseCaseDiagramObject selectedObjectExplorer;
+    UseCaseDiagramObject selectedObjectExplorer;
     private String associationType;
     private boolean isInDragMode = false;
-    private UseCaseDiagramObject objectBeingDragged = null;
+    UseCaseDiagramObject objectBeingDragged = null;
     private boolean isInEditMode = false; // To track if the user is in edit mode
-    private String systemBoundaryName = "System";  // Default name for the system boundary
+    String systemBoundaryName = "System";  // Default name for the system boundary
 
     /**
      * Initializes the Use Case Diagram editor by setting up UI components, event handlers, and default configurations.
@@ -105,7 +105,7 @@ public class UseCaseDiagram {
      * assigns actions to buttons, and sets up listeners for user interactions on the canvas and text fields.</p>
      */
     @FXML
-    private void initialize() {
+    void initialize() {
         objects = new ArrayList<>();
         associations = new ArrayList<>();
         gc = canvas.getGraphicsContext2D();
@@ -230,7 +230,7 @@ public class UseCaseDiagram {
      * <p>If the actor name is empty, it defaults to "Actor". The method creates a new {@code UseCaseDiagramObject},
      * adds it to the list of objects, updates the object explorer, and redraws the canvas to reflect the new actor.</p>
      */
-    private void addActor() {
+    void addActor() {
         String actorName = txtActorName.getText().trim();
         if (actorName.isEmpty()) {
             actorName = "Actor";
@@ -253,7 +253,7 @@ public class UseCaseDiagram {
      * <p>If the use case name is empty, it defaults to "Use Case". The method creates a new {@code UseCaseDiagramObject},
      * adds it to the list of objects, updates the object explorer, and redraws the canvas to reflect the new use case.</p>
      */
-    private void addUseCase() {
+    void addUseCase() {
         String useCaseName = txtUseCaseName.getText().trim();
         if (useCaseName.isEmpty()) {
             useCaseName = "Use Case";
@@ -278,7 +278,7 @@ public class UseCaseDiagram {
      *
      * @param objectName The name of the object selected in the explorer.
      */
-    private void selectObjectFromExplorer(String objectName) {
+    void selectObjectFromExplorer(String objectName) {
         for (UseCaseDiagramObject object : objects) {
             if (object.getName().equals(objectName)) {
                 selectedObjectExplorer = object;
@@ -294,7 +294,7 @@ public class UseCaseDiagram {
      * <p>The system boundary defines the scope of the system being modeled. It is drawn as a rectangle with the
      * specified system boundary name centered at the top.</p>
      */
-    private void drawSystemBoundary() {
+    void drawSystemBoundary() {
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setStroke(Color.BLACK);
@@ -311,7 +311,7 @@ public class UseCaseDiagram {
      *
      * <p>This method updates the {@code systemBoundaryName} variable and redraws the canvas to reflect the new name.</p>
      */
-    private void onSystemBoundaryNameChange() {
+    void onSystemBoundaryNameChange() {
         //systemBoundaryName = txtSystemBoundaryName.getText().trim();
         //redrawCanvas();  // Redraw the canvas to reflect the updated name
         String newName = txtSystemBoundaryName.getText().trim();
@@ -484,7 +484,7 @@ public class UseCaseDiagram {
      * and redraws the canvas to reflect the updated name.</p>
      */
     @FXML
-    private void onNameChange() {
+    void onNameChange() {
         if (selectedObjectExplorer != null) {
             String newName;
             if ("actor".equals(selectedObjectExplorer.getType())) {
@@ -526,7 +526,7 @@ public class UseCaseDiagram {
      *
      * @param event The {@code MouseEvent} triggered by the mouse drag.
      */
-    private void onMouseDragged(MouseEvent event) {
+    void onMouseDragged(MouseEvent event) {
         if (isInDragMode && objectBeingDragged != null) {
             objectBeingDragged.setX(event.getX());
             objectBeingDragged.setY(event.getY());
@@ -542,7 +542,7 @@ public class UseCaseDiagram {
      *
      * @param event The {@code MouseEvent} triggered by the mouse release.
      */
-    private void onMouseReleased(MouseEvent event) {
+    void onMouseReleased(MouseEvent event) {
         if (isInDragMode) {
             if (objectBeingDragged != null) {
                 objectBeingDragged.hideNameField();
@@ -579,7 +579,7 @@ public class UseCaseDiagram {
      * @param obj2 The second {@code UseCaseDiagramObject} involved in the association.
      * @param type The type of association ("association", "include", or "extend").
      */
-    private void drawAssociation(UseCaseDiagramObject obj1, UseCaseDiagramObject obj2, String type) {
+    void drawAssociation(UseCaseDiagramObject obj1, UseCaseDiagramObject obj2, String type) {
         double[] obj1End = getObjectEdge(obj1, obj2.getX(), obj2.getY());
         double[] obj2End = getObjectEdge(obj2, obj1.getX(), obj1.getY());
 
@@ -676,7 +676,7 @@ public class UseCaseDiagram {
      * @param x2 The X-coordinate of the end point of the association line.
      * @param y2 The Y-coordinate of the end point of the association line.
      */
-    private void drawArrowhead(double x1, double y1, double x2, double y2) {
+    void drawArrowhead(double x1, double y1, double x2, double y2) {
         double angle = Math.atan2(y2 - y1, x2 - x1); // Get the angle of the line
         double arrowheadLength = 10; // Length of the arrowhead
         double arrowAngle = Math.PI / 6; // Angle for the arrowhead sides (30 degrees)
@@ -860,7 +860,7 @@ public class UseCaseDiagram {
      * It creates a {@code UseCaseDiagramManager}, populates it with current objects and associations,
      * and delegates the serialization process to the {@code UseCaseDiagramSerializer} class.</p>
      */
-    private void saveDiagramToJson() {
+    void saveDiagramToJson() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
         File file = fileChooser.showSaveDialog(new Stage());
@@ -895,7 +895,7 @@ public class UseCaseDiagram {
      * It delegates the deserialization process to the {@code UseCaseDiagramSerializer} class and updates
      * the internal state of the diagram accordingly.</p>
      */
-    private void loadDiagramFromJson() {
+    void loadDiagramFromJson() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
         File file = fileChooser.showOpenDialog(new Stage());
