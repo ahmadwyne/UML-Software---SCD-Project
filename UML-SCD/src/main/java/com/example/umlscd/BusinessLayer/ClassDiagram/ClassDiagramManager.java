@@ -214,8 +214,10 @@ public class ClassDiagramManager {
 
         // Create the "<<Interface>>" label
         Label interfaceLabel = new Label("<<Interface>>");
-        interfaceLabel.setStyle("-fx-padding: 1;");
+        interfaceLabel.setStyle("-fx-padding: 1;  -fx-alignment: center;");
         interfaceLabel.setAlignment(Pos.CENTER);
+        interfaceLabel.setMaxWidth(Double.MAX_VALUE); // Allow it to span the width for alignment
+
 
         Label interfaceNameLabel = new Label(name);
         interfaceNameLabel.setStyle("-fx-font-weight: bold; -fx-padding: 1;");
@@ -747,6 +749,8 @@ public class ClassDiagramManager {
                 setDraggable((VBox) element, true);
             }
         }
+        // Trigger Object Explorer update
+        if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
     /**
