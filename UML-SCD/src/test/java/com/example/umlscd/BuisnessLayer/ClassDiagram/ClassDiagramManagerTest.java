@@ -5,32 +5,32 @@ import static org.mockito.Mockito.*;
 
 import com.example.umlscd.BuisnessLayer.ClasDiagram.*;
 import com.example.umlscd.DataAccessLayer.Serializers.ClassDiagram.ClassDiagramSerializer;
-import com.example.umlscd.Models.ClassDiagram.ClassDiagramD;
-import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
-import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
-import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
+import com.example.umlscd.Models.ClassDiagram.*;
 import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
-public class ClassDiagramManagerTest {
-
+public class ClassDiagramManagerTest   {
     @Mock
     private ClassDiagramUI mockUiController;
-
+    @Mock private Alert mockAlert;  // Mock Alert
     @Mock
     private ClassDiagramSerializer mockSerializer;
 
@@ -53,13 +53,35 @@ public class ClassDiagramManagerTest {
     private File mockFile;
 
     private ClassDiagramManager manager;
+    private ClassDiagramD classDiagram;    // Mock ClassDiagram
+    private Pane drawingPane;
+    private VBox firstVBox;
+    private VBox secondVBox;
 
+    // Create a simple mock for the relationsManager and InheritanceManager
+    private ClassDiagramRelationsManager relationsManager;
     @BeforeEach
     public void setUp() {
         new JFXPanel();
         MockitoAnnotations.openMocks(this);
         manager = new ClassDiagramManager(mockUiController);
         manager.classDiagram = mockClassDiagram;
+        classDiagram = mock(ClassDiagramD.class);
+
+// Initialize the Pane and VBox elements (to simulate UI)
+        drawingPane = new Pane();
+        firstVBox = new VBox();
+        secondVBox = new VBox();
+
+        // Add VBoxes to the drawingPane (to simulate that they are on the UI)
+        drawingPane.getChildren().add(firstVBox);
+        drawingPane.getChildren().add(secondVBox);
+
+        // Initialize a mock relationsManager (or use an actual instance of InheritanceManager if possible)
+        relationsManager = new InheritanceManager(manager); // Assuming this is your implementation
+
+        // Attach the enableInheritanceMode to the drawingPane (assuming your method is part of a class)
+        manager.enableInheritanceMode(drawingPane);
     }
 
     @Test
@@ -438,6 +460,68 @@ public class ClassDiagramManagerTest {
             // Assuming the manager has a method `isDragModeEnabled()`
             assertTrue(manager.isDragEnabled, "Drag mode should be enabled");
         });
+    }
+
+    @Test
+    public void testSetDraggable() {
+        VBox vbox = mock(VBox.class);
+        // Test enabling dragging
+        manager.setDraggable(vbox, true);
+        verify(vbox, times(1)).setOnMousePressed(any());
+        verify(vbox, times(1)).setOnMouseDragged(any());
+
+        // Test disabling dragging
+        manager.setDraggable(vbox, false);
+        verify(vbox, times(1)).setOnMousePressed(null);
+        verify(vbox, times(1)).setOnMouseDragged(null);
+    }
+
+    @Test
+    public void testHighlightClass() {
+        VBox classBox = new VBox();
+
+        // Test highlighting
+        manager.highlightClass(classBox, true);
+        assertEquals("-fx-border-color: darkred; -fx-border-width: 2; -fx-border-style: solid;", classBox.getStyle());
+
+        // Test unhighlighting
+        manager.highlightClass(classBox, false);
+        assertEquals("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;", classBox.getStyle());
+    }
+    @Test
+    public void testShowDeletionConfirmation_doesNotThrowError() {
+        // Arrange
+        String elementName = "TestClass";
+
+        // Act & Assert: Make sure no errors occur when showing the deletion confirmation
+        assertDoesNotThrow(() -> Platform.runLater(() -> {
+            manager.showDeletionConfirmation(elementName);
+        }));
+    }
+    @Test
+    void testEnableInheritanceMode() {
+        // Create mock event for mouse click
+        MouseEvent mockEvent = Mockito.mock(MouseEvent.class);
+        PickResult mockPickResult = Mockito.mock(PickResult.class);
+        Node mockNode = Mockito.mock(Node.class);
+
+        // Mock the behavior of the event
+        Mockito.when(mockEvent.getPickResult()).thenReturn(mockPickResult);
+        Mockito.when(mockPickResult.getIntersectedNode()).thenReturn(mockNode);
+
+        // Assume the node is a VBox and part of elements
+        VBox mockVBox = Mockito.mock(VBox.class);
+        Mockito.when(mockNode).thenReturn(mockVBox);
+
+        // Create the mock class diagram manager and other necessary objects
+        ClassDiagramManager mockManager = Mockito.mock(ClassDiagramManager.class);
+        Pane mockPane = Mockito.mock(Pane.class);
+
+        // Call your method with mocked data
+        mockManager.enableInheritanceMode(mockPane);
+
+        // Perform assertions or further actions
+        Mockito.verify(mockPane, Mockito.times(1)).setOnMouseClicked(Mockito.any());
     }
 
 }

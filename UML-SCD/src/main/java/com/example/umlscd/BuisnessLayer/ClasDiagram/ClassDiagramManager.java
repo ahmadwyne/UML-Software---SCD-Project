@@ -96,7 +96,7 @@ public class ClassDiagramManager {
     /**
      * A mapping from element names to their corresponding UML element boxes (classes or interfaces).
      */
-    private Map<String, UMLElementBoxInterface> classBoxMap = new HashMap<>();
+    public Map<String, UMLElementBoxInterface> classBoxMap = new HashMap<>();
     public ClassDiagramD getClassDiagram() {
         return classDiagram;
     }
@@ -755,7 +755,7 @@ public class ClassDiagramManager {
      * <p>This method sets the {@code isDragEnabled} flag to {@code false} and removes mouse event handlers
      * from all {@code VBox} elements to prevent dragging.</p>
      */
-    private void disableDrag() {
+    public void disableDrag() {
         isDragEnabled = false;
         for (Node element : elements) {
             if (element instanceof VBox) {
@@ -773,7 +773,7 @@ public class ClassDiagramManager {
      * @param pane   The {@code VBox} to set as draggable or non-draggable.
      * @param enable {@code true} to enable dragging; {@code false} to disable.
      */
-    private void setDraggable(VBox pane, boolean enable) {
+    public void setDraggable(VBox pane, boolean enable) {
         if (enable) {
             pane.setOnMousePressed(event -> pane.setUserData(new double[]{event.getSceneX(), event.getSceneY(), pane.getLayoutX(), pane.getLayoutY()}));
             pane.setOnMouseDragged(event -> {
@@ -802,7 +802,7 @@ public class ClassDiagramManager {
      * @param newX The new X-coordinate position.
      * @param newY The new Y-coordinate position.
      */
-    private void updateElementCoordinates(VBox pane, double newX, double newY) {
+    public void updateElementCoordinates(VBox pane, double newX, double newY) {
         for (UMLClassBox umlClass : classDiagram.getClasses()) {
             if (umlClass.getVisualRepresentation() == pane) {
                 umlClass.setX(newX);
@@ -829,7 +829,7 @@ public class ClassDiagramManager {
      * @param classBox The {@code VBox} representing the class or interface to highlight.
      * @param highlight {@code true} to apply highlighting; {@code false} to remove it.
      */
-    private void highlightClass(VBox classBox, boolean highlight) {
+    public void highlightClass(VBox classBox, boolean highlight) {
         if (classBox == null) {
             System.out.println("Attempting to highlight a null classBox!");
             return;
@@ -1253,7 +1253,7 @@ public class ClassDiagramManager {
         if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
-    private void showDeletionConfirmation(String elementName) {
+    public void showDeletionConfirmation(String elementName) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
                 "Element '" + elementName + "' and its related relationships have been deleted.", ButtonType.OK);
         alert.showAndWait();
