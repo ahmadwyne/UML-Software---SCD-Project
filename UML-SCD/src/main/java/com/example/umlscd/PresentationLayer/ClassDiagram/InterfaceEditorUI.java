@@ -1,7 +1,7 @@
 package com.example.umlscd.PresentationLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.InterfaceEditorManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassDiagramManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.InterfaceEditorManager;
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -11,7 +11,6 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -251,7 +250,15 @@ public class InterfaceEditorUI {
         methodsArea.setText(String.join("\n", umlInterfaceBox.getMethods()));
     }
 
-
+    /**
+     * Deletes a method from the list of methods.
+     * <p>This method prompts the user to enter the name of the method they want to delete. If the method with the provided
+     * name is found, it will be removed from the list. The updated list is then displayed in the `methodsArea`.</p>
+     *
+     * <p>The deletion works by searching for a method that contains the specified method name in the list of methods.
+     * If multiple methods with similar names exist, all of them will be deleted. Ensure that method names are unique to
+     * avoid unintentional deletions.</p>
+     */
     private void deleteMethod() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Delete Method");
@@ -273,8 +280,15 @@ public class InterfaceEditorUI {
         });
     }
 
-
-    // Edit method logic
+    /**
+     * Edits an existing method in the code editor.
+     * <p> This method displays a dialog where the user can enter the old method name they wish to edit,
+     * the updated method name, method parameters, visibility modifier, and return type. The dialog pre-fills
+     * with the currently selected method from the editor, allowing the user to update individual components.</p>
+     * <p> The method utilizes helper methods such as {@link #parseVisibility(String)}, {@link #parseReturnType(String)},
+     * {@link #parseMethodName(String)}, and {@link #parseParameters(String)} to extract and parse the method details from
+     * the selected method text. </p>
+     */
     private void editMethod() {
         Dialog<InterfaceEditorUI.MethodsDetails> dialog = new Dialog<>();
         dialog.setTitle("Edit Method");
@@ -416,7 +430,14 @@ public class InterfaceEditorUI {
         }
     }
 
-    // MethodsDetails class now includes parameters as well
+    /**
+     * A class to store method details including the old and new method names, visibility modifier, return type,
+     * and parameters.
+     * <p>
+     * This class is used to manage method details while editing methods in the code editor.
+     * It holds information about a method's current and updated values, which are passed to the editor when making changes.
+     * </p>
+     */
     public static class MethodsDetails {
         String oldName;
         String newName;
@@ -432,7 +453,17 @@ public class InterfaceEditorUI {
             this.parameters = parameters;
         }
     }
-    // Parse visibility from the attribute string
+
+    /**
+     * Parses the visibility from a method signature string.
+     * <p>
+     * This method examines the beginning of a method string to determine its visibility. It checks for the following symbols:
+     * If no specific visibility is found, it defaults to public visibility.
+     * </p>
+     *
+     * @param attribute the method signature string to parse
+     * @return the visibility as a string, e.g., "+ public", "- private", or "# protected"
+     */
     private String parseVisibility(String attribute) {
         if (attribute.startsWith("+")) return "+ public";
         if (attribute.startsWith("-")) return "- private";
@@ -440,7 +471,16 @@ public class InterfaceEditorUI {
         return "+ public"; // Default to public
     }
 
-    // Parse visibility symbol for saving the updated attribute
+    /**
+     * Parses the visibility symbol for saving an updated method attribute.
+     * <p>
+     * This method converts the full visibility string (e.g., "+ public") into the corresponding symbol
+     * ("+" for public, "-" for private, "#" for protected).
+     * </p>
+     *
+     * @param visibility the full visibility string (e.g., "+ public")
+     * @return the visibility symbol corresponding to the provided string
+     */
     private String parseVisibilitySymbol(String visibility) {
         return switch (visibility) {
             case "+ public" -> "+";
@@ -449,8 +489,17 @@ public class InterfaceEditorUI {
             default -> "+";
         };
     }
-    // Show error dialog
-    private void showErrorDialog(String title, String content) {
+
+    /**
+     * Displays an error dialog with the specified title and content.
+     * <p>
+     * This method creates an error dialog that displays the provided title and message content.
+     * It is typically used when a method update or deletion fails, or when an invalid input is provided.
+     * </p>
+     *
+     * @param title the title of the error dialog
+     * @param content the content of the error dialog
+     */    private void showErrorDialog(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);  // No header for the error dialog
@@ -458,7 +507,16 @@ public class InterfaceEditorUI {
         alert.showAndWait();  // Show the alert and wait for user to close it
     }
 
-    // Show success dialog
+    /**
+     * Displays a success dialog with the specified title and content.
+     * <p>
+     * This method creates an information dialog that displays the provided title and success message content.
+     * It is typically used after successfully updating or deleting a method.
+     * </p>
+     *
+     * @param title the title of the success dialog
+     * @param content the content of the success dialog
+     */
     private void showSuccessDialog(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -467,7 +525,16 @@ public class InterfaceEditorUI {
         alert.showAndWait();
     }
 
-    // Parse method parameters from the method signature string
+    /**
+     * Parses method parameters from a method signature string.
+     * <p>
+     * This method extracts the parameters of a method from its signature by finding the portion between the
+     * opening and closing parentheses. If no parameters are found, it returns an empty string.
+     * </p>
+     *
+     * @param method the method signature string to parse
+     * @return the method's parameters as a string, or an empty string if no parameters are present
+     */
     private String parseParameters(String method) {
         // Remove any leading/trailing whitespace
         method = method.trim();
@@ -486,7 +553,16 @@ public class InterfaceEditorUI {
     }
 
 
-    // Parse return type from the method signature string
+    /**
+     * Parses the return type from a method signature string.
+     * <p>
+     * This method extracts the return type of a method by looking for the portion of the method signature
+     * that follows the closing parenthesis. If no return type is found or if the input is invalid, it returns "void".
+     * </p>
+     *
+     * @param method the method signature string to parse
+     * @return the method's return type as a string, or "void" if no return type is found
+     */
     private String parseReturnType(String method) {
         // Ensure the method is not empty and has valid format
         if (method == null || method.isEmpty()) {
@@ -513,7 +589,17 @@ public class InterfaceEditorUI {
         }
         return "void";  // Return default value if the method signature is not in expected format
     }
-    // Parse method name from the method signature string
+
+    /**
+     * Parses the method name from a method signature string.
+     * <p>
+     * This method extracts the method name by finding the portion of the string before the opening parenthesis.
+     * If no parenthesis is found, it returns the entire method string (which may be in an invalid format).
+     * </p>
+     *
+     * @param method the method signature string to parse
+     * @return the method's name as a string
+     */
     private String parseMethodName(String method) {
         // Trim leading/trailing whitespaces
         method = method.trim();
@@ -530,7 +616,6 @@ public class InterfaceEditorUI {
         return method;
     }
 
-
     /**
      * Applies the changes made in the editor to the interface model.
      *
@@ -543,8 +628,6 @@ public class InterfaceEditorUI {
                 methodsArea.getText()
         );
     }
-
-
 
     /**
      * Applies a hover effect to a button when the mouse is hovered over it.

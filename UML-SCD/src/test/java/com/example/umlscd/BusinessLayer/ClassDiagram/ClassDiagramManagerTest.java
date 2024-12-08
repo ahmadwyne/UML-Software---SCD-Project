@@ -1,33 +1,35 @@
-package com.example.umlscd.BuisnessLayer.ClassDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.*;
+import com.example.umlscd.BusinessLayer.ClassDiagram.*;
 import com.example.umlscd.DataAccessLayer.Serializers.ClassDiagram.ClassDiagramSerializer;
 import com.example.umlscd.Models.ClassDiagram.*;
 import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
+/**
+ * Unit tests for the {@link ClassDiagramManager} class.
+ * <p>
+ * This test suite verifies the functionalities of {@link ClassDiagramManager}, focusing on managing
+ * UML class diagrams, including creating, retrieving, saving, loading, and interacting with classes,
+ * interfaces, and relationships.
+ * </p>
+ * <p>
+ * It uses mocking to isolate dependencies and real JavaFX components where appropriate.
+ * </p>
+ */
 public class ClassDiagramManagerTest   {
     @Mock
     private ClassDiagramUI mockUiController;
@@ -61,15 +63,41 @@ public class ClassDiagramManagerTest   {
 
     // Create a simple mock for the relationsManager and InheritanceManager
     private ClassDiagramRelationsManager relationsManager;
+    /**
+     * Initializes the JavaFX toolkit.
+     * <p>
+     * Ensures that JavaFX components can be used in test cases.
+     * </p>
+     */
+    @BeforeAll
+    static void initJFX() {
+        // Initializes the JavaFX toolkit
+        new JFXPanel();
+    }
+    /**
+     * Sets up the test environment before each test.
+     * <p>
+     * Initializes mocks and creates an instance of {@link ClassDiagramManager}.
+     * </p>
+     */
+
     @BeforeEach
+
     public void setUp() {
         new JFXPanel();
         MockitoAnnotations.openMocks(this);
         manager = new ClassDiagramManager(mockUiController);
         manager.classDiagram = mockClassDiagram;
         classDiagram = mock(ClassDiagramD.class);
-    }
 
+    }
+    /**
+     * Tests {@link ClassDiagramManager#getClasses()} for retrieving the list of classes.
+     * <p>
+     * Verifies that the correct classes are returned and that the interaction with
+     * the {@link ClassDiagramD} mock is as expected.
+     * </p>
+     */
     @Test
     public void testGetClasses() {
         // Arrange
@@ -83,7 +111,12 @@ public class ClassDiagramManagerTest   {
         assertEquals(1, classes.size());
         verify(mockClassDiagram).getClasses();
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#getInterfaces()} for retrieving the list of interfaces.
+     * <p>
+     * Ensures the method interacts correctly with the mock and returns the expected interfaces.
+     * </p>
+     */
     @Test
     public void testGetInterfaces() {
         // Arrange
@@ -97,7 +130,12 @@ public class ClassDiagramManagerTest   {
         assertEquals(1, interfaces.size());
         verify(mockClassDiagram).getInterfaces();
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#getRelationships()} for retrieving relationships.
+     * <p>
+     * Checks that the correct list of relationships is returned and interacts with the mock correctly.
+     * </p>
+     */
     @Test
     public void testGetRelationships() {
         // Arrange
@@ -111,7 +149,12 @@ public class ClassDiagramManagerTest   {
         assertTrue(relationships.isEmpty());
         verify(mockClassDiagram).getRelationships();
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#clearDiagram()} for clearing all diagram elements.
+     * <p>
+     * Ensures that the drawing pane and associated diagram elements (classes, interfaces, and relationships) are cleared.
+     * </p>
+     */
     @Test
     public void testClearDiagram() {
         // Arrange
@@ -126,7 +169,12 @@ public class ClassDiagramManagerTest   {
         verify(mockClassDiagram).getInterfaces();
         verify(mockClassDiagram).getRelationships();
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#createClassBox(String, double, double)} for adding a class box to the diagram.
+     * <p>
+     * Verifies that the class box is correctly created and added to the UI components.
+     * </p>
+     */
     @Test
     void testCreateClassBox() {
         // Step 1: Mock the ClassDiagramUI
@@ -149,7 +197,12 @@ public class ClassDiagramManagerTest   {
         // You can assert that the class box was created or that the method interacted with the pane as expected
         assertNotNull(mockPane.getChildren(), "The children of the pane should not be null");
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#createInterfaceBox(String, double, double)} for adding an interface box.
+     * <p>
+     * Verifies the creation and addition of the interface box to the UI components.
+     * </p>
+     */
     @Test
     public void testCreateInterfaceBox() {
         // Step 1: Mock the ClassDiagramUI
@@ -173,7 +226,12 @@ public class ClassDiagramManagerTest   {
         assertNotNull(mockPane.getChildren(), "The children of the pane should not be null");
 
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#findClassBoxByName(String)} for finding a class by name.
+     * <p>
+     * Ensures the method returns the correct visual representation for the specified class name.
+     * </p>
+     */
     @Test
     public void testFindClassBoxByName() {
         // Arrange
@@ -189,7 +247,12 @@ public class ClassDiagramManagerTest   {
         assertNotNull(result);
         verify(mockClassDiagram).getClasses();
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#findInterfaceBoxByName(String)} for finding an interface by name.
+     * <p>
+     * Verifies the method returns the correct visual representation for the specified interface name.
+     * </p>
+     */
     @Test
     public void testFindInterfaceBoxByName() {
         // Arrange
@@ -205,7 +268,12 @@ public class ClassDiagramManagerTest   {
         assertNotNull(result);
         verify(mockClassDiagram).getInterfaces();
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#saveDiagram(File)} for saving the diagram to a file.
+     * <p>
+     * Verifies that the {@link ClassDiagramSerializer} correctly serializes the diagram and interacts with the UI.
+     * </p>
+     */
     @Test
     void testSaveDiagram() throws IOException, NoSuchFieldException, IllegalAccessException {
         // Given: A mocked serializer and UI controller
@@ -230,6 +298,12 @@ public class ClassDiagramManagerTest   {
         // Also, verify that the UI controller shows the success alert
         verify(mockUIController, times(1)).showInformationAlert("Diagram saved successfully to " + testFile.getAbsolutePath());
     }
+    /**
+     * Tests {@link ClassDiagramManager#saveDiagram(File)} for handling errors during saving.
+     * <p>
+     * Simulates an {@link IOException} and verifies that the error is handled appropriately by the UI.
+     * </p>
+     */
     @Test
     void testSaveDiagramWithError() throws IOException, NoSuchFieldException, IllegalAccessException {
         // Given: A mocked serializer that throws IOException
@@ -258,6 +332,12 @@ public class ClassDiagramManagerTest   {
         // In case you want to check whether the exception was printed or logged in console
         // You can add additional verifications or use a logging framework
     }
+    /**
+     * Tests {@link ClassDiagramManager#loadDiagram(File)} for loading a diagram from a file.
+     * <p>
+     * Ensures that the diagram is correctly deserialized and loaded into the manager.
+     * </p>
+     */
     @Test
     void testLoadDiagram() throws IOException, NoSuchFieldException, IllegalAccessException {
         // Given: A mocked serializer and UI controller
@@ -285,7 +365,12 @@ public class ClassDiagramManagerTest   {
         // Optionally, verify that no error alert is shown (since the load was successful)
         verify(mockUIController, times(0)).showErrorAlert(anyString());
     }
-
+    /**
+     * Tests {@link ClassDiagramManager#loadDiagram(File)} for handling errors during loading.
+     * <p>
+     * Simulates an {@link IOException} and ensures that errors are appropriately handled by the UI.
+     * </p>
+     */
     @Test
     void testLoadDiagramWithError() throws IOException, NoSuchFieldException, IllegalAccessException {
         // Given: A mocked serializer that throws IOException
@@ -314,6 +399,12 @@ public class ClassDiagramManagerTest   {
         // In case you want to check whether the exception was printed or logged in console
         // You can add additional verifications or use a logging framework
     }
+    /**
+     * Tests tool selection for creating a class using {@link ClassDiagramManager#handleToolSelection(String, Pane, VBox)}.
+     * <p>
+     * Verifies the correct behavior when the "Class" tool is selected.
+     * </p>
+     */
     @Test
     void testHandleToolSelectionClass() {
         // Make sure the JavaFX application thread is initialized
@@ -348,6 +439,12 @@ public class ClassDiagramManagerTest   {
             // You can also check if other methods are invoked within the 'handleToolSelection' method by checking GUI side effects
         });
     }
+    /**
+     * Tests tool selection for creating an interface using {@link ClassDiagramManager#handleToolSelection(String, Pane, VBox)}.
+     * <p>
+     * Verifies the correct behavior when the "Interface" tool is selected.
+     * </p>
+     */
     @Test
     void testHandleToolSelectionInterface() {
         Platform.runLater(() -> {
@@ -367,6 +464,12 @@ public class ClassDiagramManagerTest   {
             assertNotNull(interfaceBox, "An interface box should be added");
         });
     }
+    /**
+     * Tests tool selection for creating an association relationship using {@link ClassDiagramManager#handleToolSelection(String, Pane, VBox)}.
+     * <p>
+     * Ensures the association manager is correctly set.
+     * </p>
+     */
     @Test
     void testHandleToolSelectionAssociation() {
         Platform.runLater(() -> {
@@ -383,6 +486,12 @@ public class ClassDiagramManagerTest   {
             assertTrue(manager.relationsManager instanceof AssociationManager, "The relations manager should be an instance of AssociationManager");
         });
     }
+    /**
+     * Tests tool selection for creating an aggregation relationship.
+     * <p>
+     * Ensures the aggregation manager is correctly set when selected.
+     * </p>
+     */
     @Test
     void testHandleToolSelectionAggregation() {
         Platform.runLater(() -> {
@@ -399,6 +508,12 @@ public class ClassDiagramManagerTest   {
             assertTrue(manager.relationsManager instanceof AggregationManager, "The relations manager should be an instance of AggregationManager");
         });
     }
+    /**
+     * Tests tool selection for creating a composition relationship.
+     * <p>
+     * Ensures the composition manager is correctly set when selected.
+     * </p>
+     */
     @Test
     void testHandleToolSelectionComposition() {
         Platform.runLater(() -> {
@@ -415,6 +530,13 @@ public class ClassDiagramManagerTest   {
             assertTrue(manager.relationsManager instanceof CompositionManager, "The relations manager should be an instance of CompositionManager");
         });
     }
+
+    /**
+     * Tests tool selection for creating an inheritance relationship.
+     * <p>
+     * Ensures the inheritance manager is correctly set when selected.
+     * </p>
+     */
     @Test
     void testHandleToolSelectionInheritance() {
         Platform.runLater(() -> {
@@ -431,6 +553,13 @@ public class ClassDiagramManagerTest   {
             assertTrue(manager.relationsManager instanceof InheritanceManager, "The relations manager should be an instance of InheritanceManager");
         });
     }
+
+    /**
+     * Tests tool selection for enabling drag mode.
+     * <p>
+     * Verifies that drag mode is correctly enabled when the "Drag" tool is selected.
+     * </p>
+     */
     @Test
     void testHandleToolSelectionDrag() {
         Platform.runLater(() -> {
@@ -443,11 +572,17 @@ public class ClassDiagramManagerTest   {
             manager.handleToolSelection("Drag", drawingPane, editorsPane);
 
             // Then: Verify that drag mode is enabled
-            // Assuming the manager has a method `isDragModeEnabled()`
+            // Assuming the manager has a method isDragModeEnabled()
             assertTrue(manager.isDragEnabled, "Drag mode should be enabled");
         });
     }
 
+    /**
+     * Tests the {@link ClassDiagramManager#setDraggable(VBox, boolean)} method for enabling and disabling drag behavior.
+     * <p>
+     * Verifies that the appropriate event handlers are set or removed based on the draggable state.
+     * </p>
+     */
     @Test
     public void testSetDraggable() {
         VBox vbox = mock(VBox.class);
@@ -462,6 +597,12 @@ public class ClassDiagramManagerTest   {
         verify(vbox, times(1)).setOnMouseDragged(null);
     }
 
+    /**
+     * Tests the {@link ClassDiagramManager#highlightClass(VBox, boolean)} method for highlighting a class box.
+     * <p>
+     * Ensures that the style of the class box is correctly updated when highlighting is toggled.
+     * </p>
+     */
     @Test
     public void testHighlightClass() {
         VBox classBox = new VBox();
@@ -474,31 +615,4 @@ public class ClassDiagramManagerTest   {
         manager.highlightClass(classBox, false);
         assertEquals("-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;", classBox.getStyle());
     }
-    @Test
-    @Disabled
-    void testEnableInheritanceMode() {
-        // Create mock event for mouse click
-        MouseEvent mockEvent = Mockito.mock(MouseEvent.class);
-        PickResult mockPickResult = Mockito.mock(PickResult.class);
-        Node mockNode = Mockito.mock(Node.class);
-
-        // Mock the behavior of the event
-        Mockito.when(mockEvent.getPickResult()).thenReturn(mockPickResult);
-        Mockito.when(mockPickResult.getIntersectedNode()).thenReturn(mockNode);
-
-        // Assume the node is a VBox and part of elements
-        VBox mockVBox = Mockito.mock(VBox.class);
-        Mockito.when(mockNode).thenReturn(mockVBox);
-
-        // Create the mock class diagram manager and other necessary objects
-        ClassDiagramManager mockManager = Mockito.mock(ClassDiagramManager.class);
-        Pane mockPane = Mockito.mock(Pane.class);
-
-        // Call your method with mocked data
-        mockManager.enableInheritanceMode(mockPane);
-
-        // Perform assertions or further actions
-        Mockito.verify(mockPane, Mockito.times(1)).setOnMouseClicked(Mockito.any());
-    }
-
 }

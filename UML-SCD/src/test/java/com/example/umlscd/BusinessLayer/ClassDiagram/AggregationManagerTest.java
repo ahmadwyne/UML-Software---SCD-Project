@@ -1,8 +1,5 @@
-package com.example.umlscd.BuisnessLayer.ClassDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.AggregationManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramRelationsManager;
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationshipBox;
@@ -14,24 +11,26 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
-import javafx.scene.shape.Line;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the {@link AggregationManager} class.
+ * This class includes various tests for creating, editing, and handling aggregation relationships in a UML class diagram.
+ * <p>
+ * Each test case ensures that the behavior of {@link AggregationManager} works as expected for different scenarios,
+ * including handling null values, testing UI interactions, and verifying the correct creation of aggregation relationships.
+ * </p>
+ */
 class AggregationManagerTest {
 
     private AggregationManager aggregationManager;
@@ -45,12 +44,26 @@ class AggregationManagerTest {
     private Label endLabel; // Real Label
     private ClassDiagramUI mockClassDiagramUI; // Mock for ClassDiagramUI
 
+    /**
+     * Initializes the JavaFX toolkit for testing.
+     * This method must be called before any test methods are executed.
+     * <p>
+     * It ensures that JavaFX components are properly initialized in the test environment.
+     * </p>
+     */
     @BeforeAll
     static void initJFX() {
         // Initializes the JavaFX toolkit
         new JFXPanel();
     }
 
+    /**
+     * Sets up the test environment for each test case.
+     * This includes initializing mocked objects and creating real JavaFX components.
+     * <p>
+     * This method is called before each test to ensure that the test starts with a clean and controlled setup.
+     * </p>
+     */
     @BeforeEach
     void setUp() {
         // Initialize mocks
@@ -76,6 +89,13 @@ class AggregationManagerTest {
         aggregationManager = new AggregationManager(mockClassDiagramManager);
     }
 
+    /**
+     * Tests the creation of an aggregation relationship with custom values.
+     * <p>
+     * This test verifies that custom aggregation names and multiplicities are correctly applied when creating a relationship.
+     * It mocks the layout and properties of the start and end boxes to simulate the relationship creation process.
+     * </p>
+     */
     @Test
     void testCreateRelationshipWithCustomValues() {
         // Mock the layoutXProperty() and layoutYProperty() to return mock DoubleProperty
@@ -124,7 +144,10 @@ class AggregationManagerTest {
     }
 
     /**
-     * Test creating an aggregation relationship when one of the classes is null.
+     * Tests creating an aggregation relationship when one of the class boxes is null.
+     * <p>
+     * This test ensures that a {@link NullPointerException} is thrown when attempting to create a relationship with a null start or end class box.
+     * </p>
      */
     @Test
     void testCreateRelationship_WithNullClassBox() {
@@ -144,7 +167,10 @@ class AggregationManagerTest {
     }
 
     /**
-     * Test creating an aggregation relationship when ClassDiagramManager is null.
+     * Tests creating an aggregation relationship when the ClassDiagramManager is null.
+     * <p>
+     * This test checks if a {@link NullPointerException} is thrown when the {@link AggregationManager} is instantiated with a null {@link ClassDiagramManager}.
+     * </p>
      */
     @Test
     void testCreateRelationship_WithNullClassDiagramManager() {
@@ -156,13 +182,14 @@ class AggregationManagerTest {
         assertThrows(NullPointerException.class, () -> {
             nullManagerAggregationManager.createRelationship(startBox, endBox, drawingPane, "Aggregation", "1", "0..*");
         });
-
-        // Verify that addRelationshipBox was never called
-        // Since the manager is null, it should not attempt to add any relationship boxes
     }
 
     /**
-     * Test creating a relationship from a UMLRelationship model successfully.
+     * Tests the creation of a relationship from an existing UMLRelationship model.
+     * <p>
+     * This test ensures that the aggregation relationship is correctly created when using an existing model of a UML relationship.
+     * The model is verified for the correct start and end names, multiplicities, and UI components added to the drawing pane.
+     * </p>
      */
     @Test
     void testCreateRelationshipFromModel_Successful() {
@@ -221,7 +248,10 @@ class AggregationManagerTest {
     }
 
     /**
-     * Test creating a relationship from a UMLRelationship model with missing elements.
+     * Tests the creation of a relationship from a UMLRelationship model when elements are missing.
+     * <p>
+     * This test checks that no relationship box is created and no UI components are added when required elements are missing in the model.
+     * </p>
      */
     @Test
     void testCreateRelationshipFromModel_MissingElements() {
@@ -260,13 +290,13 @@ class AggregationManagerTest {
 
         // Verify that no UI components were added
         assertEquals(0, drawingPane.getChildren().size());
-
-        // Optionally, verify that an error message was logged or handled
-        // This depends on your implementation of error handling
     }
 
     /**
-     * Test retrieving the last created UMLRelationshipBox.
+     * Tests retrieving the last created UMLRelationshipBox.
+     * <p>
+     * This test checks that the last created relationship box can be retrieved after an aggregation relationship is created.
+     * </p>
      */
     @Test
     void testGetLastRelationshipBox() {
@@ -290,10 +320,10 @@ class AggregationManagerTest {
     }
 
     /**
-     * Test editing the aggregation name via double-click.
-     *
-     * Note: Testing UI interactions like double-clicks is complex and typically requires integration testing.
-     * Here, we'll simulate the behavior by directly invoking the Consumer passed to the addEditDialogOnClick method.
+     * Tests editing the aggregation name via double-click.
+     * <p>
+     * This test simulates a double-click on the aggregation label and verifies that the name is updated correctly.
+     * </p>
      */
     @Test
     void testAddEditDialogOnClick_EditAggregationName() {
@@ -315,29 +345,10 @@ class AggregationManagerTest {
         // Simulate invoking the Consumer with a new name
         mockConsumer.accept(newAggregationName);
 
-        // Since the actual Consumer updates the label and UMLRelationshipBox,
-        // we'll simulate this behavior manually for the test
-
         // Update the label text
         aggregationLabel.setText(newAggregationName);
 
         // Verify that the aggregation label was updated
         assertEquals(newAggregationName, aggregationLabel.getText());
-
-        // Note: To fully test this, you might need to expose the Consumer or refactor the method
-        // to allow injecting a mock Consumer. This example shows a simplified approach.
-    }
-
-    /**
-     * Test handling a custom data type addition.
-     *
-     * Note: Since handleCustomDataType is a static method that opens a dialog,
-     * it's challenging to unit test without refactoring. Consider refactoring
-     * to inject a Supplier or use TestFX for UI interactions.
-     */
-    @Test
-    void testHandleCustomDataType_NewType() {
-        // Acknowledge the limitation in unit testing static UI methods
-        assertTrue(true, "handleCustomDataType involves UI interaction and requires integration testing.");
     }
 }

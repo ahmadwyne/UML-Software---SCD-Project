@@ -1,6 +1,7 @@
-package com.example.umlscd.BuisnessLayer.ClassDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
+
 import static org.mockito.Mockito.*;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramRelationsManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassDiagramRelationsManager;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -9,6 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link ClassDiagramRelationsManager} class.
+ * <p>
+ * This test suite validates the functionality of managing relationships in UML class diagrams,
+ * including enabling/disabling modes, boundary point calculations, and binding labels to lines.
+ * </p>
+ */
 public class ClassDiagramRelationsManagerTest {
 
     private ClassDiagramRelationsManager classDiagramRelationsManager;
@@ -16,6 +24,12 @@ public class ClassDiagramRelationsManagerTest {
     private VBox endBox;
     private Pane drawingPane;
 
+    /**
+     * Sets up the test environment before each test.
+     * <p>
+     * Initializes the necessary mocks and prepares the {@link ClassDiagramRelationsManager} instance for testing.
+     * </p>
+     */
     @BeforeEach
     public void setup() {
         // Initialize mocks
@@ -25,6 +39,12 @@ public class ClassDiagramRelationsManagerTest {
         drawingPane = mock(Pane.class);
     }
 
+    /**
+     * Tests enabling the association mode.
+     * <p>
+     * Verifies that association mode is enabled successfully.
+     * </p>
+     */
     @Test
     public void testEnableAssociationMode() {
         // Given
@@ -34,6 +54,12 @@ public class ClassDiagramRelationsManagerTest {
         assertTrue(classDiagramRelationsManager.enabledAssociationModel, "Association mode should be enabled.");
     }
 
+    /**
+     * Tests disabling the association mode.
+     * <p>
+     * Verifies that association mode is disabled successfully.
+     * </p>
+     */
     @Test
     public void testDisableAssociationMode() {
         // Given
@@ -43,6 +69,12 @@ public class ClassDiagramRelationsManagerTest {
         assertFalse(classDiagramRelationsManager.enabledAssociationModel, "Association mode should be disabled.");
     }
 
+    /**
+     * Tests enabling the aggregation mode.
+     * <p>
+     * Verifies that aggregation mode is enabled successfully.
+     * </p>
+     */
     @Test
     public void testEnableAggregationMode() {
         // Given
@@ -52,6 +84,12 @@ public class ClassDiagramRelationsManagerTest {
         assertTrue(classDiagramRelationsManager.enabledAggregationModel, "Aggregation mode should be enabled.");
     }
 
+    /**
+     * Tests disabling the aggregation mode.
+     * <p>
+     * Verifies that aggregation mode is disabled successfully.
+     * </p>
+     */
     @Test
     public void testDisableAggregationMode() {
         // Given
@@ -60,6 +98,13 @@ public class ClassDiagramRelationsManagerTest {
         // When & Then
         assertFalse(classDiagramRelationsManager.enabledAggregationModel, "Aggregation mode should be disabled.");
     }
+
+    /**
+     * Tests enabling the composition mode.
+     * <p>
+     * Verifies that composition mode is enabled successfully.
+     * </p>
+     */
     @Test
     public void testEnableCompositionMode() {
         // Given
@@ -68,7 +113,12 @@ public class ClassDiagramRelationsManagerTest {
         // When & Then
         assertTrue(classDiagramRelationsManager.enabledCompositionModel, "Composition mode should be enabled.");
     }
-
+    /**
+     * Tests disabling the composition mode.
+     * <p>
+     * Verifies that composition mode is disabled successfully.
+     * </p>
+     */
     @Test
     public void testDisableCompositionMode() {
         // Given
@@ -77,6 +127,13 @@ public class ClassDiagramRelationsManagerTest {
         // When & Then
         assertFalse(classDiagramRelationsManager.enabledCompositionModel, "Composition mode should be disabled.");
     }
+
+    /**
+     * Tests enabling the inheritance mode.
+     * <p>
+     * Verifies that inheritance mode is enabled successfully.
+     * </p>
+     */
     @Test
     public void testEnableInheritanceMode() {
         // Given
@@ -86,6 +143,12 @@ public class ClassDiagramRelationsManagerTest {
         assertTrue(classDiagramRelationsManager.inheritanceModeEnabled, "Inheritance mode should be enabled.");
     }
 
+    /**
+     * Tests disabling the inheritance mode.
+     * <p>
+     * Verifies that inheritance mode is disabled successfully.
+     * </p>
+     */
     @Test
     public void testDisableInheritanceMode() {
         // Given
@@ -95,6 +158,12 @@ public class ClassDiagramRelationsManagerTest {
         assertFalse(classDiagramRelationsManager.inheritanceModeEnabled, "Inheritance mode should be disabled.");
     }
 
+    /**
+     * Tests retrieving the closest boundary point between two elements.
+     * <p>
+     * Ensures that the closest boundary point is calculated correctly based on layout positions.
+     * </p>
+     */
     @Test
     public void testGetClosestBoundaryPoint() {
         // Given
@@ -112,6 +181,12 @@ public class ClassDiagramRelationsManagerTest {
         assertEquals(10.0, closestPoint.getY(), "Y coordinate of closest point should match.");
     }
 
+    /**
+     * Tests calculating the boundary points of a given element.
+     * <p>
+     * Verifies that the four boundary points (top, bottom, left, right) are computed accurately.
+     * </p>
+     */
     @Test
     public void testGetBoundaryPoints() {
         // Given
@@ -130,6 +205,12 @@ public class ClassDiagramRelationsManagerTest {
         assertEquals(x, boundaryPoints[3].getX(), "Left center X coordinate should match.");
     }
 
+    /**
+     * Tests calculating the Euclidean distance between two points.
+     * <p>
+     * Validates the correctness of the distance calculation.
+     * </p>
+     */
     @Test
     public void testCalculateDistance() {
         // Given
@@ -143,6 +224,12 @@ public class ClassDiagramRelationsManagerTest {
         assertEquals(5.0, distance, "The Euclidean distance should be 5.0.");
     }
 
+    /**
+     * Tests binding an association label to a line.
+     * <p>
+     * Ensures that the label's position is dynamically updated to follow the line's midpoint.
+     * </p>
+     */
     @Test
     public void testBindAssociationLabelToLine() {
         // Given
@@ -157,6 +244,12 @@ public class ClassDiagramRelationsManagerTest {
         assertNotNull(label.yProperty().get(), "Label Y position should be bound.");
     }
 
+    /**
+     * Tests binding a multiplicity label to a line.
+     * <p>
+     * Verifies that the multiplicity label's position is dynamically updated for either endpoint of the line.
+     * </p>
+     */
     @Test
     public void testBindMultiplicityLabelToLine() {
         // Given

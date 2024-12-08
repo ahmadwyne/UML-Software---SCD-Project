@@ -4,11 +4,10 @@ import com.example.umlscd.Models.ClassDiagram.ClassDiagramD;
 import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassDiagramManager;
 import javafx.embed.swing.JFXPanel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +15,27 @@ import java.util.Arrays;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * Test class for {@link ClassDiagramSerializer}.
+ * <p>
+ * This class tests the serialization and deserialization functionality of the {@link ClassDiagramSerializer} class,
+ * as well as the restoration of a diagram using the restored objects. It verifies that a ClassDiagram can be correctly
+ * serialized into a file, deserialized back, and restored into a manager object while ensuring that the proper
+ * interactions with the manager occur.
+ * </p>
+ */
 class ClassDiagramSerializerTest {
 
     private ClassDiagramSerializer serializer;
     private ClassDiagramManager mockManager;
 
+    /**
+     * Set up the test environment before each test.
+     * <p>
+     * This method initializes the JavaFX toolkit (required for JavaFX classes such as {@link JFXPanel})
+     * and creates an instance of {@link ClassDiagramSerializer} and a mock of {@link ClassDiagramManager}.
+     * </p>
+     */
     @BeforeEach
     void setUp() {
         // Initialize JavaFX toolkit (required for Platform.runLater())
@@ -30,6 +45,15 @@ class ClassDiagramSerializerTest {
         mockManager = mock(ClassDiagramManager.class);
     }
 
+    /**
+     * Test method to verify that the class diagram can be serialized to a file.
+     * <p>
+     * This test checks that the {@link ClassDiagramSerializer#serialize(ClassDiagramD, File)} method correctly
+     * serializes a diagram object to a file. It asserts that the file is created after serialization.
+     * </p>
+     *
+     * @throws IOException if an I/O error occurs during serialization.
+     */
     @Test
     void testSerialize() throws IOException {
         // Prepare test data
@@ -67,6 +91,16 @@ class ClassDiagramSerializerTest {
         assert(outputFile.exists());
     }
 
+    /**
+     * Test method to verify that the class diagram can be deserialized from a file.
+     * <p>
+     * This test verifies that the {@link ClassDiagramSerializer#deserialize(File)} method can correctly read a serialized
+     * class diagram from a file and return a valid {@link ClassDiagramD} object. It then checks that the diagram contains
+     * the expected number of classes, interfaces, and relationships.
+     * </p>
+     *
+     * @throws IOException if an I/O error occurs during deserialization.
+     */
     @Test
     void testDeserialize() throws IOException {
         // Prepare a test file (assuming this file exists in the project)
@@ -81,6 +115,14 @@ class ClassDiagramSerializerTest {
         assert(deserializedDiagram.getRelationships().size() > 0);
     }
 
+    /**
+     * Test method to verify that a diagram can be restored to a manager.
+     * <p>
+     * This test checks that the {@link ClassDiagramSerializer#restoreDiagram(ClassDiagramD, ClassDiagramManager)} method
+     * correctly restores a {@link ClassDiagramD} object to the {@link ClassDiagramManager}. It verifies that the mock
+     * manager is correctly interacted with during the restoration process.
+     * </p>
+     */
     @Test
     void testRestoreDiagram() {
         // Prepare test data

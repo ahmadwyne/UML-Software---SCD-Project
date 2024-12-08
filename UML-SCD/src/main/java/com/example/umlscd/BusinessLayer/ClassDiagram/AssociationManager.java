@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.ClasDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
@@ -123,6 +123,18 @@ public class AssociationManager extends ClassDiagramRelationsManager {
         classDiagramManager.addRelationshipBox(relationshipBox);
         lastRelationshipBox = relationshipBox;
     }
+
+    /**
+     * This function adds a dialog to edit association name and multiplicity labels.
+     * <p>Sets up a double-click event handler on the given <code>Text</code> element to display a text input dialog for editing the text value.
+     * When the user double-clicks the <code>Text</code> element, a dialog is shown to allow them to enter a new value.
+     * If the user enters a new value and presses "OK", the provided <code>onSave</code> consumer is called with the new value.</p>
+     *
+     * @param textElement The <code>Text</code> element that will trigger the edit dialog on double-click.
+     * @param dialogTitle The title of the text input dialog.
+     * @param onSave A <code>Consumer&lt;String&gt;</code> that will be called with the new value entered by the user. This consumer allows
+     *               for custom handling of the new value (e.g., saving it or updating the UI).
+     */
     public void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
         textElement.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) { // Double-click to edit
@@ -138,6 +150,7 @@ public class AssociationManager extends ClassDiagramRelationsManager {
             }
         });
     }
+
     /**
      * Creates an association relationship from a UMLRelationship model object during deserialization.
      * <p>This method recreates an association relationship using data from a {@link UMLRelationship} object and

@@ -2,7 +2,7 @@ package com.example.umlscd.PresentationLayer.UseCaseDiagram;
 
 import com.example.umlscd.Models.UseCaseDiagram.Association;
 import com.example.umlscd.DataAccessLayer.Serializers.UseCaseDiagram.UseCaseDiagramDAO;
-import com.example.umlscd.BuisnessLayer.UseCaseDiagram.UseCaseDiagramManager;
+import com.example.umlscd.BusinessLayer.UseCaseDiagram.UseCaseDiagramManager;
 import com.example.umlscd.Models.UseCaseDiagram.UseCaseDiagramObject;
 import com.example.umlscd.DataAccessLayer.Serializers.UseCaseDiagram.UseCaseDiagramSerializer;
 import javafx.fxml.FXML;
@@ -266,8 +266,6 @@ public class UseCaseDiagram {
         rootItem.getChildren().add(useCaseItem);
 
         redrawCanvas();
-        // Clear the use case name text field
-        //txtUseCaseName.clear();
     }
 
     /**
@@ -732,30 +730,6 @@ public class UseCaseDiagram {
      * or cancels the navigation.</p>
      */
     private void navigateToHome() {
-        /*// Create a confirmation dialog
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Save Diagram");
-        alert.setHeaderText("Do you want to save the diagram before exiting?");
-        alert.setContentText("Choose your option:");
-
-        // Add buttons to the alert
-        ButtonType saveAndExit = new ButtonType("Save and Exit");
-        ButtonType exitWithoutSaving = new ButtonType("Exit Without Saving");
-        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        alert.getButtonTypes().setAll(saveAndExit, exitWithoutSaving, cancel);
-
-        // Show the alert and wait for user input
-        alert.showAndWait().ifPresent(response -> {
-            if (response == saveAndExit) {
-                // Trigger save button's action event to save the diagram
-                btnSaveDiagram.fire();
-                goToHomePage(); // Navigate to the homepage
-            } else if (response == exitWithoutSaving) {
-                goToHomePage(); // Navigate to the homepage without saving
-            }
-            // If "Cancel" is clicked, do nothing and stay on the page
-        });*/
         goToHomePage();
     }
 
@@ -779,7 +753,6 @@ public class UseCaseDiagram {
             Parent root = loader.load();
             Stage stage = (Stage) btnHome.getScene().getWindow();
             System.out.println("Loaded welcomepage");
-
 
             // Create a scene with specific size
             Scene scene = new Scene(root, 1366, 768);
@@ -972,24 +945,33 @@ public class UseCaseDiagram {
         alert.showAndWait();
     }
 
+    /**
+     * Updates the object explorer tree by clearing the existing tree and adding all the objects (actors, use cases, etc.)
+     * within the system boundary.
+     *
+     * <p> This method starts by clearing the existing children of the root item in the TreeView, adds a system boundary
+     * as the root node (if needed), and then populates the tree with the objects in the diagram (such as actors and
+     * use cases). Each object is added as a child of the system boundary node. </p>
+     *
+     * <p> After updating the tree, the TreeView is refreshed to reflect the changes.</p>
+     */
     private void updateObjectExplorer() {
         // Clear the existing tree
         rootItem.getChildren().clear();
 
-        // Add system boundary as the root (optional, depending on your needs)
+        // Add system boundary as the root
         TreeItem<String> systemBoundaryItem = new TreeItem<>(systemBoundaryName);
         rootItem.getChildren().add(systemBoundaryItem);
 
         // Add objects to the tree view (actors, use cases, etc.)
         for (UseCaseDiagramObject obj : objects) {
-            TreeItem<String> objectItem = new TreeItem<>(obj.getName()); // Assuming getName() returns the name of the object
+            TreeItem<String> objectItem = new TreeItem<>(obj.getName());
             systemBoundaryItem.getChildren().add(objectItem);
         }
 
         // Ensure the TreeView is refreshed
         objectExplorer.refresh();
     }
-
 
     /**
      * Exports the current use case diagram as an image file based on the current state of the canvas.

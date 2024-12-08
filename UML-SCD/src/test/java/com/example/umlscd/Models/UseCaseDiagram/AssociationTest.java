@@ -4,8 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link Association} class.
+ * <p>
+ * This class tests the functionality of the {@link Association} model, which represents the relationship between two objects
+ * in a use case diagram. It verifies the constructor, getters, setters, and other core functionalities of the {@link Association} class.
+ * </p>
+ */
 class AssociationTest extends TestBase{
 
+    /**
+     * Tests the constructor and getter methods of the {@link Association} class.
+     * <p>
+     * This test ensures that the constructor initializes the {@link Association} object with the correct values
+     * for the associated objects (obj1, obj2) and the type of relationship.
+     * </p>
+     */
     @Test
     void testConstructorAndGetters() {
         UseCaseDiagramObject obj1 = new UseCaseDiagramObject("actor", 100.0, 200.0, "Actor1");
@@ -19,6 +33,13 @@ class AssociationTest extends TestBase{
         assertEquals(type, association.getType(), "Type should be initialized correctly");
     }
 
+    /**
+     * Tests the setter methods of the {@link Association} class.
+     * <p>
+     * This test ensures that the setter methods correctly update the associated objects (obj1, obj2) and the type of relationship
+     * in the {@link Association} object.
+     * </p>
+     */
     @Test
     void testSetters() {
         UseCaseDiagramObject obj1 = new UseCaseDiagramObject("actor", 100.0, 200.0, "Actor1");

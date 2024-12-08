@@ -14,18 +14,16 @@ module com.example.umlscd {
     requires com.google.gson;
     requires javafx.swing;
 
-    opens com.example.umlscd to javafx.fxml, com.fasterxml.jackson.databind;
-    exports com.example.umlscd;
     exports com.example.umlscd.Models.UseCaseDiagram;
     opens com.example.umlscd.Models.UseCaseDiagram to com.fasterxml.jackson.databind, javafx.fxml;
     exports com.example.umlscd.Models.ClassDiagram;
     opens com.example.umlscd.Models.ClassDiagram to com.fasterxml.jackson.databind, javafx.fxml;
     exports com.example.umlscd.PresentationLayer;
     opens com.example.umlscd.PresentationLayer to com.fasterxml.jackson.databind, javafx.fxml;
-    exports com.example.umlscd.BuisnessLayer.UseCaseDiagram;
-    opens com.example.umlscd.BuisnessLayer.UseCaseDiagram to com.fasterxml.jackson.databind, javafx.fxml;
-    exports com.example.umlscd.BuisnessLayer.ClasDiagram;
-    opens com.example.umlscd.BuisnessLayer.ClasDiagram to com.fasterxml.jackson.databind, javafx.fxml;
+    exports com.example.umlscd.BusinessLayer.UseCaseDiagram;
+    opens com.example.umlscd.BusinessLayer.UseCaseDiagram to com.fasterxml.jackson.databind, javafx.fxml;
+    exports com.example.umlscd.BusinessLayer.ClassDiagram;
+    opens com.example.umlscd.BusinessLayer.ClassDiagram to com.fasterxml.jackson.databind, javafx.fxml;
     exports com.example.umlscd.PresentationLayer.ClassDiagram;
     opens com.example.umlscd.PresentationLayer.ClassDiagram to com.fasterxml.jackson.databind, javafx.fxml;
     exports com.example.umlscd.PresentationLayer.UseCaseDiagram;

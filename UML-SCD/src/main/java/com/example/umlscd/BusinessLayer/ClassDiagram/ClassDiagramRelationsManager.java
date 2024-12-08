@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.ClasDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;

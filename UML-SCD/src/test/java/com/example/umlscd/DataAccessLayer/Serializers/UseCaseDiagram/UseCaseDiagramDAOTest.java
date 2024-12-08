@@ -1,22 +1,41 @@
 package com.example.umlscd.DataAccessLayer.Serializers.UseCaseDiagram;
 
-import com.example.umlscd.BuisnessLayer.UseCaseDiagram.UseCaseDiagramManager;
+import com.example.umlscd.BusinessLayer.UseCaseDiagram.UseCaseDiagramManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for {@link UseCaseDiagramDAO}.
+ * <p>
+ * This class contains unit tests for the {@link UseCaseDiagramDAO} class, which handles saving and loading
+ * use case diagrams to and from serialized files. The tests cover different scenarios of saving and loading diagrams,
+ * including success cases and error handling such as loading from non-existent or corrupted files.
+ * </p>
+ */
 public class UseCaseDiagramDAOTest {
 
     private UseCaseDiagramManager mockManager;
     private static final String TEST_FILE_PATH = "test_usecase_diagram.ser";
 
+    /**
+     * Setup method to initialize the {@link UseCaseDiagramManager} instance before each test.
+     * This method is called before each test method is executed.
+     */
     @BeforeEach
     void setUp() {
         mockManager = new UseCaseDiagramManager(); // Initialize with a real or mock object
     }
 
+    /**
+     * Test method to verify the successful saving of a diagram.
+     * <p>
+     * This test checks that the {@link UseCaseDiagramDAO#saveDiagram(UseCaseDiagramManager, String)} method
+     * correctly saves the diagram to a file. It then asserts that the file is created as expected.
+     * </p>
+     */
     @Test
     void testSaveDiagram_Success() {
         // Arrange
@@ -33,6 +52,14 @@ public class UseCaseDiagramDAOTest {
         savedFile.delete();
     }
 
+    /**
+     * Test method to verify the successful loading of a diagram.
+     * <p>
+     * This test first saves a diagram to a file using {@link UseCaseDiagramDAO#saveDiagram(UseCaseDiagramManager, String)}.
+     * It then loads the diagram using {@link UseCaseDiagramDAO#loadDiagram(String)} and asserts that the diagram is loaded
+     * successfully and matches the original diagram.
+     * </p>
+     */
     @Test
     void testLoadDiagram_Success() {
         // Arrange: First, save the diagram to a file
@@ -49,6 +76,13 @@ public class UseCaseDiagramDAOTest {
         new File(filePath).delete();
     }
 
+    /**
+     * Test method to handle the scenario where the diagram file does not exist.
+     * <p>
+     * This test verifies that if an attempt is made to load a diagram from a non-existent file,
+     * the {@link UseCaseDiagramDAO#loadDiagram(String)} method should return {@code null}.
+     * </p>
+     */
     @Test
     void testLoadDiagram_Error_FileNotFound() {
         // Arrange: Use a file path that does not exist
@@ -61,6 +95,13 @@ public class UseCaseDiagramDAOTest {
         assertNull(loadedManager, "The diagram should return null if the file does not exist.");
     }
 
+    /**
+     * Test method to handle the scenario where the diagram file is corrupted.
+     * <p>
+     * This test creates a corrupted file (empty or invalid format) and verifies that
+     * {@link UseCaseDiagramDAO#loadDiagram(String)} returns {@code null} when trying to load the diagram from it.
+     * </p>
+     */
     @Test
     void testLoadDiagram_Error_CorruptedFile() {
         // Arrange: Create an empty or corrupted file

@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.UseCaseDiagram;
+package com.example.umlscd.BusinessLayer.UseCaseDiagram;
 
 import com.example.umlscd.Models.UseCaseDiagram.UseCaseDiagramObject;
 import com.example.umlscd.Models.UseCaseDiagram.Association;
@@ -18,16 +18,33 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the {@link UseCaseDiagramManager} class.
+ * This class contains tests for creating, editing, and handling use case diagram relationships within a UML diagram.
+ * <p>
+ * The tests ensure that the {@link UseCaseDiagramManager} works as expected, covering scenarios such as object addition,
+ * association creation, and export to image functionality. They also include handling scenarios like empty object lists,
+ * duplicate associations, and interactions with the user interface.
+ * </p>
+ */
 @ExtendWith(MockitoExtension.class) // Enables the use of Mockito annotations
 public class UseCaseDiagramManagerTest {
 
-    // Before all tests, initialize the JavaFX Toolkit
+    /**
+     * Initializes the JavaFX toolkit before all tests.
+     * This method is annotated with @BeforeAll and starts the JavaFX toolkit.
+     */
     @BeforeAll
     public static void setUpClass() {
         Platform.startup(() -> {}); // Starts the JavaFX toolkit
     }
 
-    // Test Default Constructor
+    /**
+     * Tests the default constructor of the UseCaseDiagramManager class.
+     * <p>
+     * It verifies that the manager is initialized with empty object and association lists.
+     * </p>
+     */
     @Test
     public void testDefaultConstructor() {
         UseCaseDiagramManager manager = new UseCaseDiagramManager();
@@ -37,7 +54,13 @@ public class UseCaseDiagramManagerTest {
         assertTrue(manager.getAssociations().isEmpty());
     }
 
-    // Test Parameterized Constructor
+    /**
+     * Tests the parameterized constructor of the UseCaseDiagramManager class.
+     * <p>
+     * It verifies that the manager is initialized with the provided lists of objects and associations,
+     * and the system boundary name.
+     * </p>
+     */
     @Test
     public void testParameterizedConstructor() {
         ArrayList<UseCaseDiagramObject> objects = new ArrayList<>();
@@ -50,8 +73,12 @@ public class UseCaseDiagramManagerTest {
         assertEquals(associations, manager.getAssociations());
         assertEquals(systemBoundaryName, manager.getSystemBoundaryName());
     }
-
-    // Test Getters and Setters
+    /**
+     * Tests the getter and setter methods of the UseCaseDiagramManager class.
+     * <p>
+     * It verifies that objects, associations, and system boundary name can be correctly set and retrieved.
+     * </p>
+     */
     @Test
     public void testSettersAndGetters() {
         ArrayList<UseCaseDiagramObject> objects = new ArrayList<>();
@@ -68,7 +95,12 @@ public class UseCaseDiagramManagerTest {
         assertEquals(systemBoundaryName, manager.getSystemBoundaryName());
     }
 
-    // Test addObject method
+    /**
+     * Tests the addObject method of the UseCaseDiagramManager class.
+     * <p>
+     * It verifies that a UseCaseDiagramObject can be successfully added to the manager.
+     * </p>
+     */
     @Test
     public void testAddObject() {
         UseCaseDiagramObject object = new UseCaseDiagramObject("actor", 50, 100, "Actor1"); // Assuming the object has a no-args constructor
@@ -80,7 +112,12 @@ public class UseCaseDiagramManagerTest {
         assertEquals(object, manager.getObjects().get(0));
     }
 
-    // Test addAssociation method
+    /**
+     * Tests the addAssociation method of the UseCaseDiagramManager class.
+     * <p>
+     * It verifies that an Association can be successfully added to the manager.
+     * </p>
+     */
     @Test
     public void testAddAssociation() {
         Association association = new Association(new UseCaseDiagramObject("actor", 50, 100, "Actor1"), new UseCaseDiagramObject("actor", 50, 100, "Actor2"), "association"); // Assuming the object has a no-args constructor
@@ -99,6 +136,12 @@ public class UseCaseDiagramManagerTest {
     @Mock
     private Canvas canvas;
 
+    /**
+     * Tests the exportDiagramToImage method of the UseCaseDiagramManager class.
+     * <p>
+     * It verifies that the export to image functionality works correctly using a mock ExportImageService.
+     * </p>
+     */
     @Test
     public void testExportDiagramToImage() {
         // Create an instance of UseCaseDiagramManager

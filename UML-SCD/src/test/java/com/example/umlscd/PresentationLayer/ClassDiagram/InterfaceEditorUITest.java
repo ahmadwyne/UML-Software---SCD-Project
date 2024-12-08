@@ -1,10 +1,7 @@
 package com.example.umlscd.PresentationLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.InterfaceEditorManager;
-import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassDiagramManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.InterfaceEditorManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,11 +10,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.*;
 import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.api.FxRobot;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
+/**
+ * Test class for {@link InterfaceEditorUI}.
+ * <p>
+ * This class contains UI tests for the {@link InterfaceEditorUI} class, ensuring that
+ * functionality for adding, deleting methods, adding parameters, applying changes, and handling custom return types works correctly.
+ * </p>
+ */
 public class InterfaceEditorUITest extends ApplicationTest {
 
     private InterfaceEditorUI interfaceEditorUI;
@@ -66,12 +69,26 @@ public class InterfaceEditorUITest extends ApplicationTest {
         stage.show();
     }
 
+    /**
+     * Tests that the interface name field is initially empty.
+     * <p>
+     * This test verifies that when the {@link InterfaceEditorUI} is loaded, the
+     * interface name field is empty by default, indicating it is ready for user input.
+     * </p>
+     */
     @Test
     public void testInterfaceNameField() {
         // Test that the interface name field is empty initially
         assertTrue(interfaceNameField.getText().isEmpty());
     }
 
+    /**
+     * Tests the functionality of the "Add Method" button.
+     * <p>
+     * This test simulates the user input to add a method with a name, return type, and visibility.
+     * It verifies that the added method appears in the methods area of the interface editor UI.
+     * </p>
+     */
     @Test
     public void testAddMethodButton() {
         // Test adding a method
@@ -89,6 +106,13 @@ public class InterfaceEditorUITest extends ApplicationTest {
         assertTrue(methodsArea.getText().contains("myMethod()"));
     }
 
+    /**
+     * Tests the functionality of the "Delete Method" button.
+     * <p>
+     * This test first adds a method and then simulates the deletion of that method.
+     * It verifies that the method is successfully deleted and no longer appears in the methods area.
+     * </p>
+     */
     @Test
     public void testDeleteMethodButton() {
         // Add a method
@@ -116,6 +140,13 @@ public class InterfaceEditorUITest extends ApplicationTest {
         assertFalse(methodsArea.getText().contains("public methodToDelete()"));
     }
 
+    /**
+     * Tests the functionality of the "Add Parameter" button.
+     * <p>
+     * This test first adds a method, then simulates adding a parameter to that method.
+     * It verifies that the parameter is added and displayed correctly in the method's signature.
+     * </p>
+     */
     @Test
     public void testAddParameterButton() {
         // Add a method first
@@ -141,6 +172,13 @@ public class InterfaceEditorUITest extends ApplicationTest {
         assertTrue(methodsArea.getText().contains("param1"));
     }
 
+    /**
+     * Tests the functionality of the "Apply Changes" button.
+     * <p>
+     * This test simulates adding an interface name and a method, then applies changes using the
+     * "Apply Changes" button. It verifies that the changes are reflected in the interface editor UI.
+     * </p>
+     */
     @Test
     public void testApplyChangesButton() {
         // Test that applying changes updates the UML model (interface name and methods)
@@ -156,16 +194,21 @@ public class InterfaceEditorUITest extends ApplicationTest {
         clickOn(applyChangesButton);
 
         // Verify that the applied changes reflect in the model
-        // (This part depends on your specific method for verifying changes, adjust as needed)
-        assertEquals("TestInterface", interfaceEditorUI.interfaceNameField.getText());  // Assume getter exists
+        assertEquals("TestInterface", interfaceEditorUI.interfaceNameField.getText());
     }
 
+    /**
+     * Tests the functionality of selecting a custom return type.
+     * <p>
+     * This test simulates selecting the "Custom..." option in the return type dropdown
+     * and tests the interface's handling of custom return types.
+     * </p>
+     */
     @Test
     public void testCustomReturnTypeSelection() {
         // Test handling of custom return type
         clickOn(returnTypeDropdown);
         type(KeyCode.DOWN).type(KeyCode.DOWN);  // Select "Custom..."
         clickOn("Custom...");
-        // Assuming custom data type handling logic is added elsewhere in your code.
     }
 }

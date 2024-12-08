@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.ClasDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import javafx.scene.control.ComboBox;

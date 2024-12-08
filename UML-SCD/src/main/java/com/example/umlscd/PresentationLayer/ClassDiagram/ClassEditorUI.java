@@ -1,7 +1,7 @@
 package com.example.umlscd.PresentationLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassEditorManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassDiagramManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassEditorManager;
 import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -32,7 +32,7 @@ import javafx.util.Pair;
 public class ClassEditorUI {
 
     // UI Components from FXML
-    @FXML private VBox root; // Root node with fx:id="root"
+    @FXML private VBox root;
     @FXML
     TextField classNameField;
     @FXML
@@ -66,8 +66,6 @@ public class ClassEditorUI {
     @FXML
     Button editAttributeButton;
     @FXML private Button editMethodButton;
-
-
 
     // Internal state for managing class attributes, methods, and parameters
     ClassEditorManager classEditorManager;
@@ -282,6 +280,14 @@ public class ClassEditorUI {
         button.setStyle("-fx-background-color: #C0C0C0; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
     }
 
+    /**
+     * Applies a hover effect to a button when the mouse enters.
+     *
+     * <p>This method changes the style of the button to provide visual feedback to the user
+     * when they hover over it.</p>
+     *
+     * @param mouseEvent The {@code MouseEvent} triggered when the mouse enters the button area.
+     */
     public void applyHoverEffect1(MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #C0C0C0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.05; -fx-scale-y: 1.05;");
@@ -298,6 +304,14 @@ public class ClassEditorUI {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #AFAFAF; -fx-font-size: 12px;  -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
+
+    /**
+     * Removes the hover effect from a button when the mouse exits.
+     *
+     * <p>This method resets the style of the button to its default state when the mouse is no longer hovering over it.</p>
+     *
+     * @param mouseEvent The {@code MouseEvent} triggered when the mouse exits the button area.
+     */
     public void removeHoverEffect1(MouseEvent mouseEvent) {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #AFAFAF; -fx-font-size: 11px;  -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
@@ -328,6 +342,13 @@ public class ClassEditorUI {
         return root;
     }
 
+    /**
+     * Deletes an attribute from the list of attributes by prompting the user for the attribute's name.
+     *
+     * <p>This method displays a dialog that asks the user to input the name of the attribute they want
+     * to delete. After receiving the input, it removes the corresponding attribute from the list and updates
+     * the displayed list of attributes.</p>
+     */
     private void deleteAttribute() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Delete Attribute");
@@ -349,6 +370,13 @@ public class ClassEditorUI {
         });
     }
 
+    /**
+     * Deletes a method from the list of methods by prompting the user for the method's name.
+     *
+     * <p>This method displays a dialog that asks the user to input the name of the method they want
+     * to delete. After receiving the input, it removes the corresponding method from the list and updates
+     * the displayed list of methods.</p>
+     */
     private void deleteMethod() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Delete Method");
@@ -369,6 +397,17 @@ public class ClassEditorUI {
             methodsArea.setText(String.join("\n", updatedMethods));
          });
     }
+
+    /**
+     * Opens a dialog to allow the user to edit an existing attribute's details such as name, visibility, and data type.
+     *
+     * <p>This method displays a dialog where the user can input a new name, visibility, and data type for an existing
+     * attribute. The attribute's current details are pre-filled in the dialog, and the user can update the relevant fields.
+     * If a custom data type is selected, the user is prompted to enter a custom value.</p>
+     *
+     * <p>If the attribute is successfully updated, the changes are reflected in the attributes area. If the attribute
+     * cannot be found, an error message is displayed. A success dialog is shown if the update is successful.</p>
+     */
     private void editAttribute() {
         Dialog<AttributeDetails> dialog = new Dialog<>();
         dialog.setTitle("Edit Attribute");
@@ -492,8 +531,15 @@ public class ClassEditorUI {
         }
     }
 
-
-    // Helper class to encapsulate attribute details
+    /**
+     * Helper class to encapsulate the details of an attribute.
+     * <p>This class is used to store information about an attribute, including its old and new names, visibility,
+     * and data type. This is typically used when editing an attribute in a user interface, where users can update
+     * the attribute's properties.</p>
+     *
+     * <p>Instances of this class are passed around when editing attribute details, storing the necessary data to
+     * reflect the changes made to an attribute.</p>
+     */
     private static class AttributeDetails {
         String oldName;
         String newName;
@@ -508,7 +554,14 @@ public class ClassEditorUI {
         }
     }
 
-    // Parse visibility from the attribute string
+    /**
+     * Parse the visibility modifier from the attribute string.
+     * <p>This method examines the provided attribute string and returns a human-readable visibility string
+     * indicating the attribute's access level (public, private, or protected).</p>
+     *
+     * @param attribute The attribute string to parse.
+     * @return The visibility string (e.g., "+ public", "- private", "# protected").
+     */
     private String parseVisibility(String attribute) {
         if (attribute.startsWith("+")) return "+ public";
         if (attribute.startsWith("-")) return "- private";
@@ -516,7 +569,14 @@ public class ClassEditorUI {
         return "+ public"; // Default to public
     }
 
-    // Parse visibility symbol for saving the updated attribute
+    /**
+     * Parse the visibility symbol from a visibility string.
+     * <p>This method converts a human-readable visibility string into its corresponding symbol
+     * for saving the updated attribute (e.g., converting "+ public" to "+").</p>
+     *
+     * @param visibility The human-readable visibility string (e.g., "+ public").
+     * @return The corresponding visibility symbol (e.g., "+" for public).
+     */
     private String parseVisibilitySymbol(String visibility) {
         return switch (visibility) {
             case "+ public" -> "+";
@@ -526,13 +586,27 @@ public class ClassEditorUI {
         };
     }
 
-    // Parse data type from the attribute string
+    /**
+     * Parse the data type from the attribute string.
+     * <p>This method extracts and returns the data type part from an attribute string,
+     * assuming the format "visibility name : type". If the type is not found, it defaults to "String".</p>
+     *
+     * @param attribute The attribute string (e.g., "+ name : String").
+     * @return The data type (e.g., "String", "int", etc.). Defaults to "String" if no type is found.
+     */
     private String parseDataType(String attribute) {
         String[] parts = attribute.split(" : ");
         return parts.length > 1 ? parts[1].trim() : "String"; // Default to String
     }
 
-    // Parse attribute name from the attribute string
+    /**
+     * Parse the attribute name from the attribute string.
+     * <p>This method extracts the attribute name from an attribute string, ignoring the visibility and type.
+     * If the format is incorrect or the name is not found, it defaults to "attribute".</p>
+     *
+     * @param attribute The attribute string (e.g., "+ name : String").
+     * @return The attribute name (e.g., "name"). Defaults to "attribute" if no valid name is found.
+     */
     private String parseAttributeName(String attribute) {
         // Split the attribute by the space character
         String[] parts = attribute.split(" ");
@@ -550,7 +624,14 @@ public class ClassEditorUI {
         return "attribute"; // Default to "attribute"
     }
 
-    // Show error dialog
+    /**
+     * Show an error dialog with the specified title and content.
+     * <p>This method displays an error dialog with the provided title and content text,
+     * typically used for displaying error messages to the user.</p>
+     *
+     * @param title The title of the error dialog.
+     * @param content The content text to display in the dialog.
+     */
     private void showErrorDialog(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -559,7 +640,14 @@ public class ClassEditorUI {
         alert.showAndWait();  // Show the alert and wait for user to close it
     }
 
-    // Show success dialog
+    /**
+     * Show a success dialog with the specified title and content.
+     * <p>This method displays a success dialog with the provided title and content text,
+     * typically used for displaying confirmation or success messages to the user.</p>
+     *
+     * @param title The title of the success dialog.
+     * @param content The content text to display in the dialog.
+     */
     private void showSuccessDialog(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -568,7 +656,20 @@ public class ClassEditorUI {
         alert.showAndWait();
     }
 
-    // Edit method logic
+    /**
+     * Edit an existing method in the methods area.
+     * <p>This method displays a dialog allowing the user to edit the details of an existing method,
+     * including the method's name, visibility, return type, and parameters. Once the user provides the
+     * updated details, the method updates the method's information in the methods area.</p>
+     *
+     * <p>The method performs the following steps:</p>
+     * <ol>
+     *     <li>Displays a dialog for editing method details.</li>
+     *     <li>Pre-fills the dialog with the selected method's current details, if available.</li>
+     *     <li>Validates user input and updates the method in the methods area if found.</li>
+     *     <li>Shows a success or error message based on the result.</li>
+     * </ol>
+     */
     private void editMethod() {
         Dialog<MethodsDetails> dialog = new Dialog<>();
         dialog.setTitle("Edit Method");
@@ -711,7 +812,11 @@ public class ClassEditorUI {
         }
     }
 
-    // MethodsDetails class now includes parameters as well
+    /**
+     * Helper class to encapsulate method details, including parameters.
+     * <p>This class stores the details of a method, including its old name, new name, visibility, return type,
+     * and parameters. It is used to manage method updates during the editing process in the `editMethod` method.</p>
+     */
     private static class MethodsDetails {
         String oldName;
         String newName;
@@ -727,7 +832,15 @@ public class ClassEditorUI {
             this.parameters = parameters;
         }
     }
-    // Parse method parameters from the method signature string
+
+    /**
+     * Parse method parameters from the method signature string.
+     * <p>This method extracts the parameters part of the method signature, which is expected to be enclosed in parentheses.
+     * If no parameters are found or if the format is incorrect, it returns an empty string.</p>
+     *
+     * @param method The method signature string, e.g., "public void someMethod(int id, String name)".
+     * @return A string containing the method parameters, e.g., "int id, String name". Returns an empty string if no parameters are found.
+     */
     private String parseParameters(String method) {
         // Remove any leading/trailing whitespace
         method = method.trim();
@@ -745,8 +858,14 @@ public class ClassEditorUI {
         return "";
     }
 
-
-    // Parse return type from the method signature string
+    /**
+     * Parse the return type from the method signature string.
+     * <p>This method extracts the return type from the method signature, which is expected to be after the closing parenthesis of the method parameters.
+     * If no valid return type is found, it defaults to "void".</p>
+     *
+     * @param method The method signature string, e.g., "public void someMethod(int id, String name)".
+     * @return A string representing the return type of the method, e.g., "void", "int", "String".
+     */
     private String parseReturnType(String method) {
         // Ensure the method is not empty and has valid format
         if (method == null || method.isEmpty()) {
@@ -770,7 +889,15 @@ public class ClassEditorUI {
         }
         return "void";  // Return default value if the method signature is not in expected format
     }
-    // Parse method name from the method signature string
+
+    /**
+     * Parse the method name from the method signature string.
+     * <p>This method extracts the name of the method from the method signature string. The method name is expected to appear
+     * before the opening parenthesis `(`.</p>
+     *
+     * @param method The method signature string, e.g., "public void someMethod(int id, String name)".
+     * @return The method name, e.g., "someMethod".
+     */
     private String parseMethodName(String method) {
         // Trim leading/trailing whitespaces
         method = method.trim();

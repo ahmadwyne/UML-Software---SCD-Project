@@ -11,15 +11,31 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Handles the generation of Java code from the UML diagram and saves it to a text file.
+ * <h1>Class Diagram Code Generator</h1>
+ *
+ * <p>The {@code ClassDiagramCodeGenerator} class is responsible for generating Java code based on a UML class diagram.
+ * It generates Java classes and interfaces, including their relationships (inheritance, associations, aggregations, compositions),
+ * attributes, and methods, and saves the generated code to a specified file.</p>
+ *
+ * <p>This class is designed to interact with the UML class diagram model, specifically {@link ClassDiagramD},
+ * and generates code that accurately reflects the diagram's structure. It handles code generation for both
+ * classes and interfaces, along with their relationships and method definitions, based on the information in the diagram.</p>
+ *
+ * <p><b>Authors:</b> Ahmad Wyne, Wahaj Asif, Muhammad Muneeb</p>
+ *
+ * <p><b>Version:</b> 1.0</p>
+ * <p><b>Since:</b> 2024-12-03</p>
  */
 public class ClassDiagramCodeGenerator {
 
     /**
-     * Generates Java code for all classes, interfaces, and relationships in the diagram and saves it to a file.
+     * Generates Java code for classes and interfaces in the given UML diagram and saves it to a specified file.
      *
-     * @param diagram    The UML class diagram model.
-     * @param outputFile The file to save the generated code.
+     * <p>The method iterates through the diagram's classes and interfaces, generating code for each, including relationships,
+     * attributes, and methods. The generated code is written to the provided output file.</p>
+     *
+     * @param diagram    The UML class diagram containing the classes and interfaces.
+     * @param outputFile The file where the generated Java code will be saved.
      */
     public void generateCodeFiles(ClassDiagramD diagram, String outputFile) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
@@ -49,11 +65,15 @@ public class ClassDiagramCodeGenerator {
     }
 
     /**
-     * Generates the class code including its relationships (like inheritance or associations).
+     * Generates Java code for a class, including its inheritance, associations, aggregations, and compositions.
      *
-     * @param umlClass      The UML class box.
-     * @param relationships The relationships for the UML diagram.
-     * @return The Java code for the class, including its relationships.
+     * <p>This method generates the class definition, handling relationships such as inheritance (extends or implements),
+     * and associations, aggregations, or compositions, based on the provided UML class and relationships.</p>
+     *
+     * @param umlClass    The UML class box representing the class to generate code for.
+     * @param relationships The list of relationships related to the UML diagram.
+     * @param diagram     The UML diagram containing all classes and relationships.
+     * @return The Java code for the class with relationships included.
      */
     private String generateClassWithRelationships(UMLClassBox umlClass, List<UMLRelationship> relationships, ClassDiagramD diagram) {
         StringBuilder classCode = new StringBuilder();
@@ -76,28 +96,18 @@ public class ClassDiagramCodeGenerator {
                 } else {
                     classCode.append(" extends ").append(parentName);
                 }
-
                 hasInheritance = true;
             }
         }
-        // Open the class body
-        classCode.append(" {");
-        // Handle inheritance (extends)
-        /*for (UMLRelationship relationship : relationships) {
-            if (relationship.getType().equalsIgnoreCase("Inheritance") &&
-                    relationship.getStartElementName().equals(umlClass.getName())) {
-                classCode.append(" extends ").append(relationship.getEndElementName());
-            }
-        }
 
         // Open the class body
-        classCode.append(" {");*/
+        classCode.append(" {");
 
         // Handle associations, aggregations, and compositions
         for (UMLRelationship relationship : relationships) {
             if (relationship.getStartElementName().equals(umlClass.getName())) {
                 String associationType = relationship.getEndElementName(); // Associated class name
-                String fieldName = relationship.getStartElementName();//Character.toLowerCase(associationType.charAt(0)) + associationType.substring(1);
+                String fieldName = relationship.getStartElementName();
 
                 if (relationship.getType().equalsIgnoreCase("Association")) {
                     classCode.append("\n    private ").append(associationType).append(" ").append(fieldName).append(";");
@@ -115,10 +125,14 @@ public class ClassDiagramCodeGenerator {
 
 
     /**
-     * Generates the attributes and methods for the class.
+     * Generates the Java code for the attributes and methods of a given UML class.
      *
-     * @param umlClass The UML class box.
-     * @return The Java code for the attributes and methods.
+     * <p>This method processes the attributes and methods of the provided UML class,
+     * formatting them according to Java syntax. It handles visibility, parameterization,
+     * and method signatures, generating appropriate code for each attribute and method.</p>
+     *
+     * @param umlClass The UML class box containing the attributes and methods.
+     * @return The Java code representing the attributes and methods of the class.
      */
     private String generateAttributesAndMethods(UMLClassBox umlClass) {
         StringBuilder classBody = new StringBuilder();
@@ -200,6 +214,8 @@ public class ClassDiagramCodeGenerator {
     /**
      * Convert visibility symbols to Java visibility keywords.
      *
+     * <p>Function to return the converted visibility for code.<p/>
+     *
      * @param visibility The visibility symbol ('+', '-', '#')
      * @return The corresponding Java visibility keyword.
      */
@@ -216,12 +232,15 @@ public class ClassDiagramCodeGenerator {
         }
     }
 
-
     /**
-     * Generates the Java code for interfaces.
+     * Generates the Java code for a given UML interface, including its methods.
      *
-     * @param umlInterface The UML interface.
-     * @return The Java code for the interface.
+     * <p>This method processes the methods of the provided UML interface, formatting them
+     * according to Java syntax. It handles method visibility, parameters, and return types
+     * to generate the appropriate code.</p>
+     *
+     * @param umlInterface The UML interface box containing the methods.
+     * @return The Java code representing the interface, including its methods.
      */
     private String generateInterfaceCode(UMLInterfaceBox umlInterface) {
         StringBuilder interfaceCode = new StringBuilder();

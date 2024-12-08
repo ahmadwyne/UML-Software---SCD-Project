@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * <p><b>Version:</b> 1.0</p>
  * <p><b>Since:</b> 2024-12-03</p>
  */
-@JsonIgnoreProperties(ignoreUnknown = true) // This will ignore unrecognized fields during deserialization
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UseCaseDiagramObject implements Serializable {
     /**
      * Serial version UID for serialization compatibility.
@@ -273,11 +273,20 @@ public class UseCaseDiagramObject implements Serializable {
         return type;
     }
 
-
+    /**
+     * Sets a new name for the object and updates the name editing text field if it exists.
+     *
+     * @param type The new type to assigned to the object.
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Checks if the nameField for the object is visible.
+     *
+     * @return A {@code boolean} indicating the visibility of nameField
+     */
     public boolean isNameFieldVisible() {
         return nameFieldVisible;
     }

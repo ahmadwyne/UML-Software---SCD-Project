@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.ClasDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
@@ -17,7 +17,18 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * Manages the creation and rendering of Composition relationships.
+ * <h1>Composition Manager</h1>
+ *
+ * <p>The {@code CompositionManager} is responsible for creating and rendering composition relationships between
+ * classes in a UML class diagram. This class handles the creation of composition lines, multiplicity labels, and
+ * relationship labels, as well as dynamically updating these elements when classes are moved.</p>
+ *
+ * <p>It inherits from {@link ClassDiagramRelationsManager} and implements the abstract method {@link #createRelationship},
+ * which is used to create a  composition relationship between two classes.</p>
+ *
+ * <p><b>Authors:</b> Ahmad Wyne, Wahaj Asif, Muhammad Muneeb</p>
+ * <p><b>Version:</b> 1.0</p>
+ * <p><b>Since:</b> 2024-12-04</p>
  */
 public class CompositionManager extends ClassDiagramRelationsManager {
 
@@ -25,9 +36,11 @@ public class CompositionManager extends ClassDiagramRelationsManager {
     private UMLRelationshipBox lastRelationshipBox;
 
     /**
-     * Constructor that initializes the CompositionManager with a ClassDiagramManager.
+     * Constructs an {@code CompositionManager} instance.
+     * <p>This constructor initializes the manager with the specified {@link ClassDiagramManager} and enables the
+     * composition mode by default.</p>
      *
-     * @param manager The ClassDiagramManager instance.
+     * @param manager The {@link ClassDiagramManager} instance managing the overall diagram.
      */
     public CompositionManager(ClassDiagramManager manager) {
         this.classDiagramManager = manager;
@@ -36,6 +49,9 @@ public class CompositionManager extends ClassDiagramRelationsManager {
 
     /**
      * Creates a composition relationship between two UML elements.
+     * <p>This method calculates the closest boundary points of the two given {@code VBox} elements representing the
+     * classes and creates a composition line between them. It also creates labels for the composition name and the
+     * multiplicity of both ends of the relationship. The line and labels are added to the {@code drawingPane}.</p>
      *
      * @param start            The starting UML element (source).
      * @param end              The ending UML element (target).
@@ -147,23 +163,37 @@ public class CompositionManager extends ClassDiagramRelationsManager {
         System.out.println("Created composition: " + compositionName + " between " + getElementName(start) + " and " + getElementName(end));
     }
 
-private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
-    textElement.setOnMouseClicked(event -> {
-        if (event.getClickCount() == 2) { // Double-click to edit
-            TextInputDialog dialog = new TextInputDialog(textElement.getText());
-            dialog.setTitle(dialogTitle);
-            dialog.setHeaderText(null);
-            dialog.setContentText("Enter new value:");
+    /**
+     * This function add a dialog to edit composition name and multiplicity labels.
+     * <p>Sets up a double-click event handler on the given <code>Text</code> element to display a text input dialog for editing the text value.
+     * When the user double-clicks the <code>Text</code> element, a dialog is shown to allow them to enter a new value.
+     * If the user enters a new value and presses "OK", the provided <code>onSave</code> consumer is called with the new value.</p>
+     *
+     * @param textElement The <code>Text</code> element that will trigger the edit dialog on double-click.
+     * @param dialogTitle The title of the text input dialog.
+     * @param onSave A <code>Consumer&lt;String&gt;</code> that will be called with the new value entered by the user. This consumer allows
+     *               for custom handling of the new value (e.g., saving it or updating the UI).
+     */
+    private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
+        textElement.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Double-click to edit
+                TextInputDialog dialog = new TextInputDialog(textElement.getText());
+                dialog.setTitle(dialogTitle);
+                dialog.setHeaderText(null);
+                dialog.setContentText("Enter new value:");
 
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(newValue -> {
-                onSave.accept(newValue);
-            });
-        }
-    });
-}
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(newValue -> {
+                    onSave.accept(newValue);
+                });
+            }
+        });
+    }
+
     /**
      * Creates a composition relationship from a UMLRelationship model object during deserialization.
+     * <p>This method recreates a composition relationship using data from a {@link UMLRelationship} object and
+     * adds the elements (line and labels) to the specified {@code drawingPane}.</p>
      *
      * @param umlRelationship The UMLRelationship data.
      * @param drawingPane     The pane where the relationship is drawn.
@@ -273,6 +303,8 @@ private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer
 
     /**
      * Retrieves the name of the UML element from the VBox.
+     * <p>This method extracts the name of the UML element by checking the first label in the {@code VBox}, which
+     * typically contains the name of the class or interface.</p>
      *
      * @param box The VBox representing the UML element.
      * @return The name of the element.
@@ -307,6 +339,8 @@ private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer
 
     /**
      * Adds dynamic listeners to update the composition line and diamond when classes are moved.
+     * <p>This method attaches listeners to the {@code VBox} elements representing the classes involved in the
+     * composition. The listeners update the position of the composition line and labels when the classes are moved.</p>
      *
      * @param line                   The composition line.
      * @param diamond                The composition diamond.
@@ -355,6 +389,9 @@ private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer
 
     /**
      * Updates the position of the composition line and diamond when either class is moved.
+     * <p>This method recalculates the closest boundary points between the two {@code VBox} elements representing
+     * the classes, updates the position of the composition line and diamond, and rebinds the labels (composition name and
+     * multiplicity) to the updated line.</p>
      *
      * @param line                   The composition line.
      * @param diamond                The composition diamond.
@@ -392,125 +429,3 @@ private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer
         bindMultiplicityLabelToLine(endMultiplicityText, line, false);
     }
 }
-
-    
-    /*@Override
-    public void createRelationship(VBox start, VBox end, Pane drawingPane, String compositionName, String startMultiplicity, String endMultiplicity) {
-        // Disable association mode immediately after starting the process
-        disableCompositionMode();
-
-        // Set default values if fields are empty
-        if (compositionName == null || compositionName.isEmpty()) compositionName = "Aggregation";
-        if (startMultiplicity == null || startMultiplicity.isEmpty()) startMultiplicity = "1";
-        if (endMultiplicity == null || endMultiplicity.isEmpty()) endMultiplicity = "1";
-
-        // Find the closest boundary points between the two classes
-        Point startPoint = getClosestBoundaryPoint(start, end);
-        Point endPoint = getClosestBoundaryPoint(end, start);
-
-        // Create the diamond (aggregation) shape
-        Polygon diamond = new Polygon();
-        diamond.getPoints().addAll(
-                0.0, 0.0,  // top
-                10.0, -10.0,  // top-left
-                20.0, 0.0,  // bottom-right
-                10.0, 10.0  // bottom-left
-        );
-        diamond.setFill(Color.BLACK);
-        diamond.setStroke(Color.BLACK); // Optionally add a border to the diamond
-
-        // Attach diamond to the second class boundary (tip to the class boundary)
-        double secondElementCenterX = end.getLayoutX() + end.getWidth() / 2;
-        double secondElementCenterY = end.getLayoutY() + end.getHeight() / 2;
-        double tipX = secondElementCenterX;
-        double tipY = end.getLayoutY(); // Position tip at the top of the second class
-
-        // Offset the diamond to ensure its tip touches the class boundary (not center)
-        diamond.setLayoutX(tipX - 10); // Offset to position the diamond correctly
-        diamond.setLayoutY(tipY - 10); // Offset to position the diamond correctly
-
-        // Create the line connecting the first selected element (source) and the diamond (aggregation point)
-        Line compositionLine = new Line();
-        compositionLine.setStartX(start.getLayoutX() + start.getWidth() / 2); // Start at the center of the first class
-        compositionLine.setStartY(start.getLayoutY() + start.getHeight() / 2);
-        compositionLine.setEndX(tipX); // End at the diamond's tip
-        compositionLine.setEndY(tipY); // End at the diamond's tip
-
-        // Add the diamond and line to the drawing pane
-        drawingPane.getChildren().addAll(diamond, compositionLine);
-
-        // Create the aggregation label
-        Text compositionLabel = new Text(compositionName);
-        compositionLabel.setStyle("-fx-font-style: italic; -fx-font-size: 12;");
-        bindAssociationLabelToLine(compositionLabel, compositionLine);
-        drawingPane.getChildren().add(compositionLabel);
-
-        // Create multiplicity labels
-        Text startMultiplicityText = new Text(startMultiplicity);
-        Text endMultiplicityText = new Text(endMultiplicity);
-        startMultiplicityText.setStyle("-fx-font-size: 10;");
-        endMultiplicityText.setStyle("-fx-font-size: 10;");
-        bindMultiplicityLabelToLine(startMultiplicityText, compositionLine, true);
-        bindMultiplicityLabelToLine(endMultiplicityText, compositionLine, false);
-        drawingPane.getChildren().addAll(startMultiplicityText, endMultiplicityText);
-
-        // Add listeners to update the line and diamond when either class is moved
-        addDynamicUpdateListener(compositionLine, diamond, start, end, compositionLabel, startMultiplicityText, endMultiplicityText);
-    }
-
-    // Add listeners to update the line and diamond dynamically when classes are moved
-    private void addDynamicUpdateListener(Line line, Polygon diamond, VBox start, VBox end, Text compositionLabel, Text startMultiplicityText, Text endMultiplicityText) {
-        // Update position when the start or end class is moved
-        start.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLineAndDiamondPosition(line, diamond, start, end, compositionLabel, startMultiplicityText, endMultiplicityText));
-        start.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndDiamondPosition(line, diamond, start, end, compositionLabel, startMultiplicityText, endMultiplicityText));
-        end.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLineAndDiamondPosition(line, diamond, start, end, compositionLabel, startMultiplicityText, endMultiplicityText));
-        end.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLineAndDiamondPosition(line, diamond, start, end, compositionLabel, startMultiplicityText, endMultiplicityText));
-    }
-
-    // Update the line and diamond's position when either class is moved
-    private void updateLineAndDiamondPosition(Line line, Polygon diamond, VBox start, VBox end, Text compositionLabel, Text startMultiplicityText, Text endMultiplicityText) {
-        // Recalculate the closest boundary points
-        Point startPoint = getClosestBoundaryPoint(start, end);
-        Point endPoint = getClosestBoundaryPoint(end, start);
-
-        // Update the line's position
-        line.setStartX(startPoint.getX());
-        line.setStartY(startPoint.getY());
-
-        // Position the line end at the tip of the diamond
-        double secondElementCenterX = end.getLayoutX() + end.getWidth() / 2;
-        double tipX = secondElementCenterX;
-        double tipY = end.getLayoutY(); // Tip should be attached to the class boundary
-
-        line.setEndX(tipX);
-        line.setEndY(tipY);
-
-        // Update the diamond position, keeping its tip attached to the end class boundary
-        diamond.setLayoutX(tipX - 10); // Offset to position the diamond correctly
-        diamond.setLayoutY(tipY - 10); // Offset to position the diamond correctly
-
-        // Rebind the association label and multiplicity labels to the new line
-        bindAssociationLabelToLine(compositionLabel, line);
-        bindMultiplicityLabelToLine(startMultiplicityText, line, true);
-        bindMultiplicityLabelToLine(endMultiplicityText, line, false);
-    }
-}
-
-// Update the line and labels when either class is moved
-    /*private void updateLinePosition(Line line, VBox start, VBox end, Text associationLabel, Text startMultiplicityText, Text endMultiplicityText) {
-        // Recalculate the closest boundary points
-        Point startPoint = getClosestBoundaryPoint(start, end);
-        Point endPoint = getClosestBoundaryPoint(end, start);
-
-        // Update the line's position
-        line.setStartX(startPoint.getX());
-        line.setStartY(startPoint.getY());
-        line.setEndX(endPoint.getX());
-        line.setEndY(endPoint.getY());
-
-        // Rebind the association label and multiplicity labels to the new line
-        bindAssociationLabelToLine(associationLabel, line);
-        bindMultiplicityLabelToLine(startMultiplicityText, line, true);
-        bindMultiplicityLabelToLine(endMultiplicityText, line, false);
-    }
-}*/

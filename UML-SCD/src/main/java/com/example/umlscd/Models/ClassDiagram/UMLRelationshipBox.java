@@ -368,6 +368,11 @@ public class UMLRelationshipBox {
         );
     }
 
+    /**
+     * Sets the Association Name for the relation
+     *
+     * @param newName A {@code String} specifying the new name for the relationship
+     */
     public void setAssociationName(String newName) {
         this.name=newName;
     }

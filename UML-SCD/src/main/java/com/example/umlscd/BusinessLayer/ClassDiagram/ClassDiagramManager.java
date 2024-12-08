@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.ClasDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
 import com.example.umlscd.Models.ClassDiagram.*;
 import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
@@ -817,7 +817,6 @@ public class ClassDiagramManager {
                 return;
             }
         }
-        // Handle relationships if necessary
     }
 
     /**
@@ -873,8 +872,11 @@ public class ClassDiagramManager {
         return null;
     }
 
-    // Track the currently highlighted box
+    /**
+     *  Track the currently highlighted box
+     */
     private VBox currentHighlightedBox = null;
+
     /**
      * Retrieves a UML interface box by its associated {@code VBox}.
      *
@@ -942,7 +944,6 @@ public class ClassDiagramManager {
                 AssociationManager associationManager = new AssociationManager(this);
                 associationManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
                 break;
-            // Uncomment and implement other relationship types as needed
             case "aggregation":
                 AggregationManager aggregationManager = new AggregationManager(this);
                 aggregationManager.createRelationshipFromModel(umlRelationship, uiController.getDrawingPane());
@@ -1161,8 +1162,6 @@ public class ClassDiagramManager {
 
         // Take a snapshot of the drawing pane
         SnapshotParameters params = new SnapshotParameters();
-        // Optionally, set a background color if needed
-        // params.setFill(Color.TRANSPARENT);
         image = drawingPane.snapshot(params, image);
 
         // Convert WritableImage to BufferedImage
@@ -1186,90 +1185,15 @@ public class ClassDiagramManager {
         ImageIO.write(bufferedImage, format, file);
     }
 
-
-    /*// Method to delete the selected element (class) and any related relationships
-    public void deleteSelectedElement(VBox selectedElement) {
-        if (selectedElement != null) {
-            String className = selectedElement.getId();  // Assuming each VBox has a unique ID (class name)
-
-            // Remove the class from the drawing pane
-            uiController.getDrawingPane().getChildren().remove(selectedElement);
-
-            // Remove the class from the classBoxMap
-            classBoxMap.remove(className);
-            elements.remove(selectedElement);
-
-            // Remove the class from the model (classDiagram) if it's part of the model
-            classDiagram.removeRelationshipsByClassName(className);
-
-            // Optionally, remove related relationships if any
-            deleteRelatedRelationships(className);
-
-            // You can add a confirmation or alert that the class has been deleted
-            //showDeletionConfirmation(className);
-        }
-
-    }
-
-    private void showDeletionConfirmation(String className) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Class " + className + " and its related relationships have been deleted.", ButtonType.OK);
-        alert.showAndWait();
-    }
-
-    private void deleteRelatedRelationships(String className) {
-        // Collect relationships to remove
-        List<UMLRelationship> relationshipsToRemove = classDiagram.getRelationships().stream()
-                .filter(relationship -> relationship.getStartElementName().equals(className)
-                        || relationship.getEndElementName().equals(className))
-                .collect(Collectors.toList());
-
-        // Remove each relationship from the diagram and UI
-        for (UMLRelationship relationship : relationshipsToRemove) {
-            // Remove the visual representation
-            String visualElement = relationship.getType(); // Assuming getType() returns the Line/Node for the UI.
-            if (visualElement != null) {
-                uiController.getDrawingPane().getChildren().remove(visualElement);
-            }
-
-            // Remove the relationship from the data model
-            classDiagram.getRelationships().remove(relationship);
-        }
-    }
-
-
-    public void deleteSelectedRelationship(Line line) {
-        System.out.println("Attempting to delete line: " + line);
-        uiController.getDrawingPane().getChildren().remove(line); // Remove from UI
-        // Additional cleanup logic for labels or relationships
-    }
-
-    public void deleteSelectedRelationship(Node selectedRelationship) {
-        if (selectedRelationship == null) {
-            return; // No relationship selected
-        }
-
-        // Find and remove the corresponding UMLRelationship
-        UMLRelationship toRemove = null;
-        for (UMLRelationship relationship : classDiagram.getRelationships()) {
-            if (relationship.getType().equals(selectedRelationship)) {
-                toRemove = relationship;
-                break;
-            }
-        }
-
-        if (toRemove != null) {
-            // Remove the visual representation
-            uiController.getDrawingPane().getChildren().remove(selectedRelationship);
-
-            // Remove from the data model
-            classDiagram.getRelationships().remove(toRemove);
-
-            // Optional: Show confirmation
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Relationship deleted successfully.", ButtonType.OK);
-            alert.showAndWait();
-        }
-    }*/
-
+    /**
+     * Deletes the selected element (class or interface) from the UI and data model,
+     * and removes any associated relationships.
+     *
+     * <p>If the element type cannot be determined or no element is selected, no action is taken.</p>
+     * <p>Triggers an object explorer update callback, if provided.</p>
+     *
+     * @param selectedElement The {@link VBox} containing the element to delete, with its name in a label.
+     */
     public void deleteSelectedElement(VBox selectedElement) {
         if (selectedElement == null) {
             return; // No element selected
@@ -1319,6 +1243,14 @@ public class ClassDiagramManager {
         if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
 
+    /**
+     * Deletes relationships related to the specified element from the UI and data model.
+     *
+     * <p>Relationships are identified by matching the element name to either the start or end element.</p>
+     * <p>If an object explorer update callback is provided, it is triggered after the deletion.</p>
+     *
+     * @param elementName The name of the element whose related relationships are to be deleted.
+     */
     private void deleteRelatedRelationships(String elementName) {
         // Collect relationships to remove
         List<UMLRelationship> relationshipsToRemove = classDiagram.getRelationships().stream()
@@ -1337,5 +1269,4 @@ public class ClassDiagramManager {
         // Trigger Object Explorer update
         if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
-
 }
