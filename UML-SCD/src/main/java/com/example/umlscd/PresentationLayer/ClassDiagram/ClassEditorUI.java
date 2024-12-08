@@ -33,29 +33,45 @@ public class ClassEditorUI {
 
     // UI Components from FXML
     @FXML private VBox root; // Root node with fx:id="root"
-    @FXML private TextField classNameField;
-    @FXML private TextArea attributesArea;
-    @FXML private ComboBox<String> dataTypeDropdown;
-    @FXML private ComboBox<String> visibilityDropdown;
-    @FXML private TextField attributeNameField;
-    @FXML private TextArea methodsArea;
-    @FXML private ComboBox<String> returnTypeDropdown;
-    @FXML private ComboBox<String> methodVisibilityDropdown;
-    @FXML private TextField methodNameField;
-    @FXML private Button addAttributeButton;
-    @FXML private Button addMethodButton;
-    @FXML private Button addParameterButton;
-    @FXML private Button applyChangesButton;
-    @FXML private Button deleteAttributeButton;
-    @FXML private Button deleteMethodButton;
-    @FXML private Button editAttributeButton;
+    @FXML
+    TextField classNameField;
+    @FXML
+    TextArea attributesArea;
+    @FXML
+    ComboBox<String> dataTypeDropdown;
+    @FXML
+    ComboBox<String> visibilityDropdown;
+    @FXML
+    TextField attributeNameField;
+    @FXML
+    TextArea methodsArea;
+    @FXML
+    ComboBox<String> returnTypeDropdown;
+    @FXML
+    ComboBox<String> methodVisibilityDropdown;
+    @FXML
+    TextField methodNameField;
+    @FXML
+    Button addAttributeButton;
+    @FXML
+    Button addMethodButton;
+    @FXML
+    Button addParameterButton;
+    @FXML
+    Button applyChangesButton;
+    @FXML
+    Button deleteAttributeButton;
+    @FXML
+    Button deleteMethodButton;
+    @FXML
+    Button editAttributeButton;
     @FXML private Button editMethodButton;
 
 
 
     // Internal state for managing class attributes, methods, and parameters
-    private ClassEditorManager classEditorManager;
-    private List<String> currentParameters = new ArrayList<>();
+    ClassEditorManager classEditorManager;
+    List<String> currentParameters = new ArrayList<>();
     private ClassDiagramManager classDiagramManager;
 
     /**
@@ -363,9 +379,9 @@ public class ClassEditorUI {
 
         // Text fields for old and new attribute names
         TextField oldAttributeField = new TextField();
-        oldAttributeField.setPromptText("Existing Attribute Name");
+        oldAttributeField.setPromptText("Existing Attribute");
         TextField newAttributeField = new TextField();
-        newAttributeField.setPromptText("Updated Attribute Name");
+        newAttributeField.setPromptText("Updated Attribute");
 
         // Dropdowns for visibility and data type with initial placeholder values
         ComboBox<String> visibilityDropdown = new ComboBox<>();
@@ -533,6 +549,7 @@ public class ClassEditorUI {
         // Default case if the format is not as expected
         return "attribute"; // Default to "attribute"
     }
+
     // Show error dialog
     private void showErrorDialog(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
