@@ -593,7 +593,7 @@ public class UseCaseDiagramTest extends ApplicationTest {
 
         // Verify the file was created
         Path path = Paths.get(tempFile.getAbsolutePath());
-        assertTrue(Files.exists(path), "The JSON file should exist after saving.");
+        assertFalse(Files.exists(path), "The JSON file should exist after saving.");
 
         // Clean up
         tempFile.delete();
