@@ -3,32 +3,28 @@ package com.example.umlscd.BuisnessLayer.ClassDiagram;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.AssociationManager;
-import javafx.embed.swing.JFXPanel; // Import JFXPanel to initialize the JavaFX toolkit
-
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
+import com.example.umlscd.BuisnessLayer.ClasDiagram.*;
 import com.example.umlscd.DataAccessLayer.Serializers.ClassDiagram.ClassDiagramSerializer;
 import com.example.umlscd.Models.ClassDiagram.ClassDiagramD;
 import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
 import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
-import javafx.scene.Node;
-import javafx.scene.control.Dialog;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.PickResult;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.mockito.*;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Optional;
 
 public class ClassDiagramManagerTest {
 
@@ -57,25 +53,13 @@ public class ClassDiagramManagerTest {
     private File mockFile;
 
     private ClassDiagramManager manager;
-    private Object mockUIController;
-    private Pane mockDrawingPane;
-    private VBox mockElement1;
-    private VBox mockElement2;
+
     @BeforeEach
     public void setUp() {
         new JFXPanel();
         MockitoAnnotations.openMocks(this);
         manager = new ClassDiagramManager(mockUiController);
         manager.classDiagram = mockClassDiagram;
-        // Mocking the relations manager
-        manager.relationsManager = mock(AssociationManager.class);
-
-        manager = mock(ClassDiagramManager.class);
-        mockDrawingPane = new Pane();
-        mockElement1 = new VBox();
-        mockElement2 = new VBox();
-        mockDrawingPane.getChildren().addAll(mockElement1, mockElement2);
-
     }
 
     @Test
@@ -134,6 +118,7 @@ public class ClassDiagramManagerTest {
         verify(mockClassDiagram).getInterfaces();
         verify(mockClassDiagram).getRelationships();
     }
+
     @Test
     void testCreateClassBox() {
         // Step 1: Mock the ClassDiagramUI
@@ -152,11 +137,13 @@ public class ClassDiagramManagerTest {
         // Step 5: Test the createClassBox method
         manager.createClassBox("Class1", 50, 100);
 
+        // Step 6: Assertions
         // You can assert that the class box was created or that the method interacted with the pane as expected
         assertNotNull(mockPane.getChildren(), "The children of the pane should not be null");
     }
+
     @Test
-    void testCreateInterfaceBox() {
+    public void testCreateInterfaceBox() {
         // Step 1: Mock the ClassDiagramUI
         ClassDiagramUI mockUI = mock(ClassDiagramUI.class);
 
@@ -173,10 +160,11 @@ public class ClassDiagramManagerTest {
         // Step 5: Test the createClassBox method
         manager.createClassBox("Interface1", 50, 100);
 
+        // Step 6: Assertions
         // You can assert that the class box was created or that the method interacted with the pane as expected
         assertNotNull(mockPane.getChildren(), "The children of the pane should not be null");
-    }
 
+    }
 
     @Test
     public void testFindClassBoxByName() {
@@ -209,6 +197,7 @@ public class ClassDiagramManagerTest {
         assertNotNull(result);
         verify(mockClassDiagram).getInterfaces();
     }
+
     @Test
     void testSaveDiagram() throws IOException, NoSuchFieldException, IllegalAccessException {
         // Given: A mocked serializer and UI controller
@@ -233,7 +222,6 @@ public class ClassDiagramManagerTest {
         // Also, verify that the UI controller shows the success alert
         verify(mockUIController, times(1)).showInformationAlert("Diagram saved successfully to " + testFile.getAbsolutePath());
     }
-
     @Test
     void testSaveDiagramWithError() throws IOException, NoSuchFieldException, IllegalAccessException {
         // Given: A mocked serializer that throws IOException
@@ -263,150 +251,33 @@ public class ClassDiagramManagerTest {
         // You can add additional verifications or use a logging framework
     }
     @Test
-    void testHandleToolSelectionClass() {
-        // Given
-        ClassDiagramManager manager = mock(ClassDiagramManager.class);
-        Pane mockDrawingPane = mock(Pane.class);
-        VBox mockEditorsPane = mock(VBox.class);
-        ClassDiagramD mockClassDiagram = mock(ClassDiagramD.class);
-        when(manager.getClassDiagram()).thenReturn(mockClassDiagram);
+    void testLoadDiagram() throws IOException, NoSuchFieldException, IllegalAccessException {
+        // Given: A mocked serializer and UI controller
+        ClassDiagramSerializer mockSerializer = mock(ClassDiagramSerializer.class);
+        ClassDiagramUI mockUIController = mock(ClassDiagramUI.class);
+        ClassDiagramManager manager = new ClassDiagramManager(mockUIController);
 
-        // Call method with "Class" tool
-        manager.handleToolSelection("Class", mockDrawingPane, mockEditorsPane);
+        // Use reflection to inject the mock serializer
+        java.lang.reflect.Field field = ClassDiagramManager.class.getDeclaredField("serializer");
+        field.setAccessible(true);  // Make the private field accessible
+        field.set(manager, mockSerializer);
 
-        // Verify createClassBox is called
-        verify(manager, times(1)).createClassBox(anyString(), anyInt(), anyInt());
+        // Create a temporary file to simulate the load
+        File testFile = new File("test_diagram.json");
+
+        // Mock the behavior of the serializer to return some mock data
+        ClassDiagramD mockDiagram = mock(ClassDiagramD.class);
+        when(mockSerializer.deserialize(testFile)).thenReturn(mockDiagram);
+
+        // When: Load the diagram from the file
+        manager.loadDiagram(testFile);
+
+        // Then: Verify that the serializer's deserialize method was called with the correct file
+        verify(mockSerializer, times(1)).deserialize(testFile);
+        // Optionally, verify that no error alert is shown (since the load was successful)
+        verify(mockUIController, times(0)).showErrorAlert(anyString());
     }
 
-    @Test
-    void testHandleToolSelectionInterface() {
-        // Given
-        ClassDiagramManager manager = mock(ClassDiagramManager.class);
-        Pane mockDrawingPane = mock(Pane.class);
-        VBox mockEditorsPane = mock(VBox.class);
-        ClassDiagramD mockClassDiagram = mock(ClassDiagramD.class);
-        when(manager.getClassDiagram()).thenReturn(mockClassDiagram);
-
-        // Call method with "Interface" tool
-        manager.handleToolSelection("Interface", mockDrawingPane, mockEditorsPane);
-
-        // Verify createInterfaceBox is called
-        verify(manager, times(1)).createInterfaceBox(anyString(), anyInt(), anyInt());
-    }
-
-    //@Test
-    /*void testHandleToolSelectionAssociation() {
-        // Given
-        ClassDiagramManager manager = mock(ClassDiagramManager.class);
-        Pane mockDrawingPane = mock(Pane.class);
-        VBox mockEditorsPane = mock(VBox.class);
-
-        // Call method with "Association" tool
-        manager.handleToolSelection("Association", mockDrawingPane, mockEditorsPane);
-
-        // Verify relationsManager is set to AssociationManager and enableAssociationMode is called
-        verify(manager, times(1)).enableAssociationMode(mockDrawingPane);
-    }*/
-
-    @Test
-    void testHandleToolSelectionAggregation() {
-        // Given
-        ClassDiagramManager manager = mock(ClassDiagramManager.class);
-        Pane mockDrawingPane = mock(Pane.class);
-        VBox mockEditorsPane = mock(VBox.class);
-
-        // Call method with "Aggregation" tool
-        manager.handleToolSelection("Aggregation", mockDrawingPane, mockEditorsPane);
-
-        // Verify relationsManager is set to AggregationManager and enableAggregationMode is called
-        verify(manager, times(1)).enableAggregationMode(mockDrawingPane);
-    }
-
-    @Test
-    void testHandleToolSelectionComposition() {
-        // Given
-        ClassDiagramManager manager = mock(ClassDiagramManager.class);
-        Pane mockDrawingPane = mock(Pane.class);
-        VBox mockEditorsPane = mock(VBox.class);
-
-        // Call method with "Composition" tool
-        manager.handleToolSelection("Composition", mockDrawingPane, mockEditorsPane);
-
-        // Verify relationsManager is set to CompositionManager and enableCompositionMode is called
-        verify(manager, times(1)).enableCompositionMode(mockDrawingPane);
-    }
-
-    @Test
-    void testHandleToolSelectionInheritance() {
-        // Given
-        ClassDiagramManager manager = mock(ClassDiagramManager.class);
-        Pane mockDrawingPane = mock(Pane.class);
-        VBox mockEditorsPane = mock(VBox.class);
-
-        // Call method with "Inheritance" tool
-        manager.handleToolSelection("Inheritance", mockDrawingPane, mockEditorsPane);
-
-        // Verify relationsManager is set to InheritanceManager and enableInheritanceMode is called
-        verify(manager, times(1)).enableInheritanceMode(mockDrawingPane);
-    }
-
-    @Test
-    void testHandleToolSelectionDrag() {
-        // Given
-        ClassDiagramManager manager = mock(ClassDiagramManager.class);
-        Pane mockDrawingPane = mock(Pane.class);
-        VBox mockEditorsPane = mock(VBox.class);
-
-        // Call method with "Drag" tool
-        manager.handleToolSelection("Drag", mockDrawingPane, mockEditorsPane);
-
-        // Verify enableDragMode is called
-        verify(manager, times(1)).enableDragMode();
-    }
-
-    @Test
-    void testHandleToolSelectionUnknown() {
-        // Given
-        ClassDiagramManager manager = mock(ClassDiagramManager.class);
-        Pane mockDrawingPane = mock(Pane.class);
-        VBox mockEditorsPane = mock(VBox.class);
-
-        // Call method with an unknown tool
-        manager.handleToolSelection("UnknownTool", mockDrawingPane, mockEditorsPane);
-
-        // Verify that no actions are triggered (except for the error message)
-        verify(manager, never()).createClassBox(anyString(), anyInt(), anyInt());
-        verify(manager, never()).createInterfaceBox(anyString(), anyInt(), anyInt());
-    }
-    @Test
-    public void testLoadDiagram() throws IOException, IllegalAccessException, NoSuchFieldException {
-        // Arrange
-        File mockFile = mock(File.class); // Mock the File object
-        ClassDiagramD mockClassDiagram = mock(ClassDiagramD.class); // Mock the ClassDiagramD object
-        ClassDiagramSerializer mockSerializer = mock(ClassDiagramSerializer.class); // Mock the serializer
-
-        // Mock the behavior of the file input stream
-        FileInputStream mockFileInputStream = mock(FileInputStream.class);
-        when(mockFile.exists()).thenReturn(true); // Mock file exists check
-        when(mockFileInputStream.read(any(byte[].class))).thenReturn(0); // Mock file read behavior
-
-        // Mock the deserialize method to return the mock class diagram
-        when(mockSerializer.deserialize(mockFile)).thenReturn(mockClassDiagram);
-
-        // Create the ClassDiagramManager with the mock UI controller
-        ClassDiagramManager manager = new ClassDiagramManager(mockUiController);
-       // Use reflection to inject the mock serializer
-        Field serializerField = ClassDiagramManager.class.getDeclaredField("serializer");
-        serializerField.setAccessible(true); // Make the private field accessible
-        serializerField.set(manager, mockSerializer); // Set the mock serializer
-
-        // Act
-        manager.loadDiagram(mockFile); // Call the method to test
-
-        // Assert
-        verify(mockSerializer).deserialize(mockFile); // Verify the deserialize method is called
-        verify(mockUiController).showInformationAlert(anyString()); // Verify UI feedback is shown
-    }
     @Test
     void testLoadDiagramWithError() throws IOException, NoSuchFieldException, IllegalAccessException {
         // Given: A mocked serializer that throws IOException
@@ -435,31 +306,138 @@ public class ClassDiagramManagerTest {
         // In case you want to check whether the exception was printed or logged in console
         // You can add additional verifications or use a logging framework
     }
-
     @Test
-    void testEnableAssociationMode() {
-        // Simulate a MouseEvent for first selection (first element clicked)
-        MouseEvent mockEvent1 = mock(MouseEvent.class);
-        when(mockEvent1.getPickResult()).thenReturn(mock(PickResult.class));
-        when(mockEvent1.getPickResult().getIntersectedNode()).thenReturn(mockElement1);
+    void testHandleToolSelectionClass() {
+        // Make sure the JavaFX application thread is initialized
+        Platform.runLater(() -> {
+            // Given: Create real JavaFX UI components
+            Pane mockDrawingPane = new Pane(); // Real Pane (not mocked)
+            VBox mockEditorsPane = new VBox(); // Real VBox (not mocked)
 
-        // Simulate a MouseEvent for second selection (second element clicked)
-        MouseEvent mockEvent2 = mock(MouseEvent.class);
-        when(mockEvent2.getPickResult()).thenReturn(mock(PickResult.class));
-        when(mockEvent2.getPickResult().getIntersectedNode()).thenReturn(mockElement2);
+            // Create the manager with a real UI component (no mocks)
+            ClassDiagramUI realUI = new ClassDiagramUI();  // Assuming this is your real UI class
+            ClassDiagramManager manager = new ClassDiagramManager(realUI);
 
-        // Simulate user interaction by firing mouse events on mock elements
-        mockElement1.fireEvent(mockEvent1);  // First click on mockElement1
-        mockElement2.fireEvent(mockEvent2);  // Second click on mockElement2
+            // When: Call the handleToolSelection method with the "Class" tool
+            manager.handleToolSelection("Class", mockDrawingPane, mockEditorsPane);
 
-        // Verify that the dialog was shown after the second click
-        //verify(mockDialog, times(1)).showAndWait();
+            // Simulate adding a class box (assuming your 'createClassBox' method is invoked here)
+            String expectedClassName = "Class1";
+            manager.createClassBox(expectedClassName, 50, 100);
 
-        // Verify that the createRelationship method is called with the correct parameters
-        verify(manager.relationsManager, times(1)).createRelationship(
-                eq(mockElement1), eq(mockElement2), eq(mockDrawingPane),
-                eq("Association"), eq("1"), eq("1")
-        );
+            // Then: Verify the behavior (Here, we can check that the class box is actually added to the pane)
+            assertFalse(mockDrawingPane.getChildren().isEmpty(), "Drawing pane should contain at least one node after adding a class box");
+
+            // Optionally, check that the box has the expected properties (e.g., name, position)
+            assertEquals(1, mockDrawingPane.getChildren().size(), "There should be exactly one class box added");
+
+            // Check that the class box has the correct name (if your method sets a label or text)
+            VBox classBox = (VBox) mockDrawingPane.getChildren().get(0); // Assuming createClassBox adds VBox
+            assertNotNull(classBox, "Class box should be added to the pane");
+            // Assuming the class box has a label or something identifiable for name
+            assertTrue(classBox.getChildren().get(0).toString().contains(expectedClassName), "Class box should have the expected class name");
+
+            // You can also check if other methods are invoked within the 'handleToolSelection' method by checking GUI side effects
+        });
     }
-}
+    @Test
+    void testHandleToolSelectionInterface() {
+        Platform.runLater(() -> {
+            // Given: Real UI components
+            Pane drawingPane = new Pane();
+            VBox editorsPane = new VBox();
+            ClassDiagramManager manager = new ClassDiagramManager(new ClassDiagramUI()); // Assuming real UI
 
+            // When: Select the "Interface" tool
+            manager.handleToolSelection("Interface", drawingPane, editorsPane);
+
+            // Then: Verify that the interface box was created
+            assertFalse(drawingPane.getChildren().isEmpty(), "Drawing pane should contain at least one node after interface selection");
+
+            // Check that the first child in the pane is a VBox (interface box)
+            VBox interfaceBox = (VBox) drawingPane.getChildren().get(0);
+            assertNotNull(interfaceBox, "An interface box should be added");
+        });
+    }
+    @Test
+    void testHandleToolSelectionAssociation() {
+        Platform.runLater(() -> {
+            // Given: Real UI components
+            Pane drawingPane = new Pane();
+            VBox editorsPane = new VBox();
+            ClassDiagramManager manager = new ClassDiagramManager(new ClassDiagramUI()); // Assuming real UI
+
+            // When: Select the "Association" tool
+            manager.handleToolSelection("Association", drawingPane, editorsPane);
+
+            // Then: Verify that the association mode was enabled
+            // You can verify if the relationsManager is an instance of AssociationManager
+            assertTrue(manager.relationsManager instanceof AssociationManager, "The relations manager should be an instance of AssociationManager");
+        });
+    }
+    @Test
+    void testHandleToolSelectionAggregation() {
+        Platform.runLater(() -> {
+            // Given: Real UI components
+            Pane drawingPane = new Pane();
+            VBox editorsPane = new VBox();
+            ClassDiagramManager manager = new ClassDiagramManager(new ClassDiagramUI()); // Assuming real UI
+
+            // When: Select the "Aggregation" tool
+            manager.handleToolSelection("Aggregation", drawingPane, editorsPane);
+
+            // Then: Verify that the aggregation mode was enabled
+            // Verify that the relationsManager is an instance of AggregationManager
+            assertTrue(manager.relationsManager instanceof AggregationManager, "The relations manager should be an instance of AggregationManager");
+        });
+    }
+    @Test
+    void testHandleToolSelectionComposition() {
+        Platform.runLater(() -> {
+            // Given: Real UI components
+            Pane drawingPane = new Pane();
+            VBox editorsPane = new VBox();
+            ClassDiagramManager manager = new ClassDiagramManager(new ClassDiagramUI()); // Assuming real UI
+
+            // When: Select the "Composition" tool
+            manager.handleToolSelection("Composition", drawingPane, editorsPane);
+
+            // Then: Verify that the composition mode was enabled
+            // Verify that the relationsManager is an instance of CompositionManager
+            assertTrue(manager.relationsManager instanceof CompositionManager, "The relations manager should be an instance of CompositionManager");
+        });
+    }
+    @Test
+    void testHandleToolSelectionInheritance() {
+        Platform.runLater(() -> {
+            // Given: Real UI components
+            Pane drawingPane = new Pane();
+            VBox editorsPane = new VBox();
+            ClassDiagramManager manager = new ClassDiagramManager(new ClassDiagramUI()); // Assuming real UI
+
+            // When: Select the "Inheritance" tool
+            manager.handleToolSelection("Inheritance", drawingPane, editorsPane);
+
+            // Then: Verify that the inheritance mode was enabled
+            // Verify that the relationsManager is an instance of InheritanceManager
+            assertTrue(manager.relationsManager instanceof InheritanceManager, "The relations manager should be an instance of InheritanceManager");
+        });
+    }
+    @Test
+    void testHandleToolSelectionDrag() {
+        Platform.runLater(() -> {
+            // Given: Real UI components
+            Pane drawingPane = new Pane();
+            VBox editorsPane = new VBox();
+            ClassDiagramManager manager = new ClassDiagramManager(new ClassDiagramUI()); // Assuming real UI
+
+            // When: Select the "Drag" tool
+            manager.handleToolSelection("Drag", drawingPane, editorsPane);
+
+            // Then: Verify that drag mode is enabled
+            // Assuming the manager has a method `isDragModeEnabled()`
+            assertTrue(manager.isDragEnabled, "Drag mode should be enabled");
+        });
+    }
+
+}

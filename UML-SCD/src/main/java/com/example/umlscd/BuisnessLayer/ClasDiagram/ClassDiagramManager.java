@@ -83,7 +83,7 @@ public class ClassDiagramManager {
     /**
      * Flag indicating whether drag functionality is enabled for moving diagram elements.
      */
-    private boolean isDragEnabled = false;
+    public boolean isDragEnabled = false;
 
 
     private Runnable objectExplorerUpdateCallback;
@@ -1185,91 +1185,6 @@ public class ClassDiagramManager {
         // Write the BufferedImage to the file
         ImageIO.write(bufferedImage, format, file);
     }
-
-
-    /*// Method to delete the selected element (class) and any related relationships
-    public void deleteSelectedElement(VBox selectedElement) {
-        if (selectedElement != null) {
-            String className = selectedElement.getId();  // Assuming each VBox has a unique ID (class name)
-
-            // Remove the class from the drawing pane
-            uiController.getDrawingPane().getChildren().remove(selectedElement);
-
-            // Remove the class from the classBoxMap
-            classBoxMap.remove(className);
-            elements.remove(selectedElement);
-
-            // Remove the class from the model (classDiagram) if it's part of the model
-            classDiagram.removeRelationshipsByClassName(className);
-
-            // Optionally, remove related relationships if any
-            deleteRelatedRelationships(className);
-
-            // You can add a confirmation or alert that the class has been deleted
-            //showDeletionConfirmation(className);
-        }
-
-    }
-
-    private void showDeletionConfirmation(String className) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Class " + className + " and its related relationships have been deleted.", ButtonType.OK);
-        alert.showAndWait();
-    }
-
-    private void deleteRelatedRelationships(String className) {
-        // Collect relationships to remove
-        List<UMLRelationship> relationshipsToRemove = classDiagram.getRelationships().stream()
-                .filter(relationship -> relationship.getStartElementName().equals(className)
-                        || relationship.getEndElementName().equals(className))
-                .collect(Collectors.toList());
-
-        // Remove each relationship from the diagram and UI
-        for (UMLRelationship relationship : relationshipsToRemove) {
-            // Remove the visual representation
-            String visualElement = relationship.getType(); // Assuming getType() returns the Line/Node for the UI.
-            if (visualElement != null) {
-                uiController.getDrawingPane().getChildren().remove(visualElement);
-            }
-
-            // Remove the relationship from the data model
-            classDiagram.getRelationships().remove(relationship);
-        }
-    }
-
-
-    public void deleteSelectedRelationship(Line line) {
-        System.out.println("Attempting to delete line: " + line);
-        uiController.getDrawingPane().getChildren().remove(line); // Remove from UI
-        // Additional cleanup logic for labels or relationships
-    }
-
-    public void deleteSelectedRelationship(Node selectedRelationship) {
-        if (selectedRelationship == null) {
-            return; // No relationship selected
-        }
-
-        // Find and remove the corresponding UMLRelationship
-        UMLRelationship toRemove = null;
-        for (UMLRelationship relationship : classDiagram.getRelationships()) {
-            if (relationship.getType().equals(selectedRelationship)) {
-                toRemove = relationship;
-                break;
-            }
-        }
-
-        if (toRemove != null) {
-            // Remove the visual representation
-            uiController.getDrawingPane().getChildren().remove(selectedRelationship);
-
-            // Remove from the data model
-            classDiagram.getRelationships().remove(toRemove);
-
-            // Optional: Show confirmation
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Relationship deleted successfully.", ButtonType.OK);
-            alert.showAndWait();
-        }
-    }*/
-
     public void deleteSelectedElement(VBox selectedElement) {
         if (selectedElement == null) {
             return; // No element selected
