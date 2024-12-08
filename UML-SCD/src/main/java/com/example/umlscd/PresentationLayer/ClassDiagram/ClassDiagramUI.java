@@ -55,13 +55,15 @@ public class ClassDiagramUI {
      * The pane where the class diagram is drawn.
      */
     @FXML
-    private Pane drawingPane;
+    Pane drawingPane;
 
     /**
      * The list view displaying available diagrams.
      */
     @FXML
-    private ListView<String> objectExplorer, modelExplorerListView;
+    private ListView<String> objectExplorer;
+    @FXML
+    ListView<String> modelExplorerListView;
 
     /**
      * Buttons for selecting various tools in the toolbox.
@@ -79,22 +81,30 @@ public class ClassDiagramUI {
     private Button btnInheritance;
 
     @FXML
-    private Button btnSave, btnLoad, btnExportImage,btnCode; // Added Save and Load buttons
+    Button btnSave;
+    @FXML
+    Button btnLoad;
+    @FXML
+    Button btnExportImage;
+    @FXML
+    Button btnCode; // Added Save and Load buttons
 
     @FXML private Button btnDelete;
-    private boolean isDeleteModeEnabled = false;
+    boolean isDeleteModeEnabled = false;
 
 
     /**
      * The pane containing editors for classes and interfaces.
      */
     @FXML
-    private VBox editorsPane;
+    VBox editorsPane;
 
     /**
      * The manager responsible for handling class diagram operations.
      */
     private ClassDiagramManager classDiagramManager;
+
+
 
     /**
      * Reference to the primary stage for file chooser dialogs.
@@ -373,7 +383,7 @@ public class ClassDiagramUI {
      * on the success or failure of the operation.</p>
      */
     @FXML
-    private void handleExportAsImage() {
+    void handleExportAsImage() {
         // Retrieve the Stage from the drawingPane (or any other node)
         Stage stage = (Stage) drawingPane.getScene().getWindow();
 
