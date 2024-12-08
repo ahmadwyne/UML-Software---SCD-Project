@@ -842,6 +842,9 @@ public class UseCaseDiagram {
                 associations = manager.getAssociations();
                 systemBoundaryName = manager.getSystemBoundaryName(); // Load the system boundary name
                 redrawCanvas();
+
+                // Update the object explorer after loading the diagram
+                updateObjectExplorer();
             } else {
                 System.err.println("Failed to load diagram from the selected file.");
             }
@@ -927,6 +930,9 @@ public class UseCaseDiagram {
 
                 // Redraw the canvas with the loaded data
                 redrawCanvas();
+
+                // Update the object explorer after loading the diagram
+                updateObjectExplorer();
             } catch (IOException e) {
                 e.printStackTrace();
                 showAlert("Error", "Failed to load diagram from JSON.");
@@ -965,6 +971,25 @@ public class UseCaseDiagram {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    private void updateObjectExplorer() {
+        // Clear the existing tree
+        rootItem.getChildren().clear();
+
+        // Add system boundary as the root (optional, depending on your needs)
+        TreeItem<String> systemBoundaryItem = new TreeItem<>(systemBoundaryName);
+        rootItem.getChildren().add(systemBoundaryItem);
+
+        // Add objects to the tree view (actors, use cases, etc.)
+        for (UseCaseDiagramObject obj : objects) {
+            TreeItem<String> objectItem = new TreeItem<>(obj.getName()); // Assuming getName() returns the name of the object
+            systemBoundaryItem.getChildren().add(objectItem);
+        }
+
+        // Ensure the TreeView is refreshed
+        objectExplorer.refresh();
+    }
+
 
     /**
      * Exports the current use case diagram as an image file based on the current state of the canvas.
@@ -1018,6 +1043,4 @@ public class UseCaseDiagram {
         Button button = (Button) mouseEvent.getSource();
         button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
-
-
 }
