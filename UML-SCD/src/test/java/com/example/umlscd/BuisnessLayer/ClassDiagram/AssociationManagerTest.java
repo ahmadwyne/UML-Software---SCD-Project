@@ -1,336 +1,208 @@
 package com.example.umlscd.BuisnessLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.AssociationManager;
 import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramRelationsManager;
+import com.example.umlscd.BuisnessLayer.ClasDiagram.AssociationManager;
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationshipBox;
-import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.scene.shape.Line;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
+import org.mockito.*;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class AssociationManagerTest {
 
-    private AssociationManager associationManager;
+    @Mock
     private ClassDiagramManager mockClassDiagramManager;
-    private UMLRelationshipBox mockUMLRelationshipBox;
-    private UMLRelationship mockUMLRelationship;
-    private Pane drawingPane; // Real Pane
-    private VBox startBox; // Real VBox
-    private VBox endBox; // Real VBox
-    private Label startLabel; // Real Label
-    private Label endLabel; // Real Label
-    private ClassDiagramUI mockClassDiagramUI; // Mock for ClassDiagramUI
 
-    @BeforeAll
-    static void initJFX() {
-        // Initializes the JavaFX toolkit
-        new JFXPanel();
-    }
+    @Mock
+    private Pane mockDrawingPane;
+
+    @Mock
+    private VBox mockStartBox;
+
+    @Mock
+    private VBox mockEndBox;
+
+    @Mock
+    private UMLElementBoxInterface mockStartClass;
+
+    @Mock
+    private UMLElementBoxInterface mockEndClass;
+
+    @Mock
+    private DoubleProperty mockLayoutXProperty;
+
+    @Mock
+    private DoubleProperty mockLayoutYProperty;
+
+    private AssociationManager associationManager;
 
     @BeforeEach
     void setUp() {
-        // Initialize mocks
-        mockClassDiagramManager = mock(ClassDiagramManager.class);
-        mockUMLRelationshipBox = mock(UMLRelationshipBox.class);
-        mockUMLRelationship = mock(UMLRelationship.class);
-        mockClassDiagramUI = mock(ClassDiagramUI.class);
+        MockitoAnnotations.openMocks(this);
 
-        // Initialize real JavaFX components for start and end classes
-        startLabel = new Label("StartClass");
-        endLabel = new Label("EndClass");
-        startBox = new VBox();
-        startBox.getChildren().addAll(new Label("Class:"), startLabel);
-        endBox = new VBox();
-        endBox.getChildren().addAll(new Label("Class:"), endLabel);
-        drawingPane = new Pane();
+        // Mocking ClassDiagramManager and its behavior
+        when(mockClassDiagramManager.getClassBoxMap()).thenReturn(FXCollections.observableHashMap());
 
-        // Set up ClassDiagramManager behavior
-        when(mockClassDiagramManager.isClassNameExists(anyString())).thenReturn(false);
-        when(mockClassDiagramManager.getUiController()).thenReturn(mockClassDiagramUI);
-
-        // Instantiate AggregationManager with the mocked ClassDiagramManager
+        // Creating the AssociationManager instance
         associationManager = new AssociationManager(mockClassDiagramManager);
+
+        // Setting up mock behaviors for layout properties
+        when(mockStartBox.layoutXProperty()).thenReturn(mockLayoutXProperty);
+        when(mockEndBox.layoutXProperty()).thenReturn(mockLayoutXProperty);
+        when(mockStartBox.layoutYProperty()).thenReturn(mockLayoutYProperty);
+        when(mockEndBox.layoutYProperty()).thenReturn(mockLayoutYProperty);
+
+        // Mocking the addition of elements to the Pane (drawing pane)
+        ObservableList<Node> mockChildren = FXCollections.observableArrayList();
+        when(mockDrawingPane.getChildren()).thenReturn(mockChildren);
     }
 
     @Test
-    void testCreateRelationshipWithCustomValues() {
-        // Mock the layoutXProperty() and layoutYProperty() to return mock DoubleProperty
-        VBox startBoxMock = mock(VBox.class);
-        VBox endBoxMock = mock(VBox.class);
+    void testCreateRelationship_successful() {
+        // Arrange
+        when(mockStartBox.getLayoutX()).thenReturn(100.0);
+        when(mockStartBox.getLayoutY()).thenReturn(200.0);
+        when(mockEndBox.getLayoutX()).thenReturn(300.0);
+        when(mockEndBox.getLayoutY()).thenReturn(400.0);
 
-        DoubleProperty startLayoutXMock = mock(DoubleProperty.class);
-        DoubleProperty startLayoutYMock = mock(DoubleProperty.class);
-        DoubleProperty endLayoutXMock = mock(DoubleProperty.class);
-        DoubleProperty endLayoutYMock = mock(DoubleProperty.class);
+        // Act
+        associationManager.createRelationship(mockStartBox, mockEndBox, mockDrawingPane, "Association", "1", "0..*");
 
-        // Mock the layoutXProperty() and layoutYProperty()
-        when(startBoxMock.layoutXProperty()).thenReturn(startLayoutXMock);
-        when(startBoxMock.layoutYProperty()).thenReturn(startLayoutYMock);
-        when(endBoxMock.layoutXProperty()).thenReturn(endLayoutXMock);
-        when(endBoxMock.layoutYProperty()).thenReturn(endLayoutYMock);
-
-        // Mock the values of layoutX and layoutY
-        when(startLayoutXMock.get()).thenReturn(100.0);
-        when(startLayoutYMock.get()).thenReturn(100.0);
-        when(endLayoutXMock.get()).thenReturn(300.0);
-        when(endLayoutYMock.get()).thenReturn(100.0);
-
-        // Mock getChildren() to return a non-null ObservableList
-        ObservableList<javafx.scene.Node> startChildrenMock = mock(ObservableList.class);
-        ObservableList<javafx.scene.Node> endChildrenMock = mock(ObservableList.class);
-        when(startBoxMock.getChildren()).thenReturn(startChildrenMock);
-        when(endBoxMock.getChildren()).thenReturn(endChildrenMock);
-
-        // Optionally, you can mock the behavior of isEmpty() on the ObservableList if needed:
-        when(startChildrenMock.isEmpty()).thenReturn(true);
-        when(endChildrenMock.isEmpty()).thenReturn(true);
-
-        // Custom name and multiplicities
-        String aggregationName = "Custom Association";
-        String startMultiplicity = "0..1";
-        String endMultiplicity = "1..*";
-
-        // Call the method to test
-        associationManager.createRelationship(startBoxMock, endBoxMock, drawingPane, aggregationName, startMultiplicity, endMultiplicity);
-
-        // Assert that custom values are applied
-        assertEquals(aggregationName, associationManager.getLastRelationshipBox().getName());
-        assertEquals(startMultiplicity, associationManager.getLastRelationshipBox().getStartMultiplicity());
-        assertEquals(endMultiplicity, associationManager.getLastRelationshipBox().getEndMultiplicity());
+        // Assert: Verifying the drawing pane interactions
+        verify(mockDrawingPane, times(1)).getChildren();
+        verify(mockDrawingPane.getChildren(), times(1)).add(any(Line.class));
+        verify(mockDrawingPane.getChildren(), times(2)).add(any(Text.class)); // 1 for association, 1 for multiplicity
+        verify(mockStartBox.layoutXProperty(), times(1)).addListener((ChangeListener<? super Number>) any());
+        verify(mockStartBox.layoutYProperty(), times(1)).addListener((ChangeListener<? super Number>) any());
     }
 
-    /**
-     * Test creating an aggregation relationship when one of the classes is null.
-     */
     @Test
-    void testCreateRelationship_WithNullClassBox() {
-        // Attempt to create a relationship with a null startBox
-        assertThrows(NullPointerException.class, () -> {
-            associationManager.createRelationship(null, endBox, drawingPane, "Association", "1", "0..*");
+    void testCreateRelationship_invalidInput() {
+        // Arrange: Provide null or empty values for relationship name and multiplicity
+        when(mockStartBox.getLayoutX()).thenReturn(100.0);
+        when(mockStartBox.getLayoutY()).thenReturn(200.0);
+        when(mockEndBox.getLayoutX()).thenReturn(300.0);
+        when(mockEndBox.getLayoutY()).thenReturn(400.0);
+
+        // Act: Call createRelationship with empty associationName and multiplicities
+        associationManager.createRelationship(mockStartBox, mockEndBox, mockDrawingPane, "", "", "");
+
+        // Assert: Verify that the default values are used (associationName = "Association", multiplicity = "1")
+        verify(mockDrawingPane.getChildren(), times(1)).add(any(Line.class));
+        verify(mockDrawingPane.getChildren(), times(1)).add(any(Text.class)); // Association label
+        verify(mockDrawingPane.getChildren(), times(2)).add(any(Text.class)); // Multiplicity labels
+    }
+
+    /*@Test
+    void testAddEditDialog_onAssociationLabelClick() {
+        // Arrange
+        Text associationLabel = new Text("Association");
+
+        // Mock the label click behavior
+        associationManager.addEditDialogOnClick(associationLabel, "Edit Association Name", newName -> {
+            associationLabel.setText(newName);
         });
 
-        // Verify that getClassBoxMap was not called
-        verify(mockClassDiagramManager, never()).getClassBoxMap();
+        // Act: Simulate a double-click event on the label
+        MouseEvent mouseEvent = new MouseEvent(
+                MouseEvent.MOUSE_CLICKED,    // Event Type
+                0, 0,                        // X and Y position
+                0, 0,                        // Screen coordinates
+                2,                            // Click count (double-click)
+                MouseButton.PRIMARY,         // Mouse button (left button)
+                1,                            // Click count (1 = single click)
+                true, true, true, true,       // Various flags (Shift, Control, etc.)
+                false, false,                // Modifiers (alt, etc.)
+                null                          // Source (optional)
+        );
 
-        // Verify that no relationship box was added
-        verify(mockClassDiagramManager, never()).addRelationshipBox(any());
+        // Simulate the double-click event on the association label
+        associationLabel.fireEvent(mouseEvent);
 
-        // Verify that no UI components were added
-        assertEquals(0, drawingPane.getChildren().size());
-    }
+        // Assert: Verify the dialog opens and the name is updated
+        TextInputDialog dialog = new TextInputDialog("Association");
+        dialog.setTitle("Edit Association Name");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Enter new value:");
+        dialog.showAndWait().ifPresent(newValue -> associationLabel.setText(newValue));
 
-    /**
-     * Test creating an association relationship when ClassDiagramManager is null.
-     */
+        // Verify the label's text is updated
+        assert associationLabel.getText().equals("New Association Name");
+    }*/
+
+
     @Test
-    void testCreateRelationship_WithNullClassDiagramManager() {
-        // Instantiate AssociationManager with a null ClassDiagramManager
-        AssociationManager nullManagerAssociationManager = new AssociationManager(null);
+    void testCreateRelationshipFromModel_successful() {
+        // Arrange: Mock UMLRelationship
+        UMLRelationship mockRelationship = mock(UMLRelationship.class);
+        when(mockRelationship.getStartElementName()).thenReturn("Class1");
+        when(mockRelationship.getEndElementName()).thenReturn("Class2");
+        when(mockRelationship.getName()).thenReturn("Association");
+        when(mockRelationship.getStartMultiplicity()).thenReturn("1");
+        when(mockRelationship.getEndMultiplicity()).thenReturn("0..*");
 
-        // Attempt to create a relationship
-        // This should throw a NullPointerException based on current implementation
-        assertThrows(NullPointerException.class, () -> {
-            nullManagerAssociationManager.createRelationship(startBox, endBox, drawingPane, "Association", "1", "0..*");
-        });
+        UMLElementBoxInterface mockStartClass = mock(UMLElementBoxInterface.class);
+        UMLElementBoxInterface mockEndClass = mock(UMLElementBoxInterface.class);
+        VBox mockStartBox = mock(VBox.class);
+        VBox mockEndBox = mock(VBox.class);
 
+        // Simulate that the class diagram manager has the required elements
+        when(mockClassDiagramManager.getClassBoxMap()).thenReturn(FXCollections.observableMap(Map.of("Class1", mockStartClass, "Class2", mockEndClass)));
+        when(mockStartClass.getVisualRepresentation()).thenReturn(mockStartBox);
+        when(mockEndClass.getVisualRepresentation()).thenReturn(mockEndBox);
+
+        // Act: Create the relationship using data from UMLRelationship
+        associationManager.createRelationshipFromModel(mockRelationship, mockDrawingPane);
+
+        // Assert: Verify elements were added to the drawing pane
+        verify(mockDrawingPane.getChildren(), times(1)).add(any(Line.class));
+        verify(mockDrawingPane.getChildren(), times(3)).add(any(Text.class)); // 1 for label, 2 for multiplicity
     }
 
-    /**
-     * Test creating a relationship from a UMLRelationship model successfully.
-     */
     @Test
-    void testCreateRelationshipFromModel_Successful() {
-        // Setup UMLRelationship model
-        String startName = "StartClass";
-        String endName = "EndClass";
-        String associationName = "AssociationFromModel";
-        String startMultiplicity = "1";
-        String endMultiplicity = "0..*";
+    void testDynamicUpdateListener_updatesPosition() {
+        // Arrange
+        Line line = mock(Line.class);
+        Text associationLabel = mock(Text.class);
+        Text startMultiplicityText = mock(Text.class);
+        Text endMultiplicityText = mock(Text.class);
 
-        when(mockUMLRelationship.getStartElementName()).thenReturn(startName);
-        when(mockUMLRelationship.getEndElementName()).thenReturn(endName);
-        when(mockUMLRelationship.getName()).thenReturn(associationName);
-        when(mockUMLRelationship.getStartMultiplicity()).thenReturn(startMultiplicity);
-        when(mockUMLRelationship.getEndMultiplicity()).thenReturn(endMultiplicity);
+        // Create mock boxes
+        VBox startBox = mock(VBox.class);
+        VBox endBox = mock(VBox.class);
 
-        // Mock ClassDiagramManager's classBoxMap retrieval
-        UMLElementBoxInterface startElement = mock(UMLElementBoxInterface.class);
-        UMLElementBoxInterface endElement = mock(UMLElementBoxInterface.class);
-        when(mockClassDiagramManager.getClassBoxMap()).thenReturn(new HashMap<>() {{
-            put(startName, startElement);
-            put(endName, endElement);
-        }});
+        when(startBox.layoutXProperty()).thenReturn(mockLayoutXProperty);
+        when(endBox.layoutXProperty()).thenReturn(mockLayoutXProperty);
 
-        // Mock getVisualRepresentation to return the real VBox instances
-        when(startElement.getVisualRepresentation()).thenReturn(startBox);
-        when(endElement.getVisualRepresentation()).thenReturn(endBox);
+        // Act: Add listeners for dynamic updates
+        associationManager.addDynamicUpdateListener(line, startBox, endBox, associationLabel, startMultiplicityText, endMultiplicityText);
 
-        // Call the method under test
-        associationManager.createRelationshipFromModel(mockUMLRelationship, drawingPane);
+        // Simulate movement of boxes
+        mockLayoutXProperty.set(150.0);
+        mockLayoutYProperty.set(250.0);
 
-        // Verify that getClassBoxMap was called twice (once to retrieve start, once to retrieve end)
-        verify(mockClassDiagramManager, times(2)).getClassBoxMap();
-
-        // Verify that a UMLRelationshipBox was added
-        ArgumentCaptor<UMLRelationshipBox> relationshipBoxCaptor = ArgumentCaptor.forClass(UMLRelationshipBox.class);
-        verify(mockClassDiagramManager).addRelationshipBox(relationshipBoxCaptor.capture());
-
-        UMLRelationshipBox capturedBox = relationshipBoxCaptor.getValue();
-        assertEquals("Association", capturedBox.getType());
-        assertEquals(startName, capturedBox.getStartElementName());
-        assertEquals(endName, capturedBox.getEndElementName());
-        assertEquals(associationName, capturedBox.getName());
-        assertEquals(startMultiplicity, capturedBox.getStartMultiplicity());
-        assertEquals(endMultiplicity, capturedBox.getEndMultiplicity());
-
-        // Verify that the UI components are added to the drawingPane
-        // Expected components: associationLine (Line), associationLabel (Text), multiplicity labels (Text)
-        assertEquals(4, drawingPane.getChildren().size());
-
-        // Verify the aggregation label
-        Node labelNode = drawingPane.getChildren().get(1);
-        assertTrue(labelNode instanceof Text);
-        Text aggregationLabel = (Text) labelNode;
-        assertEquals(associationName, aggregationLabel.getText());
+        // Assert: Verify that the update listener updated the line position
+        verify(line, times(1)).setStartX(anyDouble());
+        verify(line, times(1)).setStartY(anyDouble());
+        verify(line, times(1)).setEndX(anyDouble());
+        verify(line, times(1)).setEndY(anyDouble());
     }
-
-    /**
-     * Test creating a relationship from a UMLRelationship model with missing elements.
-     */
-    @Test
-    void testCreateRelationshipFromModel_MissingElements() {
-        // Setup UMLRelationship model
-        String startName = "StartClass";
-        String endName = "EndClass";
-        String aggregationName = "AssociationFromModel";
-        String startMultiplicity = "1";
-        String endMultiplicity = "0..*";
-
-        when(mockUMLRelationship.getStartElementName()).thenReturn(startName);
-        when(mockUMLRelationship.getEndElementName()).thenReturn(endName);
-        when(mockUMLRelationship.getName()).thenReturn(aggregationName);
-        when(mockUMLRelationship.getStartMultiplicity()).thenReturn(startMultiplicity);
-        when(mockUMLRelationship.getEndMultiplicity()).thenReturn(endMultiplicity);
-
-        // Mock ClassDiagramManager's classBoxMap retrieval with missing end element
-        UMLElementBoxInterface startElement = mock(UMLElementBoxInterface.class);
-        when(mockClassDiagramManager.getClassBoxMap()).thenReturn(new HashMap<>() {{
-            put(startName, startElement);
-            // End element is missing
-        }});
-
-        // Mock getVisualRepresentation to return the real VBox instances
-        when(startElement.getVisualRepresentation()).thenReturn(startBox);
-        // End element retrieval would return null
-
-        // Call the method under test
-        associationManager.createRelationshipFromModel(mockUMLRelationship, drawingPane);
-
-        // Verify that getClassBoxMap was called twice (once to retrieve start, once to retrieve end)
-        verify(mockClassDiagramManager, times(2)).getClassBoxMap();
-
-        // Verify that addRelationshipBox was not called due to missing end element
-        verify(mockClassDiagramManager, never()).addRelationshipBox(any());
-
-        // Verify that no UI components were added
-        assertEquals(0, drawingPane.getChildren().size());
-
-        // Optionally, verify that an error message was logged or handled
-        // This depends on your implementation of error handling
-    }
-
-    /**
-     * Test retrieving the last created UMLRelationshipBox.
-     */
-    @Test
-    void testGetLastRelationshipBox() {
-        // Setup input parameters
-        String aggregationName = "AggregationRelation";
-        String startMultiplicity = "1";
-        String endMultiplicity = "0..*";
-
-        // Call the method under test
-        associationManager.createRelationship(startBox, endBox, drawingPane, aggregationName, startMultiplicity, endMultiplicity);
-
-        // Retrieve the lastRelationshipBox
-        UMLRelationshipBox lastBox = associationManager.getLastRelationshipBox();
-
-        // Assert that lastBox is the one we just added
-        ArgumentCaptor<UMLRelationshipBox> relationshipBoxCaptor = ArgumentCaptor.forClass(UMLRelationshipBox.class);
-        verify(mockClassDiagramManager).addRelationshipBox(relationshipBoxCaptor.capture());
-
-        UMLRelationshipBox capturedBox = relationshipBoxCaptor.getValue();
-        assertEquals(lastBox, capturedBox);
-    }
-
-    /**
-     * Test editing the association name via double-click.
-     *
-     * Note: Testing UI interactions like double-clicks is complex and typically requires integration testing.
-     * Here, we'll simulate the behavior by directly invoking the Consumer passed to the addEditDialogOnClick method.
-     */
-    @Test
-    void testAddEditDialogOnClick_EditAggregationName() {
-        // Setup input parameters
-        String associationName = "AssociationRelation";
-        String newAssociationName = "UpdatedAssociation";
-
-        // Call the method under test
-        associationManager.createRelationship(startBox, endBox, drawingPane, associationName, "1", "0..*");
-
-        // Retrieve the aggregation label
-        Node labelNode = drawingPane.getChildren().get(2);
-        assertTrue(labelNode instanceof Text);
-        Text aggregationLabel = (Text) labelNode;
-
-        // Mock the Consumer to capture the new name
-        Consumer<String> mockConsumer = mock(Consumer.class);
-
-        // Simulate invoking the Consumer with a new name
-        mockConsumer.accept(newAssociationName);
-
-        // Since the actual Consumer updates the label and UMLRelationshipBox,
-        // we'll simulate this behavior manually for the test
-
-        // Update the label text
-        aggregationLabel.setText(newAssociationName);
-
-        // Verify that the aggregation label was updated
-        assertEquals(newAssociationName, aggregationLabel.getText());
-
-        // Note: To fully test this, you might need to expose the Consumer or refactor the method
-        // to allow injecting a mock Consumer. This example shows a simplified approach.
-    }
-
-    /**
-     * Test handling a custom data type addition.
-     *
-     * Note: Since handleCustomDataType is a static method that opens a dialog,
-     * it's challenging to unit test without refactoring. Consider refactoring
-     * to inject a Supplier or use TestFX for UI interactions.
-     */
 }

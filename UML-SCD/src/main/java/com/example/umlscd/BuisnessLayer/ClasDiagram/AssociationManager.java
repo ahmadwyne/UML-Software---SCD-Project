@@ -123,7 +123,7 @@ public class AssociationManager extends ClassDiagramRelationsManager {
         classDiagramManager.addRelationshipBox(relationshipBox);
         lastRelationshipBox = relationshipBox;
     }
-    private void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
+    public void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
         textElement.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) { // Double-click to edit
                 TextInputDialog dialog = new TextInputDialog(textElement.getText());
@@ -264,7 +264,7 @@ public class AssociationManager extends ClassDiagramRelationsManager {
      * @param startMultiplicityText The label for the start multiplicity.
      * @param endMultiplicityText The label for the end multiplicity.
      */
-    private void addDynamicUpdateListener(Line line, VBox startBox, VBox endBox, Text associationLabel, Text startMultiplicityText, Text endMultiplicityText) {
+    public void addDynamicUpdateListener(Line line, VBox startBox, VBox endBox, Text associationLabel, Text startMultiplicityText, Text endMultiplicityText) {
         startBox.layoutXProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, startBox, endBox, associationLabel, startMultiplicityText, endMultiplicityText));
         startBox.layoutYProperty().addListener((obs, oldVal, newVal) -> updateLinePosition(line, startBox, endBox, associationLabel, startMultiplicityText, endMultiplicityText));
 

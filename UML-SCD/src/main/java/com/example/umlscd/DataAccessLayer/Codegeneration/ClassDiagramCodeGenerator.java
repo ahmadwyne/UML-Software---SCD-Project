@@ -227,7 +227,7 @@ public class ClassDiagramCodeGenerator {
         StringBuilder interfaceCode = new StringBuilder();
 
         // Start the interface definition
-        interfaceCode.append("public interface ").append(umlInterface.getName()).append(" {");
+        interfaceCode.append("\npublic interface ").append(umlInterface.getName()).append(" {");
 
 
         // Handle methods
@@ -286,8 +286,9 @@ public class ClassDiagramCodeGenerator {
                         .append("\n        // TODO: Implement method")
                         .append("\n    }");
             }
-        }
 
+        }
+        interfaceCode.append("\n}");
         return interfaceCode.toString();
     }
 }
