@@ -26,16 +26,16 @@
         </HBox>
 
         <HBox spacing="5">
-            <Button text="Add Parameter" fx:id="addParameterButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+            <Button text="Add Parameter" fx:id="addParameterButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-pref-width: 120; -fx-font-weight: bold;"
                     onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
         </HBox>
 
         <!-- Add Method Button -->
-        <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px; -fx-font-weight: bold;"
+        <Button text="Add Method" fx:id="addMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 12px;  -fx-pref-width: 120; -fx-font-weight: bold;"
                 onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
-        <Button text="Delete Method" fx:id="deleteMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-weight: bold"
+        <Button text="Delete Method" fx:id="deleteMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-size: 11px; -fx-pref-width: 120; -fx-font-weight: bold"
                 onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
-        <Button text="Edit Method" fx:id="editMethodButton" style="-fx-background-color: #AFAFAF; -fx-font-weight: bold"
+        <Button text="Edit Method" fx:id="editMethodButton" style="-fx-background-color: #AFAFAF; -fx-pref-width: 120; -fx-font-weight: bold"
                 onMouseEntered="#applyHoverEffect" onMouseExited="#removeHoverEffect" onMouseClicked="#applyClickEffect"/>
     </VBox>
 
