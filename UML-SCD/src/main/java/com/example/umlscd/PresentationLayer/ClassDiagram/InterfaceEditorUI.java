@@ -38,7 +38,7 @@ public class InterfaceEditorUI {
      * <p>This field allows the user to enter the name of the interface being edited.</p>
      */
     @FXML
-    private TextField interfaceNameField;
+    TextField interfaceNameField;
 
     @FXML
     private TextArea methodsArea;
