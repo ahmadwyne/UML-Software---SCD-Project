@@ -1,0 +1,13 @@
+module:com.example.umlscd
+com.example.umlscd.BusinessLayer.ClassDiagram
+com.example.umlscd.BusinessLayer.UseCaseDiagram
+com.example.umlscd.DataAccessLayer.Codegeneration
+com.example.umlscd.DataAccessLayer.ImageProcessing
+com.example.umlscd.DataAccessLayer.Serializers.ClassDiagram
+com.example.umlscd.DataAccessLayer.Serializers.UseCaseDiagram
+com.example.umlscd.EntryPoint
+com.example.umlscd.Models.ClassDiagram
+com.example.umlscd.Models.UseCaseDiagram
+com.example.umlscd.PresentationLayer
+com.example.umlscd.PresentationLayer.ClassDiagram
+com.example.umlscd.PresentationLayer.UseCaseDiagram
