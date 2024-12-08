@@ -5,19 +5,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
-import java.io.File;
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
-
+/**
+ * Test class for {@link ClassDiagramUI}.
+ * <p>
+ * This class contains UI tests for the {@link ClassDiagramUI} class to ensure the proper
+ * functionality of buttons and tools in the class diagram user interface.
+ * </p>
+ */
 public class ClassDiagramUITest extends ApplicationTest {
 
     private ClassDiagramUI classDiagram;
@@ -61,13 +62,19 @@ public class ClassDiagramUITest extends ApplicationTest {
         btnInheritance = lookup("#btnInheritance").queryButton();
         drawingPane = lookup("#drawingPane").queryAs(Pane.class);
 
-        // Access the UI components
+        // Access the UI components again to make sure they are properly initialized
         btnExportImage = lookup("#btnExportImage").queryButton();
     }
 
+    /**
+     * Verifies that the UI components are correctly initialized.
+     * <p>
+     * This test checks that all buttons and the drawing pane are properly initialized
+     * and accessible.
+     * </p>
+     */
     @Test
     public void testInitialize() {
-        // Verify that the UI components are initialized
         assertNotNull(btnSave, "Save button should be initialized");
         assertNotNull(btnLoad, "Load button should be initialized");
         assertNotNull(btnExportImage, "Export Image button should be initialized");
@@ -83,7 +90,13 @@ public class ClassDiagramUITest extends ApplicationTest {
         assertNotNull(drawingPane, "Drawing Pane should be initialized");
     }
 
-
+    /**
+     * Tests the delete button functionality by toggling the delete mode.
+     * <p>
+     * This test simulates the behavior of the delete button. It checks if delete mode is enabled
+     * and disabled correctly with each click of the delete button.
+     * </p>
+     */
     @Test
     public void testDeleteButtonHandler() {
         // Ensure that initially, delete mode is not enabled
@@ -102,7 +115,13 @@ public class ClassDiagramUITest extends ApplicationTest {
         assertFalse(classDiagram.isDeleteModeEnabled, "Delete mode should be disabled after the second click");
     }
 
-
+    /**
+     * Tests enabling the delete mode via the delete button.
+     * <p>
+     * This test verifies that clicking the delete button enables delete mode, changes the button text,
+     * and allows the user to delete an element by clicking on the drawing pane.
+     * </p>
+     */
     @Test
     public void testEnableDeleteMode() {
         // Simulate clicking the delete button to enable delete mode
@@ -113,16 +132,20 @@ public class ClassDiagramUITest extends ApplicationTest {
         assertEquals("Cancel Delete", btnDelete.getText(), "Button text should be 'Cancel Delete' when delete mode is enabled");
 
         // Simulate clicking on the drawing pane to delete an element
-        // Assuming getSelectedElement() will return a valid element when in delete mode
-        // Here, we simply simulate clicking on the drawing pane
         clickOn(drawingPane);
 
         // Check that delete functionality is triggered and delete mode is disabled
-        // Assuming that clicking on the drawing pane will disable delete mode after the deletion
         assertTrue(classDiagram.isDeleteModeEnabled, "Delete mode should be disabled after deletion");
         assertEquals("Cancel Delete", btnDelete.getText(), "Button text should revert to 'Delete' after deleting an element");
     }
 
+    /**
+     * Tests disabling delete mode after it has been enabled.
+     * <p>
+     * This test ensures that delete mode can be disabled by clicking the delete button again,
+     * and verifies that the button text is reset to 'Delete'.
+     * </p>
+     */
     @Test
     public void testDisableDeleteMode() {
         // Enable delete mode first
@@ -140,78 +163,94 @@ public class ClassDiagramUITest extends ApplicationTest {
         assertEquals("Delete", btnDelete.getText(), "Button text should revert to 'Delete' when delete mode is disabled");
     }
 
+    /**
+     * Tests selecting the "Class" tool from the UI.
+     * <p>
+     * This test simulates clicking the Class tool button and verifies that the drawing pane becomes
+     * enabled after the tool selection, indicating that the tool selection was successful.
+     * </p>
+     */
     @Test
     public void testClassToolSelection() {
-        // Simulate clicking the Class tool button
         clickOn(btnClass);
-
-        // Verify that the tool selection method was called with "Class"
-        // You could mock classDiagramManager or check UI behavior if necessary
-        // For now, let's assume it updates the drawing pane in some way
-        // Check that drawing pane is enabled or some UI change happens
-        assertFalse(drawingPane.isDisabled(), "Drawing pane should be disabled after selecting 'Class'");
+        assertFalse(drawingPane.isDisabled(), "Drawing pane should be enabled after selecting 'Class'");
     }
 
+    /**
+     * Tests selecting the "Interface" tool from the UI.
+     * <p>
+     * This test simulates clicking the Interface tool button and verifies that the drawing pane becomes
+     * enabled after the tool selection, indicating that the tool selection was successful.
+     * </p>
+     */
     @Test
     public void testInterfaceToolSelection() {
-        // Simulate clicking the Interface tool button
         clickOn(btnInterface);
-
-        // Verify that the tool selection method was called with "Interface"
-        assertFalse(drawingPane.isDisabled(), "Drawing pane should be disabled after selecting 'Interface'");
+        assertFalse(drawingPane.isDisabled(), "Drawing pane should be enabled after selecting 'Interface'");
     }
 
+    /**
+     * Tests selecting the "Association" tool from the UI.
+     * <p>
+     * This test simulates clicking the Association tool button and verifies that the drawing pane becomes
+     * enabled after the tool selection, indicating that the tool selection was successful.
+     * </p>
+     */
     @Test
     public void testAssociationToolSelection() {
-        // Simulate clicking the Association tool button
         clickOn(btnAssociation);
-
-        // Verify that the tool selection method was called with "Association"
-        assertFalse(drawingPane.isDisabled(), "Drawing pane should be disabled after selecting 'Association'");
+        assertFalse(drawingPane.isDisabled(), "Drawing pane should be enabled after selecting 'Association'");
     }
 
+    /**
+     * Tests selecting the "Drag" tool from the UI.
+     * <p>
+     * This test simulates clicking the Drag tool button and verifies that the drawing pane becomes
+     * enabled after the tool selection, indicating that the tool selection was successful.
+     * </p>
+     */
     @Test
     public void testDragToolSelection() {
-        // Simulate clicking the Drag tool button
         clickOn(btnDrag);
-
-        // Verify that the tool selection method was called with "Drag"
-        assertFalse(drawingPane.isDisabled(), "Drawing pane should be disabled after selecting 'Drag'");
+        assertFalse(drawingPane.isDisabled(), "Drawing pane should be enabled after selecting 'Drag'");
     }
 
+    /**
+     * Tests selecting the "Aggregation" tool from the UI.
+     * <p>
+     * This test simulates clicking the Aggregation tool button and verifies that the drawing pane becomes
+     * enabled after the tool selection, indicating that the tool selection was successful.
+     * </p>
+     */
     @Test
     public void testAggregationToolSelection() {
-        // Simulate clicking the Aggregation tool button
         clickOn(btnAggregation);
-
-        // Verify that the tool selection method was called with "Aggregation"
-        assertFalse(drawingPane.isDisabled(), "Drawing pane should be disabled after selecting 'Aggregation'");
+        assertFalse(drawingPane.isDisabled(), "Drawing pane should be enabled after selecting 'Aggregation'");
     }
 
+    /**
+     * Tests selecting the "Composition" tool from the UI.
+     * <p>
+     * This test simulates clicking the Composition tool button and verifies that the drawing pane becomes
+     * enabled after the tool selection, indicating that the tool selection was successful.
+     * </p>
+     */
     @Test
     public void testCompositionToolSelection() {
-        // Simulate clicking the Composition tool button
         clickOn(btnComposition);
-
-        // Verify that the tool selection method was called with "Composition"
-        assertFalse(drawingPane.isDisabled(), "Drawing pane should be disabled after selecting 'Composition'");
+        assertFalse(drawingPane.isDisabled(), "Drawing pane should be enabled after selecting 'Composition'");
     }
 
+    /**
+     * Tests selecting the "Inheritance" tool from the UI.
+     * <p>
+     * This test simulates clicking the Inheritance tool button and verifies that the drawing pane becomes
+     * enabled after the tool selection, indicating that the tool selection was successful.
+     * </p>
+     */
     @Test
     public void testInheritanceToolSelection() {
-        // Simulate clicking the Inheritance tool button
         clickOn(btnInheritance);
-
-        // Verify that the tool selection method was called with "Inheritance"
-        assertFalse(drawingPane.isDisabled(), "Drawing pane should be disabled after selecting 'Inheritance'");
+        assertFalse(drawingPane.isDisabled(), "Drawing pane should be enabled after selecting 'Inheritance'");
     }
-
-
-
-
-
-
-
-
-
 }

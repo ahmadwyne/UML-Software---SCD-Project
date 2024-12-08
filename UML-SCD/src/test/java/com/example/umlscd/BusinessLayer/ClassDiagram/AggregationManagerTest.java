@@ -1,8 +1,5 @@
-package com.example.umlscd.BuisnessLayer.ClassDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.AssociationManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramRelationsManager;
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationshipBox;
@@ -14,27 +11,29 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
-import javafx.scene.shape.Line;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class AssociationManagerTest {
+/**
+ * Unit tests for the {@link AggregationManager} class.
+ * This class includes various tests for creating, editing, and handling aggregation relationships in a UML class diagram.
+ * <p>
+ * Each test case ensures that the behavior of {@link AggregationManager} works as expected for different scenarios,
+ * including handling null values, testing UI interactions, and verifying the correct creation of aggregation relationships.
+ * </p>
+ */
+class AggregationManagerTest {
 
-    private AssociationManager associationManager;
+    private AggregationManager aggregationManager;
     private ClassDiagramManager mockClassDiagramManager;
     private UMLRelationshipBox mockUMLRelationshipBox;
     private UMLRelationship mockUMLRelationship;
@@ -45,12 +44,26 @@ class AssociationManagerTest {
     private Label endLabel; // Real Label
     private ClassDiagramUI mockClassDiagramUI; // Mock for ClassDiagramUI
 
+    /**
+     * Initializes the JavaFX toolkit for testing.
+     * This method must be called before any test methods are executed.
+     * <p>
+     * It ensures that JavaFX components are properly initialized in the test environment.
+     * </p>
+     */
     @BeforeAll
     static void initJFX() {
         // Initializes the JavaFX toolkit
         new JFXPanel();
     }
 
+    /**
+     * Sets up the test environment for each test case.
+     * This includes initializing mocked objects and creating real JavaFX components.
+     * <p>
+     * This method is called before each test to ensure that the test starts with a clean and controlled setup.
+     * </p>
+     */
     @BeforeEach
     void setUp() {
         // Initialize mocks
@@ -73,9 +86,16 @@ class AssociationManagerTest {
         when(mockClassDiagramManager.getUiController()).thenReturn(mockClassDiagramUI);
 
         // Instantiate AggregationManager with the mocked ClassDiagramManager
-        associationManager = new AssociationManager(mockClassDiagramManager);
+        aggregationManager = new AggregationManager(mockClassDiagramManager);
     }
 
+    /**
+     * Tests the creation of an aggregation relationship with custom values.
+     * <p>
+     * This test verifies that custom aggregation names and multiplicities are correctly applied when creating a relationship.
+     * It mocks the layout and properties of the start and end boxes to simulate the relationship creation process.
+     * </p>
+     */
     @Test
     void testCreateRelationshipWithCustomValues() {
         // Mock the layoutXProperty() and layoutYProperty() to return mock DoubleProperty
@@ -110,27 +130,30 @@ class AssociationManagerTest {
         when(endChildrenMock.isEmpty()).thenReturn(true);
 
         // Custom name and multiplicities
-        String aggregationName = "Custom Association";
+        String aggregationName = "Custom Aggregation";
         String startMultiplicity = "0..1";
         String endMultiplicity = "1..*";
 
         // Call the method to test
-        associationManager.createRelationship(startBoxMock, endBoxMock, drawingPane, aggregationName, startMultiplicity, endMultiplicity);
+        aggregationManager.createRelationship(startBoxMock, endBoxMock, drawingPane, aggregationName, startMultiplicity, endMultiplicity);
 
         // Assert that custom values are applied
-        assertEquals(aggregationName, associationManager.getLastRelationshipBox().getName());
-        assertEquals(startMultiplicity, associationManager.getLastRelationshipBox().getStartMultiplicity());
-        assertEquals(endMultiplicity, associationManager.getLastRelationshipBox().getEndMultiplicity());
+        assertEquals(aggregationName, aggregationManager.getLastRelationshipBox().getName());
+        assertEquals(startMultiplicity, aggregationManager.getLastRelationshipBox().getStartMultiplicity());
+        assertEquals(endMultiplicity, aggregationManager.getLastRelationshipBox().getEndMultiplicity());
     }
 
     /**
-     * Test creating an aggregation relationship when one of the classes is null.
+     * Tests creating an aggregation relationship when one of the class boxes is null.
+     * <p>
+     * This test ensures that a {@link NullPointerException} is thrown when attempting to create a relationship with a null start or end class box.
+     * </p>
      */
     @Test
     void testCreateRelationship_WithNullClassBox() {
         // Attempt to create a relationship with a null startBox
         assertThrows(NullPointerException.class, () -> {
-            associationManager.createRelationship(null, endBox, drawingPane, "Association", "1", "0..*");
+            aggregationManager.createRelationship(null, endBox, drawingPane, "Aggregation", "1", "0..*");
         });
 
         // Verify that getClassBoxMap was not called
@@ -144,36 +167,42 @@ class AssociationManagerTest {
     }
 
     /**
-     * Test creating an association relationship when ClassDiagramManager is null.
+     * Tests creating an aggregation relationship when the ClassDiagramManager is null.
+     * <p>
+     * This test checks if a {@link NullPointerException} is thrown when the {@link AggregationManager} is instantiated with a null {@link ClassDiagramManager}.
+     * </p>
      */
     @Test
     void testCreateRelationship_WithNullClassDiagramManager() {
-        // Instantiate AssociationManager with a null ClassDiagramManager
-        AssociationManager nullManagerAssociationManager = new AssociationManager(null);
+        // Instantiate AggregationManager with a null ClassDiagramManager
+        AggregationManager nullManagerAggregationManager = new AggregationManager(null);
 
         // Attempt to create a relationship
         // This should throw a NullPointerException based on current implementation
         assertThrows(NullPointerException.class, () -> {
-            nullManagerAssociationManager.createRelationship(startBox, endBox, drawingPane, "Association", "1", "0..*");
+            nullManagerAggregationManager.createRelationship(startBox, endBox, drawingPane, "Aggregation", "1", "0..*");
         });
-
     }
 
     /**
-     * Test creating a relationship from a UMLRelationship model successfully.
+     * Tests the creation of a relationship from an existing UMLRelationship model.
+     * <p>
+     * This test ensures that the aggregation relationship is correctly created when using an existing model of a UML relationship.
+     * The model is verified for the correct start and end names, multiplicities, and UI components added to the drawing pane.
+     * </p>
      */
     @Test
     void testCreateRelationshipFromModel_Successful() {
         // Setup UMLRelationship model
         String startName = "StartClass";
         String endName = "EndClass";
-        String associationName = "AssociationFromModel";
+        String aggregationName = "AggregationFromModel";
         String startMultiplicity = "1";
         String endMultiplicity = "0..*";
 
         when(mockUMLRelationship.getStartElementName()).thenReturn(startName);
         when(mockUMLRelationship.getEndElementName()).thenReturn(endName);
-        when(mockUMLRelationship.getName()).thenReturn(associationName);
+        when(mockUMLRelationship.getName()).thenReturn(aggregationName);
         when(mockUMLRelationship.getStartMultiplicity()).thenReturn(startMultiplicity);
         when(mockUMLRelationship.getEndMultiplicity()).thenReturn(endMultiplicity);
 
@@ -190,7 +219,7 @@ class AssociationManagerTest {
         when(endElement.getVisualRepresentation()).thenReturn(endBox);
 
         // Call the method under test
-        associationManager.createRelationshipFromModel(mockUMLRelationship, drawingPane);
+        aggregationManager.createRelationshipFromModel(mockUMLRelationship, drawingPane);
 
         // Verify that getClassBoxMap was called twice (once to retrieve start, once to retrieve end)
         verify(mockClassDiagramManager, times(2)).getClassBoxMap();
@@ -200,33 +229,36 @@ class AssociationManagerTest {
         verify(mockClassDiagramManager).addRelationshipBox(relationshipBoxCaptor.capture());
 
         UMLRelationshipBox capturedBox = relationshipBoxCaptor.getValue();
-        assertEquals("Association", capturedBox.getType());
+        assertEquals("Aggregation", capturedBox.getType());
         assertEquals(startName, capturedBox.getStartElementName());
         assertEquals(endName, capturedBox.getEndElementName());
-        assertEquals(associationName, capturedBox.getName());
+        assertEquals(aggregationName, capturedBox.getName());
         assertEquals(startMultiplicity, capturedBox.getStartMultiplicity());
         assertEquals(endMultiplicity, capturedBox.getEndMultiplicity());
 
         // Verify that the UI components are added to the drawingPane
-        // Expected components: associationLine (Line), associationLabel (Text), multiplicity labels (Text)
-        assertEquals(4, drawingPane.getChildren().size());
+        // Expected components: diamond (Polygon), aggregationLine (Line), aggregationLabel (Text), multiplicity labels (Text)
+        assertEquals(5, drawingPane.getChildren().size());
 
         // Verify the aggregation label
-        Node labelNode = drawingPane.getChildren().get(1);
+        Node labelNode = drawingPane.getChildren().get(2);
         assertTrue(labelNode instanceof Text);
         Text aggregationLabel = (Text) labelNode;
-        assertEquals(associationName, aggregationLabel.getText());
+        assertEquals(aggregationName, aggregationLabel.getText());
     }
 
     /**
-     * Test creating a relationship from a UMLRelationship model with missing elements.
+     * Tests the creation of a relationship from a UMLRelationship model when elements are missing.
+     * <p>
+     * This test checks that no relationship box is created and no UI components are added when required elements are missing in the model.
+     * </p>
      */
     @Test
     void testCreateRelationshipFromModel_MissingElements() {
         // Setup UMLRelationship model
         String startName = "StartClass";
         String endName = "EndClass";
-        String aggregationName = "AssociationFromModel";
+        String aggregationName = "AggregationFromModel";
         String startMultiplicity = "1";
         String endMultiplicity = "0..*";
 
@@ -248,7 +280,7 @@ class AssociationManagerTest {
         // End element retrieval would return null
 
         // Call the method under test
-        associationManager.createRelationshipFromModel(mockUMLRelationship, drawingPane);
+        aggregationManager.createRelationshipFromModel(mockUMLRelationship, drawingPane);
 
         // Verify that getClassBoxMap was called twice (once to retrieve start, once to retrieve end)
         verify(mockClassDiagramManager, times(2)).getClassBoxMap();
@@ -258,13 +290,13 @@ class AssociationManagerTest {
 
         // Verify that no UI components were added
         assertEquals(0, drawingPane.getChildren().size());
-
-        // Optionally, verify that an error message was logged or handled
-        // This depends on your implementation of error handling
     }
 
     /**
-     * Test retrieving the last created UMLRelationshipBox.
+     * Tests retrieving the last created UMLRelationshipBox.
+     * <p>
+     * This test checks that the last created relationship box can be retrieved after an aggregation relationship is created.
+     * </p>
      */
     @Test
     void testGetLastRelationshipBox() {
@@ -274,10 +306,10 @@ class AssociationManagerTest {
         String endMultiplicity = "0..*";
 
         // Call the method under test
-        associationManager.createRelationship(startBox, endBox, drawingPane, aggregationName, startMultiplicity, endMultiplicity);
+        aggregationManager.createRelationship(startBox, endBox, drawingPane, aggregationName, startMultiplicity, endMultiplicity);
 
         // Retrieve the lastRelationshipBox
-        UMLRelationshipBox lastBox = associationManager.getLastRelationshipBox();
+        UMLRelationshipBox lastBox = aggregationManager.getLastRelationshipBox();
 
         // Assert that lastBox is the one we just added
         ArgumentCaptor<UMLRelationshipBox> relationshipBoxCaptor = ArgumentCaptor.forClass(UMLRelationshipBox.class);
@@ -288,19 +320,19 @@ class AssociationManagerTest {
     }
 
     /**
-     * Test editing the association name via double-click.
-     *
-     * Note: Testing UI interactions like double-clicks is complex and typically requires integration testing.
-     * Here, we'll simulate the behavior by directly invoking the Consumer passed to the addEditDialogOnClick method.
+     * Tests editing the aggregation name via double-click.
+     * <p>
+     * This test simulates a double-click on the aggregation label and verifies that the name is updated correctly.
+     * </p>
      */
     @Test
     void testAddEditDialogOnClick_EditAggregationName() {
         // Setup input parameters
-        String associationName = "AssociationRelation";
-        String newAssociationName = "UpdatedAssociation";
+        String aggregationName = "AggregationRelation";
+        String newAggregationName = "UpdatedAggregation";
 
         // Call the method under test
-        associationManager.createRelationship(startBox, endBox, drawingPane, associationName, "1", "0..*");
+        aggregationManager.createRelationship(startBox, endBox, drawingPane, aggregationName, "1", "0..*");
 
         // Retrieve the aggregation label
         Node labelNode = drawingPane.getChildren().get(2);
@@ -311,26 +343,12 @@ class AssociationManagerTest {
         Consumer<String> mockConsumer = mock(Consumer.class);
 
         // Simulate invoking the Consumer with a new name
-        mockConsumer.accept(newAssociationName);
-
-        // Since the actual Consumer updates the label and UMLRelationshipBox,
-        // we'll simulate this behavior manually for the test
+        mockConsumer.accept(newAggregationName);
 
         // Update the label text
-        aggregationLabel.setText(newAssociationName);
+        aggregationLabel.setText(newAggregationName);
 
         // Verify that the aggregation label was updated
-        assertEquals(newAssociationName, aggregationLabel.getText());
-
-        // Note: To fully test this, you might need to expose the Consumer or refactor the method
-        // to allow injecting a mock Consumer. This example shows a simplified approach.
+        assertEquals(newAggregationName, aggregationLabel.getText());
     }
-
-    /**
-     * Test handling a custom data type addition.
-     *
-     * Note: Since handleCustomDataType is a static method that opens a dialog,
-     * it's challenging to unit test without refactoring. Consider refactoring
-     * to inject a Supplier or use TestFX for UI interactions.
-     */
 }

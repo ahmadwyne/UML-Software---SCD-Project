@@ -179,15 +179,6 @@ public class UMLClassBox implements UMLElementBoxInterface {
      *
      * @param name A {@code String} containing the new name for the class.
      */
-    /*@Override
-    public void setName(String name) {
-        this.name = name;
-        if (visualRepresentation != null) {
-            Label classNameLabel = (Label) visualRepresentation.getChildren().get(0);
-            classNameLabel.setText(name);
-        }
-    }*/
-
     @Override
     public void setName(String name) {
         this.name = name;
@@ -238,17 +229,6 @@ public class UMLClassBox implements UMLElementBoxInterface {
      *
      * @param attributes A {@code List} of {@code String} representing the new attributes.
      */
-    /*public void setAttributes(List<String> attributes) {
-        this.attributes = attributes;
-        if (visualRepresentation != null) {
-            VBox attributesBox = (VBox) visualRepresentation.getChildren().get(1);
-            attributesBox.getChildren().clear();
-            for (String attribute : attributes) {
-                attributesBox.getChildren().add(new Label(attribute));
-            }
-        }
-    }*/
-
     public void setAttributes(List<String> attributes) {
         this.attributes = attributes;
         if (visualRepresentation != null && visualRepresentation.getChildren().size() > 1) {
@@ -265,7 +245,6 @@ public class UMLClassBox implements UMLElementBoxInterface {
         }
     }
 
-
     /**
      * Sets the list of methods for the UML class.
      *
@@ -273,17 +252,6 @@ public class UMLClassBox implements UMLElementBoxInterface {
      *
      * @param methods A {@code List} of {@code String} representing the new methods.
      */
-    /*public void setMethods(List<String> methods) {
-        this.methods = methods;
-        if (visualRepresentation != null) {
-            VBox methodsBox = (VBox) visualRepresentation.getChildren().get(2);
-            methodsBox.getChildren().clear();
-            for (String method : methods) {
-                methodsBox.getChildren().add(new Label(method));
-            }
-        }
-    }*/
-
     public void setMethods(List<String> methods) {
         this.methods = methods;
         if (visualRepresentation != null && visualRepresentation.getChildren().size() > 2) {
@@ -300,7 +268,6 @@ public class UMLClassBox implements UMLElementBoxInterface {
         }
     }
 
-
     /**
      * Sets the visual representation of the UML class.
      *
@@ -312,6 +279,5 @@ public class UMLClassBox implements UMLElementBoxInterface {
     @Override
     public void setVisualRepresentation(VBox visualRepresentation) {
         this.visualRepresentation = visualRepresentation;
-        // Optionally, update the UI based on current model data
     }
 }

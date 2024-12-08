@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.ClasDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
@@ -17,19 +17,49 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * Manages the creation and rendering of Aggregation relationships.
+ * <h1>Aggregation Manager</h1>
+ *
+ * <p>The {@code AggregationManager} is responsible for creating and rendering aggregation relationships between
+ * classes in a UML class diagram. This class handles the creation of aggregation lines, multiplicity labels, and
+ * relationship labels, as well as dynamically updating these elements when classes are moved.</p>
+ *
+ * <p>It inherits from {@link ClassDiagramRelationsManager} and implements the abstract method {@link #createRelationship},
+ * which is used to create an aggregation relationship between two classes.</p>
+ *
+ * <p><b>Authors:</b> Ahmad Wyne, Wahaj Asif, Muhammad Muneeb</p>
+ * <p><b>Version:</b> 1.0</p>
+ * <p><b>Since:</b> 2024-12-04</p>
  */
 public class AggregationManager extends ClassDiagramRelationsManager {
 
     private final ClassDiagramManager classDiagramManager;
     private UMLRelationshipBox lastRelationshipBox;
 
-    // Constructor
+    /**
+     * Constructs an {@code AggregationManager} instance.
+     * <p>This constructor initializes the manager with the specified {@link ClassDiagramManager} and enables the
+     * aggregation mode by default.</p>
+     *
+     * @param manager The {@link ClassDiagramManager} instance managing the overall diagram.
+     */
     public AggregationManager(ClassDiagramManager manager) {
         this.classDiagramManager = manager;
         enableAggregationMode();
     }
 
+    /**
+     * Creates an aggregation relationship between two classes.
+     * <p>This method calculates the closest boundary points of the two given {@code VBox} elements representing the
+     * classes and creates an aggregation line between them. It also creates labels for the composition name and the
+     * multiplicity of both ends of the relationship. The line and labels are added to the {@code drawingPane}.</p>
+     *
+     * @param start The starting class (VBox) for the aggregation.
+     * @param end The ending class (VBox) for the aggregation diamond.
+     * @param drawingPane The pane where the aggregation line and labels will be drawn.
+     * @param aggregationName The name of the aggregation.
+     * @param startMultiplicity The multiplicity at the start of the aggregation (e.g., "1", "0..*").
+     * @param endMultiplicity The multiplicity at the end of the aggregation (e.g., "1", "0..*").
+     */
     @Override
     public void createRelationship(VBox start, VBox end, Pane drawingPane, String aggregationName, String startMultiplicity, String endMultiplicity) {
         // Disable aggregation mode immediately after starting the process
@@ -125,25 +155,37 @@ public class AggregationManager extends ClassDiagramRelationsManager {
         lastRelationshipBox = relationshipBox;
     }
 
-
+    /**
+     * This function add a dialog to edit aggregation name and multiplicity labels.
+     * <p>Sets up a double-click event handler on the given <code>Text</code> element to display a text input dialog for editing the text value.
+     * When the user double-clicks the <code>Text</code> element, a dialog is shown to allow them to enter a new value.
+     * If the user enters a new value and presses "OK", the provided <code>onSave</code> consumer is called with the new value.</p>
+     *
+     * @param textElement The <code>Text</code> element that will trigger the edit dialog on double-click.
+     * @param dialogTitle The title of the text input dialog.
+     * @param onSave A <code>Consumer&lt;String&gt;</code> that will be called with the new value entered by the user. This consumer allows
+     *               for custom handling of the new value (e.g., saving it or updating the UI).
+     */
     public void addEditDialogOnClick(Text textElement, String dialogTitle, Consumer<String> onSave) {
-    textElement.setOnMouseClicked(event -> {
-        if (event.getClickCount() == 2) { // Double-click to edit
-            TextInputDialog dialog = new TextInputDialog(textElement.getText());
-            dialog.setTitle(dialogTitle);
-            dialog.setHeaderText(null);
-            dialog.setContentText("Enter new value:");
+        textElement.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Double-click to edit
+                TextInputDialog dialog = new TextInputDialog(textElement.getText());
+                dialog.setTitle(dialogTitle);
+                dialog.setHeaderText(null);
+                dialog.setContentText("Enter new value:");
 
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(newValue -> {
-                onSave.accept(newValue);
-            });
-        }
-    });
-}
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(newValue -> {
+                    onSave.accept(newValue);
+                });
+            }
+        });
+    }
 
-/**
+    /**
      * Creates an aggregation relationship from a UMLRelationship model object during deserialization.
+     * <p>This method recreates an aggregation relationship using data from a {@link UMLRelationship} object and
+     * adds the elements (line, labels) to the specified {@code drawingPane}.</p>
      *
      * @param umlRelationship The UMLRelationship data.
      * @param drawingPane     The pane where elements are drawn.
@@ -253,6 +295,8 @@ public class AggregationManager extends ClassDiagramRelationsManager {
 
     /**
      * Retrieves the name of the UML element from the VBox.
+     * <p>This method extracts the name of the UML element by checking the first label in the {@code VBox}, which
+     * typically contains the name of the class or interface.</p>
      *
      * @param box The VBox representing the UML element.
      * @return The name of the element.
@@ -290,6 +334,8 @@ public class AggregationManager extends ClassDiagramRelationsManager {
 
     /**
      * Adds dynamic listeners to update the aggregation line and diamond when classes are moved.
+     * <p>This method attaches listeners to the {@code VBox} elements representing the classes involved in the
+     * aggregation. The listeners update the position of the aggregation line and labels when the classes are moved.</p>
      *
      * @param line                   The aggregation line.
      * @param diamond                The aggregation diamond.
@@ -309,6 +355,8 @@ public class AggregationManager extends ClassDiagramRelationsManager {
 
     /**
      * Finds the closest point on the diamond from a given point.
+     * <p>This method calculates the closest points between the first {@code VBox} element representing
+     * the class 1 and the diamond corner attached to the second {@code VBox} element.</p>
      *
      * @param diamond The aggregation diamond.
      * @param startX  The X coordinate of the start point.
@@ -338,6 +386,9 @@ public class AggregationManager extends ClassDiagramRelationsManager {
 
     /**
      * Updates the position of the aggregation line and diamond when either class is moved.
+     * <p>This method recalculates the closest boundary points between the two {@code VBox} elements representing
+     * the classes, updates the position of the aggregation line and diamond, and rebinds the labels (aggregation name and
+     * multiplicity) to the updated line.</p>
      *
      * @param line                   The aggregation line.
      * @param diamond                The aggregation diamond.

@@ -1,6 +1,6 @@
 package com.example.umlscd.DataAccessLayer.Serializers.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassDiagramManager;
 import com.example.umlscd.Models.ClassDiagram.ClassDiagramD;
 import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
@@ -132,7 +132,7 @@ public class ClassDiagramSerializer {
                     umlClass.getX(),
                     umlClass.getY(),
                     umlClass.getAttributes(),
-                    umlClass.getMethods() // Corrected to pass methods
+                    umlClass.getMethods()
             );
         }
 

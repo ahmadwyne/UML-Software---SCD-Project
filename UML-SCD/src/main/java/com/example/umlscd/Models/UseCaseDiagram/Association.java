@@ -26,7 +26,7 @@ public class Association implements Serializable {
     /**
      * Serial version UID for serialization compatibility.
      */
-    private static final long serialVersionUID = 1L; // Add a serial version UID
+    private static final long serialVersionUID = 1L;
 
     /**
      * The first {@code UseCaseDiagramObject} involved in the association.

@@ -8,8 +8,36 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Test class for generating Java code files from a UML class diagram using {@link ClassDiagramCodeGenerator}.
+ * <p>
+ * This class demonstrates the process of creating a UML class diagram with classes, interfaces, and relationships,
+ * and then using the {@link ClassDiagramCodeGenerator} to generate corresponding Java code files.
+ * </p>
+ * <p>
+ * The test creates two classes (`Person` and `Employee`), an interface (`EmployeeActions`),
+ * and a relationship (`Inheritance` between `Employee` and `Person`). It then calls the code generator
+ * to create a Java code file, which is verified for its existence.
+ * </p>
+ */
 public class ClassDiagramCodeGeneratorTest {
 
+    /**
+     * Main method for testing code generation from a UML class diagram.
+     * <p>
+     * This method performs the following steps:
+     * <ul>
+     *   <li>Creates example UML classes with attributes and methods.</li>
+     *   <li>Creates a UML interface with methods.</li>
+     *   <li>Creates a UML relationship between the classes (Inheritance).</li>
+     *   <li>Assembles a complete UML class diagram with classes, interfaces, and relationships.</li>
+     *   <li>Generates the Java code files using {@link ClassDiagramCodeGenerator}.</li>
+     *   <li>Checks if the generated output file exists and prints a success or failure message.</li>
+     * </ul>
+     * </p>
+     *
+     * @param args Command-line arguments (not used in this test).
+     */
     public static void main(String[] args) {
         // Create example UML Class
         UMLClassBox class1 = new UMLClassBox();

@@ -1,11 +1,8 @@
 package com.example.umlscd.PresentationLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassEditorManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassEditorManager;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.*;
-import org.mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,6 +19,13 @@ import org.testfx.util.WaitForAsyncUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Test class for {@link ClassEditorUI}.
+ * <p>
+ * This class contains UI tests for the {@link ClassEditorUI} class to ensure that
+ * attributes, methods, and class details can be correctly manipulated in the UI.
+ * </p>
+ */
 public class ClassEditorUITest extends ApplicationTest {
 
     private ClassEditorUI classEditorUI;
@@ -97,6 +101,13 @@ public class ClassEditorUITest extends ApplicationTest {
         });
     }
 
+    /**
+     * Tests adding an attribute to the attributes area.
+     * <p>
+     * This test simulates the user interaction of clicking the "Add Attribute" button
+     * and ensures that the attribute is added to the attributes area with the correct format.
+     * </p>
+     */
     @Test
     public void testAddAttribute() {
         // Ensure UI is ready before interacting
@@ -117,6 +128,13 @@ public class ClassEditorUITest extends ApplicationTest {
                 "Expected 'pAttribute1 : int' to be in the attributes area but got: " + actualText);
     }
 
+    /**
+     * Tests adding a method to the methods area.
+     * <p>
+     * This test simulates the user interaction of adding a method by clicking the "Add Method" button
+     * and checks that the method is properly added to the methods area.
+     * </p>
+     */
     @Test
     public void testAddMethod() {
         // Simulate adding a method
@@ -126,7 +144,7 @@ public class ClassEditorUITest extends ApplicationTest {
             controller.returnTypeDropdown.setValue("int");
             controller.visibilityDropdown.getItems().addAll("public", "private", "protected");
             controller.visibilityDropdown.setValue("public");
-            clickOn(controller.addMethodButton);  // Corrected to click on the button in the controller
+            clickOn(controller.addMethodButton);
         });
 
         // Wait for async updates
@@ -138,6 +156,14 @@ public class ClassEditorUITest extends ApplicationTest {
                 "Expected 'Method1' to be in the methods area but got: " + actualText);
     }
 
+    /**
+     * Tests applying changes after entering class, attributes, and method details.
+     * <p>
+     * This test simulates a user entering a class name, attributes, and methods,
+     * then applying the changes by clicking the "Apply Changes" button. It verifies that
+     * the {@link ClassEditorManager} receives the correct inputs.
+     * </p>
+     */
     @Test
     public void testApplyChanges() {
         // Simulate user input
@@ -157,19 +183,25 @@ public class ClassEditorUITest extends ApplicationTest {
         // Verify the interaction with classEditorManager
         verify(classEditorManager).applyChanges("MyClass", "pAttribute1 : int", "method1()");
 
-        // You can also check whether the UI reflects the changes after applying them.
         assertEquals("MyClass", controller.classNameField.getText());
         assertEquals("pAttribute1 : int", controller.attributesArea.getText());
         assertEquals("method1()", controller.methodsArea.getText());
     }
 
+    /**
+     * Tests deleting an attribute from the attributes area.
+     * <p>
+     * This test simulates adding an attribute and then deleting it. It ensures that
+     * the attribute is removed from the attributes area after the delete operation.
+     * </p>
+     */
     @Test
     public void testDeleteAttribute() {
         // Simulate user input for deleting an attribute
         Platform.runLater(() -> {
             clickOn(controller.addAttributeButton);
             // Trigger the deleteAttribute method (usually this would be triggered by a button click)
-            clickOn(controller.deleteAttributeButton);  // Assuming there's a button to delete attributes
+            clickOn(controller.deleteAttributeButton);
         });
 
         // Wait for async updates to complete
@@ -190,6 +222,13 @@ public class ClassEditorUITest extends ApplicationTest {
                 "Expected attribute '" + attributeNameToDelete + "' to be deleted but it was still found in the attributes area: " + actualText);
     }
 
+    /**
+     * Tests deleting a method from the methods area.
+     * <p>
+     * This test simulates adding a method and then deleting it. It ensures that
+     * the method is removed from the methods area after the delete operation.
+     * </p>
+     */
     @Test
     public void testDeleteMethod() {
         // Simulate user input for deleting a method
@@ -201,7 +240,7 @@ public class ClassEditorUITest extends ApplicationTest {
             controller.visibilityDropdown.setValue("public");
             clickOn(controller.addMethodButton);
             // Trigger the deleteMethod method (usually this would be triggered by a button click)
-            clickOn(controller.deleteMethodButton);  // Assuming there's a button to delete methods
+            clickOn(controller.deleteMethodButton);
         });
 
         // Wait for async updates to complete

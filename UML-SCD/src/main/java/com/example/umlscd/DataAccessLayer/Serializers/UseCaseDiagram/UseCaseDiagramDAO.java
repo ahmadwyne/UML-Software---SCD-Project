@@ -1,6 +1,6 @@
 package com.example.umlscd.DataAccessLayer.Serializers.UseCaseDiagram;
 
-import com.example.umlscd.BuisnessLayer.UseCaseDiagram.UseCaseDiagramManager;
+import com.example.umlscd.BusinessLayer.UseCaseDiagram.UseCaseDiagramManager;
 
 import java.io.*;
 

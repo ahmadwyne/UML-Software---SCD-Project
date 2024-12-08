@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.ClasDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
@@ -13,7 +13,18 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
 /**
- * Manages the creation and rendering of Inheritance relationships.
+ * <h1>Inheritance Manager</h1>
+ *
+ * <p>The {@code InheritanceManager} is responsible for creating and rendering inheritance relationships between
+ * classes in a UML class diagram. This class handles the creation of inheritance lines and
+ * dynamically updating these elements when classes are moved.</p>
+ *
+ * <p>It inherits from {@link ClassDiagramRelationsManager} and implements the abstract method {@link #createRelationship},
+ * which is used to create a  composition relationship between two classes.</p>
+ *
+ * <p><b>Authors:</b> Ahmad Wyne, Wahaj Asif, Muhammad Muneeb</p>
+ * <p><b>Version:</b> 1.0</p>
+ * <p><b>Since:</b> 2024-12-04</p>
  */
 public class InheritanceManager extends ClassDiagramRelationsManager {
 
@@ -21,9 +32,11 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
     private UMLRelationshipBox lastRelationshipBox;
 
     /**
-     * Constructor that initializes the InheritanceManager with a ClassDiagramManager.
+     * Constructs an {@code InheritanceManager} instance.
+     * <p>This constructor initializes the manager with the specified {@link ClassDiagramManager} and enables the
+     * inheritance mode by default.</p>
      *
-     * @param manager The ClassDiagramManager instance.
+     * @param manager The {@link ClassDiagramManager} instance managing the overall diagram.
      */
     public InheritanceManager(ClassDiagramManager manager) {
         this.classDiagramManager = manager;
@@ -32,13 +45,15 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
 
     /**
      * Creates an inheritance relationship between two UML elements.
+     * <p>This method calculates the closest boundary points of the two given {@code VBox} elements representing the
+     * classes and creates an inheritance line between them. The line is added to the {@code drawingPane}.</p>
      *
      * @param start            The starting UML element (child).
      * @param end              The ending UML element (parent).
      * @param drawingPane      The pane where the relationship is drawn.
      * @param inheritanceName  The name of the inheritance relationship (optional).
      * @param startMultiplicity The multiplicity at the start end (optional, typically not used in inheritance).
-     * @param endMultiplicity   The multiplicity at the end end (optional, typically not used in inheritance).
+     * @param endMultiplicity   The multiplicity at the end (optional, typically not used in inheritance).
      */
     @Override
     public void createRelationship(VBox start, VBox end, Pane drawingPane, String inheritanceName, String startMultiplicity, String endMultiplicity) {
@@ -139,6 +154,8 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
 
     /**
      * Creates an inheritance relationship from a UMLRelationship model object during deserialization.
+     * <p>This method recreates an inheritance relationship using data from a {@link UMLRelationship} object and
+     * adds the elements (line and triangle) to the specified {@code drawingPane}.</p>
      *
      * @param umlRelationship The UMLRelationship data.
      * @param drawingPane     The pane where the relationship is drawn.
@@ -257,6 +274,8 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
 
     /**
      * Retrieves the name of the UML element from the VBox.
+     * <p>This method extracts the name of the UML element by checking the first label in the {@code VBox}, which
+     * typically contains the name of the class or interface.</p>
      *
      * @param box The VBox representing the UML element.
      * @return The name of the element.
@@ -290,7 +309,9 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
     }
 
     /**
-     * Adds dynamic listeners to update the inheritance line and triangle when classes are moved.
+     * Adds dynamic listeners to update the inheritance line and diamond when classes are moved.
+     * <p>This method attaches listeners to the {@code VBox} elements representing the classes involved in the
+     * inheritance. The listeners update the position of the inheritance line and triangle when the classes are moved.</p>
      *
      * @param line                 The inheritance line.
      * @param inheritanceTriangle  The inheritance triangle.
@@ -309,7 +330,10 @@ public class InheritanceManager extends ClassDiagramRelationsManager {
     }
 
     /**
-     * Updates the position of the inheritance line and triangle when either class is moved.
+     * Updates the position of the inheritance line and diamond when either class is moved.
+     * <p>This method recalculates the closest boundary points between the two {@code VBox} elements representing
+     * the classes, updates the position of the inheritance line and triangle, and rebinds the labels (inheritance name and
+     * multiplicity) to the updated line.</p>
      *
      * @param line                 The inheritance line.
      * @param inheritanceTriangle  The inheritance triangle.

@@ -1,4 +1,4 @@
-package com.example.umlscd.BuisnessLayer.UseCaseDiagram;
+package com.example.umlscd.BusinessLayer.UseCaseDiagram;
 
 import java.io.Serial;
 import java.io.Serializable;

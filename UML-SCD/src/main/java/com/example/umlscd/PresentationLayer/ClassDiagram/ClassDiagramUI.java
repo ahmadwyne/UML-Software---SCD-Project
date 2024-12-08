@@ -1,6 +1,6 @@
 package com.example.umlscd.PresentationLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassDiagramManager;
 import com.example.umlscd.DataAccessLayer.Codegeneration.ClassDiagramCodeGenerator;
 import com.example.umlscd.Models.ClassDiagram.UMLClassBox;
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
@@ -87,11 +87,10 @@ public class ClassDiagramUI {
     @FXML
     Button btnExportImage;
     @FXML
-    Button btnCode; // Added Save and Load buttons
+    Button btnCode;
 
     @FXML private Button btnDelete;
     boolean isDeleteModeEnabled = false;
-
 
     /**
      * The pane containing editors for classes and interfaces.
@@ -104,12 +103,10 @@ public class ClassDiagramUI {
      */
     private ClassDiagramManager classDiagramManager;
 
-
-
     /**
      * Reference to the primary stage for file chooser dialogs.
      */
-    private Stage primaryStage; // Reference to primary stage for FileChooser
+    private Stage primaryStage;
 
 
     /**
@@ -145,13 +142,15 @@ public class ClassDiagramUI {
 
         // Home button
         homeButton.setOnAction(event -> goToHomePage());
-
-
-
     }
 
-
-    // Method to update the Object Explorer
+    /**
+     * Updates the Object Explorer with the current state of the class diagram.
+     *
+     * <p>This method clears the existing items in the Object Explorer and then repopulates it with the
+     * latest classes, interfaces, and relationships from the class diagram manager. Each item is labeled
+     * appropriately to indicate whether it is a class, interface, or relationship.</p>
+     */
     public void updateObjectExplorer() {
         objectExplorer.getItems().clear();
         classDiagramManager.getClasses().forEach(cls -> objectExplorer.getItems().add("Class: " + cls.getName()));
@@ -199,8 +198,13 @@ public class ClassDiagramUI {
         button.setStyle("-fx-background-color: #8C8C8C; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
 
-
-    // Handle Delete Button Click
+    /**
+     * Sets up the handler for the delete button, toggling between enabling and disabling delete mode.
+     *
+     * <p>The method listens for a click on the delete button and toggles between two modes: delete mode
+     * and cancel mode. In delete mode, clicking on a class in the drawing pane will delete it, while in
+     * cancel mode, the delete action is disabled.</p>
+     */
     private void setupDeleteButtonHandler() {
         btnDelete.setOnAction(e -> {
             if (isDeleteModeEnabled) {
@@ -211,7 +215,12 @@ public class ClassDiagramUI {
         });
     }
 
-    // Enable delete mode for selecting a class to delete
+    /**
+     * Enables delete mode, allowing the user to select and delete a class from the diagram.
+     *
+     * <p>In this mode, the delete button text changes to "Cancel Delete" and clicking on a class in the
+     * drawing pane will remove it from the diagram. After deletion, delete mode is automatically disabled.</p>
+     */
     private void enableDeleteMode() {
         isDeleteModeEnabled = true;
         btnDelete.setText("Cancel Delete"); // Update button text to indicate mode
@@ -230,7 +239,12 @@ public class ClassDiagramUI {
         });
     }
 
-    // Disable delete mode and reset the button
+    /**
+     * Disables delete mode and resets the delete button.
+     *
+     * <p>This method restores the button text to "Delete" and removes the delete functionality from
+     * the drawing pane.</p>
+     */
     private void disableDeleteMode() {
         isDeleteModeEnabled = false;
         btnDelete.setText("Delete");
@@ -238,7 +252,15 @@ public class ClassDiagramUI {
         drawingPane.setOnMouseClicked(null); // Remove the delete click listener
     }
 
-    // Get the selected element from the drawing pane (using mouse click)
+    /**
+     * Returns the class element selected by the user in the drawing pane.
+     *
+     * <p>The method checks if a mouse click is within the bounds of any class element (represented as
+     * a VBox) in the drawing pane. If an element is clicked, it is returned, otherwise null is returned.</p>
+     *
+     * @param event The mouse event representing the click.
+     * @return The selected class element (VBox) or null if no element is selected.
+     */
     private VBox getSelectedElement(javafx.scene.input.MouseEvent event) {
         for (Node node : drawingPane.getChildren()) {
             if (node instanceof VBox && node.getBoundsInParent().contains(event.getX(), event.getY())) {
@@ -247,6 +269,7 @@ public class ClassDiagramUI {
         }
         return null; // No element selected
     }
+
     /**
      * Loads predefined diagrams into the diagram list view.
      *
@@ -310,7 +333,7 @@ public class ClassDiagramUI {
             return;
         }
 
-        // Load the ClassEditorUI (Assuming you're using FXML)
+        // Load the ClassEditorUI
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/ClassEditor.fxml"));
             VBox editor = loader.load();
@@ -344,7 +367,7 @@ public class ClassDiagramUI {
             return;
         }
 
-        // Load the InterfaceEditorUI (Assuming you're using FXML)
+        // Load the InterfaceEditorUI
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/InterfaceEditor.fxml"));
             VBox editor = loader.load();
@@ -441,6 +464,14 @@ public class ClassDiagramUI {
             showInformationAlert("Diagram saved successfully.");
         }
     }
+
+    /**
+     * Handles the action of generating Java code from the current class diagram and saving it to a file.
+     *
+     * <p>This method opens a file chooser dialog for the user to select a location and name for the
+     * output file. The code is generated based on the current class diagram, and the generated code is
+     * saved to the specified file in text format.</p>
+     */
     private void handleGenerateCode() {
         // Specify the output file location (you can customize this as needed)
         FileChooser fileChooser = new FileChooser();
@@ -560,10 +591,16 @@ public class ClassDiagramUI {
         button.setStyle("-fx-background-color: #8C8C8C; -fx-font-size: 12px; -fx-font-weight: bold; -fx-font-family: 'Verdana'; -fx-pref-width: 120; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
     }
 
-
+    /**
+     * Navigates the user to the home page of the application.
+     *
+     * <p>This method loads the "welcome.fxml" file, which represents the home page. It creates a new
+     * scene with specific dimensions and sets it as the current scene for the stage. If the FXML file
+     * is not found, an error message is displayed.</p>
+     */
     private void goToHomePage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml")); // Update with your FXML file path
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/umlscd/welcome.fxml"));
             System.out.println("Loaded welcomepage");
             // Get the FXML file location
             URL fxmlLocation = getClass().getResource("/com/example/umlscd/welcome.fxml");

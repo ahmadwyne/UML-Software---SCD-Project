@@ -1,7 +1,7 @@
-package com.example.umlscd.BuisnessLayer.ClassDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.InterfaceEditorManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.ClassDiagramManager;
+import com.example.umlscd.BusinessLayer.ClassDiagram.InterfaceEditorManager;
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLInterfaceBox;
 import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
@@ -18,6 +18,16 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the {@link InterfaceEditorManager} class.
+ * This class contains tests for creating, editing, and managing interface names and methods
+ * within a UML class diagram.
+ * <p>
+ * The tests ensure that the {@link InterfaceEditorManager} works as expected, covering scenarios
+ * such as handling valid and invalid interface names, retrieving and updating methods, and verifying
+ * UI interactions and dependency behavior.
+ * </p>
+ */
 class InterfaceEditorManagerTest {
 
     private InterfaceEditorManager interfaceEditorManager;
@@ -27,13 +37,22 @@ class InterfaceEditorManagerTest {
     private Label interfaceNameLabel; // Real Label
     private VBox methodsBox; // Real VBox
     private ClassDiagramUI mockClassDiagramUI; // Mock for ClassDiagramUI
-
+    /**
+     * <p>
+     * Initializes the JavaFX toolkit to ensure JavaFX components can be used in the tests.
+     * </p>
+     * This method is executed once before all test cases.
+     */
     @BeforeAll
     static void initJFX() {
         // Initializes the JavaFX toolkit
         new JFXPanel();
     }
-
+    /**
+     * <p>
+     * Sets up mock dependencies and initializes JavaFX components before each test case.
+     * </p>
+     */
     @BeforeEach
     void setUp() {
         interfaceEditorManager = new InterfaceEditorManager();
@@ -55,9 +74,6 @@ class InterfaceEditorManagerTest {
         interfaceNameLabel = new Label("OldInterfaceName");
         methodsBox = new VBox();
 
-        // Optionally, add initial methods
-        // methodsBox.getChildren().addAll(new Label("public void methodOne()"), new Label("public int methodTwo(String param)"));
-
         interfaceBox = new VBox();
         interfaceBox.getChildren().addAll(new Label("Interface:"), interfaceNameLabel, methodsBox);
 
@@ -67,16 +83,19 @@ class InterfaceEditorManagerTest {
     }
 
     /**
-     * Test retrieving the interface name when interfaceBox is properly initialized.
-     */
-    @Test
+     * <p>
+     * Verifies that the correct interface name is retrieved from the interface box.
+     * </p>
+     */    @Test
     void testGetInterfaceName() {
         String interfaceName = interfaceEditorManager.getInterfaceName();
         assertEquals("OldInterfaceName", interfaceName);
     }
 
     /**
-     * Test retrieving the interface name when interfaceBox is null.
+     * <p>
+     * Verifies that an empty string is returned when the interface box is null.
+     * </p>
      */
     @Test
     void testGetInterfaceName_WhenInterfaceBoxIsNull() {
@@ -84,9 +103,10 @@ class InterfaceEditorManagerTest {
         String interfaceName = interfaceEditorManager.getInterfaceName();
         assertEquals("", interfaceName);
     }
-
     /**
-     * Test retrieving the interface name when interfaceBox has no children.
+     * <p>
+     * Verifies that an empty string is returned when the interface box has no children.
+     * </p>
      */
     @Test
     void testGetInterfaceName_WhenInterfaceBoxHasNoChildren() {
@@ -95,9 +115,10 @@ class InterfaceEditorManagerTest {
         String interfaceName = interfaceEditorManager.getInterfaceName();
         assertEquals("", interfaceName);
     }
-
     /**
-     * Test retrieving methods when methodsBox has methods.
+     * <p>
+     * Verifies that methods are correctly retrieved from the methods box.
+     * </p>
      */
     @Test
     void testGetMethods() {
@@ -109,9 +130,10 @@ class InterfaceEditorManagerTest {
         String methods = interfaceEditorManager.getMethods();
         assertEquals("public void methodOne()\npublic int methodTwo(String param)", methods);
     }
-
     /**
-     * Test retrieving methods when methodsBox has no methods.
+     * <p>
+     * Verifies that an empty string is returned when there are no methods.
+     * </p>
      */
     @Test
     void testGetMethods_WhenNoMethods() {
@@ -120,9 +142,10 @@ class InterfaceEditorManagerTest {
         String methods = interfaceEditorManager.getMethods();
         assertEquals("", methods);
     }
-
     /**
-     * Test applying changes with valid new interface name and methods.
+     * <p>
+     * Verifies that interface name and methods are updated correctly when valid.
+     * </p>
      */
     @Test
     void testApplyChanges_SuccessfulUpdate() {
@@ -163,9 +186,10 @@ class InterfaceEditorManagerTest {
         assertFalse(classBoxMap.containsKey("OldInterfaceName"));
         assertEquals(mockUmlInterfaceBox, classBoxMap.get(newInterfaceName));
     }
-
     /**
-     * Test applying changes with an empty interface name.
+     * <p>
+     * Verifies that an error is shown when the interface name is empty or blank.
+     * </p>
      */
     @Test
     void testApplyChanges_EmptyInterfaceName() {
@@ -186,7 +210,9 @@ class InterfaceEditorManagerTest {
     }
 
     /**
-     * Test applying changes with a duplicate interface name.
+     * <p>
+     * Verifies that an error is shown when the interface name already exists.
+     * </p>
      */
     @Test
     void testApplyChanges_DuplicateInterfaceName() {
@@ -210,7 +236,9 @@ class InterfaceEditorManagerTest {
     }
 
     /**
-     * Test adding a parameter to a method.
+     * <p>
+     * Verifies that parameters are correctly added to the parameter list.
+     * </p>
      */
     @Test
     void testAddParameterToMethod() {
@@ -221,7 +249,9 @@ class InterfaceEditorManagerTest {
     }
 
     /**
-     * Test finalizing a method signature without parameters.
+     * <p>
+     * Verifies that method finalization works correctly for a method with no parameters.
+     * </p>
      */
     @Test
     void testFinalizeMethod_NoParameters() {
@@ -234,7 +264,9 @@ class InterfaceEditorManagerTest {
     }
 
     /**
-     * Test finalizing a method signature with parameters.
+     * <p>
+     * Verifies that method finalization works correctly for a method with parameters.
+     * </p>
      */
     @Test
     void testFinalizeMethod_WithParameters() {
@@ -250,7 +282,9 @@ class InterfaceEditorManagerTest {
     }
 
     /**
-     * Test resetting the parameters list after finalizing a method.
+     * <p>
+     * Verifies that the parameter list is correctly reset.
+     * </p>
      */
     @Test
     void testResetParameters() {

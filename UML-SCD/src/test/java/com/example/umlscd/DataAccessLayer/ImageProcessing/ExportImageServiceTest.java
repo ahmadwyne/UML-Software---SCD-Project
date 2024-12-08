@@ -17,7 +17,16 @@ import javax.imageio.ImageIO;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test class for ExportImageService.
+ * Test class for {@link ExportImageService}.
+ * <p>
+ * This class tests the functionality of exporting a diagram (rendered on a {@link Canvas}) to an image file
+ * using the {@link ExportImageService} class.
+ * </p>
+ * <p>
+ * The class includes tests to verify that the image export correctly generates an image file, checks the file's
+ * existence and non-emptiness, and verifies the content of the image by checking pixel colors. It also includes
+ * tests to handle scenarios like user cancellation where no file is selected.
+ * </p>
  */
 @ExtendWith(ApplicationExtension.class)
 public class ExportImageServiceTest {
@@ -27,16 +36,32 @@ public class ExportImageServiceTest {
     private File tempFile;
 
     /**
-     * A subclass of ExportImageService that overrides file choosing logic for testing.
-     * Instead of showing a dialog, it returns a known file.
+     * A subclass of {@link ExportImageService} that overrides file choosing logic for testing.
+     * <p>
+     * Instead of showing a file dialog to the user, this class allows for setting a fixed file for testing.
+     * </p>
      */
     private static class TestableExportImageService extends ExportImageService {
         private File fixedFile;
 
+        /**
+         * Sets the file to be used for exporting the image during the test.
+         *
+         * @param file The file to which the image will be exported.
+         */
         public void setFixedFile(File file) {
             this.fixedFile = file;
         }
 
+        /**
+         * Exports the contents of the given {@link Canvas} to an image file.
+         * <p>
+         * This method creates a writable image from the canvas, converts it to a {@link BufferedImage},
+         * and saves the image in PNG format to the provided file location.
+         * </p>
+         *
+         * @param canvas The canvas whose contents will be exported.
+         */
         @Override
         public void exportToImage(Canvas canvas) {
             // Instead of opening a dialog, we directly use the fixedFile.
@@ -64,6 +89,15 @@ public class ExportImageServiceTest {
         }
     }
 
+    /**
+     * Set up method to initialize the canvas, export service, and temporary file for testing.
+     * <p>
+     * This method prepares the environment for the tests by creating a {@link Canvas} with a simple blue rectangle
+     * and setting up the {@link TestableExportImageService} with a temporary file for saving the exported image.
+     * </p>
+     *
+     * @throws IOException if an error occurs while creating the temporary file.
+     */
     @BeforeEach
     void setUp() throws IOException {
         // Initialize the canvas and draw something to test exporting
@@ -81,6 +115,19 @@ public class ExportImageServiceTest {
         exportImageService.setFixedFile(tempFile);
     }
 
+    /**
+     * Test method to verify that exporting to an image creates a file.
+     * <p>
+     * This test simulates exporting a diagram to an image by calling the export method and then checks:
+     * <ul>
+     *   <li>Whether the file is created.</li>
+     *   <li>Whether the file is not empty.</li>
+     *   <li>Whether the correct pixel color is saved in the image.</li>
+     * </ul>
+     * </p>
+     *
+     * @throws IOException if an error occurs during file operations or image loading.
+     */
     @Test
     void testExportToImageCreatesFile() throws IOException {
         Platform.runLater(() -> {
@@ -92,14 +139,12 @@ public class ExportImageServiceTest {
 
         assertTrue(tempFile.exists(), "The exported file should exist.");
         assertTrue(tempFile.length() > 0, "The exported file should not be empty.");
-    
-
 
         // Then: Verify that the file is not empty
         assertTrue(tempFile.exists(), "The exported file should exist.");
         assertTrue(tempFile.length() > 0, "The exported file should not be empty.");
 
-        // Optional: Load the image back to verify correctness
+        // Load the image back to verify correctness
         BufferedImage loadedImage = ImageIO.read(tempFile);
         assertNotNull(loadedImage, "The loaded image should not be null.");
         // Check pixel color at a known drawn point
@@ -109,6 +154,13 @@ public class ExportImageServiceTest {
         assertEquals(0xFF0000FF, rgb, "Pixel should be blue.");
     }
 
+    /**
+     * Test method to verify that exporting without a selected file (simulating user cancellation) does not throw an error.
+     * <p>
+     * This test ensures that the export process can handle scenarios where no file is selected and that it doesn't
+     * cause any exceptions to be thrown.
+     * </p>
+     */
     @Test
     void testExportWithoutFile() {
         // Set no file to simulate user cancellation

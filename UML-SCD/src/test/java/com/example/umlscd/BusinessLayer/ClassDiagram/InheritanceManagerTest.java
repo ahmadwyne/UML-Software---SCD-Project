@@ -1,8 +1,5 @@
-package com.example.umlscd.BuisnessLayer.ClassDiagram;
+package com.example.umlscd.BusinessLayer.ClassDiagram;
 
-import com.example.umlscd.BuisnessLayer.ClasDiagram.InheritanceManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramManager;
-import com.example.umlscd.BuisnessLayer.ClasDiagram.ClassDiagramRelationsManager;
 import com.example.umlscd.Models.ClassDiagram.UMLElementBoxInterface;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationship;
 import com.example.umlscd.Models.ClassDiagram.UMLRelationshipBox;
@@ -10,28 +7,28 @@ import com.example.umlscd.PresentationLayer.ClassDiagram.ClassDiagramUI;
 import javafx.beans.property.DoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
-import javafx.scene.text.Text;
-import javafx.scene.shape.Line;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the {@link InheritanceManager} class.
+ * This class contains tests for creating inheritance relationships, handling null class boxes,
+ * and managing UML relationship models in a class diagram.
+ * <p>
+ * The tests ensure that the {@link InheritanceManager} behaves as expected in scenarios such as successful relationship creation,
+ * dealing with null elements, and working with a UML model of a relationship.
+ * </p>
+ */
 class InheritanceManagerTest {
 
     private InheritanceManager inheritanceManager;
@@ -45,12 +42,24 @@ class InheritanceManagerTest {
     private Label endLabel; // Real Label
     private ClassDiagramUI mockClassDiagramUI; // Mock for ClassDiagramUI
 
+    /**
+     * Initializes the JavaFX toolkit for testing.
+     * <p>
+     * This method is called before any test methods are executed to ensure JavaFX components are initialized.
+     * </p>
+     */
     @BeforeAll
     static void initJFX() {
         // Initializes the JavaFX toolkit
         new JFXPanel();
     }
 
+    /**
+     * Sets up the test environment for each test case.
+     * <p>
+     * This method prepares the mocked objects and real JavaFX components to provide a clean state for each test.
+     * </p>
+     */
     @BeforeEach
     void setUp() {
         // Initialize mocks
@@ -76,6 +85,13 @@ class InheritanceManagerTest {
         inheritanceManager = new InheritanceManager(mockClassDiagramManager);
     }
 
+    /**
+     * Tests the creation of an inheritance relationship.
+     * <p>
+     * This test ensures that an inheritance relationship is correctly created between two class boxes.
+     * The test verifies the correct type of the relationship ("Inheritance") and checks the number of components added to the drawing pane.
+     * </p>
+     */
     @Test
     void testCreateRelationship() {
         // Mock the layoutXProperty() and layoutYProperty() to return mock DoubleProperty
@@ -118,7 +134,10 @@ class InheritanceManagerTest {
     }
 
     /**
-     * Test creating a composition relationship when one of the classes is null.
+     * Tests creating an inheritance relationship when one of the class boxes is null.
+     * <p>
+     * This test ensures that a {@link NullPointerException} is thrown when attempting to create a relationship with a null class box.
+     * </p>
      */
     @Test
     void testCreateRelationship_WithNullClassBox() {
@@ -138,7 +157,10 @@ class InheritanceManagerTest {
     }
 
     /**
-     * Test creating an aggregation relationship when ClassDiagramManager is null.
+     * Tests creating an inheritance relationship when the ClassDiagramManager is null.
+     * <p>
+     * This test ensures that a {@link NullPointerException} is thrown when the {@link InheritanceManager} is instantiated with a null {@link ClassDiagramManager}.
+     * </p>
      */
     @Test
     void testCreateRelationship_WithNullClassDiagramManager() {
@@ -150,13 +172,14 @@ class InheritanceManagerTest {
         assertThrows(NullPointerException.class, () -> {
             nullManagerCompositionManager.createRelationship(startBox, endBox, drawingPane, "", "", "");
         });
-
-        // Verify that addRelationshipBox was never called
-        // Since the manager is null, it should not attempt to add any relationship boxes
     }
 
     /**
-     * Test creating a relationship from a UMLRelationship model successfully.
+     * Tests creating an inheritance relationship from a UMLRelationship model.
+     * <p>
+     * This test ensures that an inheritance relationship is successfully created from a given UML model.
+     * The test verifies that the correct start and end class names are retrieved, and the UI components are correctly added to the drawing pane.
+     * </p>
      */
     @Test
     void testCreateRelationshipFromModel_Successful() {
@@ -206,7 +229,10 @@ class InheritanceManagerTest {
     }
 
     /**
-     * Test retrieving the last created UMLRelationshipBox.
+     * Tests retrieving the last created UMLRelationshipBox.
+     * <p>
+     * This test ensures that the last relationship box created is correctly retrieved from the InheritanceManager.
+     * </p>
      */
     @Test
     void testGetLastRelationshipBox() {
