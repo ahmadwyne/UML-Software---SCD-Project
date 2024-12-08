@@ -12,7 +12,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Line;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -73,17 +72,17 @@ public class ClassDiagramManager {
     /**
      * Manager for handling relationships within the class diagram.
      */
-    private ClassDiagramRelationsManager relationsManager;
+    public ClassDiagramRelationsManager relationsManager;
 
     /**
      * The underlying model representing the class diagram, including classes, interfaces, and relationships.
      */
-    private ClassDiagramD classDiagram;
+    public ClassDiagramD classDiagram;
 
     /**
      * Flag indicating whether drag functionality is enabled for moving diagram elements.
      */
-    private boolean isDragEnabled = false;
+    public boolean isDragEnabled = false;
 
 
     private Runnable objectExplorerUpdateCallback;
@@ -672,7 +671,7 @@ public class ClassDiagramManager {
      *
      * @param drawingPane The {@code Pane} where elements are drawn.
      */
-    private void enableInheritanceMode(Pane drawingPane) {
+    public void enableInheritanceMode(Pane drawingPane) {
         relationsManager.enableInheritanceMode();
 
         drawingPane.setOnMouseClicked(event -> {
@@ -773,7 +772,7 @@ public class ClassDiagramManager {
      * @param pane   The {@code VBox} to set as draggable or non-draggable.
      * @param enable {@code true} to enable dragging; {@code false} to disable.
      */
-    private void setDraggable(VBox pane, boolean enable) {
+    public void setDraggable(VBox pane, boolean enable) {
         if (enable) {
             pane.setOnMousePressed(event -> pane.setUserData(new double[]{event.getSceneX(), event.getSceneY(), pane.getLayoutX(), pane.getLayoutY()}));
             pane.setOnMouseDragged(event -> {
@@ -829,7 +828,7 @@ public class ClassDiagramManager {
      * @param classBox The {@code VBox} representing the class or interface to highlight.
      * @param highlight {@code true} to apply highlighting; {@code false} to remove it.
      */
-    private void highlightClass(VBox classBox, boolean highlight) {
+    public void highlightClass(VBox classBox, boolean highlight) {
         if (classBox == null) {
             System.out.println("Attempting to highlight a null classBox!");
             return;
@@ -1337,11 +1336,5 @@ public class ClassDiagramManager {
         // Trigger Object Explorer update
         if (objectExplorerUpdateCallback != null) objectExplorerUpdateCallback.run();
     }
-
-    /*private void showDeletionConfirmation(String elementName) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Element '" + elementName + "' and its related relationships have been deleted.", ButtonType.OK);
-        alert.showAndWait();
-    }*/
 
 }
